@@ -1,0 +1,1109 @@
+{
+  "version": "1.0.0",
+  "description": "Comprehensive catalog of AI video prompting structures, parameters, and best practices",
+  "last_updated": "2025-01-28",
+  "source_document": "ai-video-prompting-guide_PL-EN.md",
+  
+  "model_catalog": {
+    "kling": {
+      "provider": "Kwai",
+      "specialization": "Realistic cinematic scenes",
+      "max_duration": "5-10 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[SUBJECT_DESCRIPTION] [SUBJECT_MOVEMENT] [ENVIRONMENT] [LIGHTING] [ATMOSPHERE] [CAMERA_MOVEMENT] [STYLE]",
+        "patterns": {
+          "CAMS": {
+            "name": "Character-Action-Movement-Setting",
+            "template": "[CHARACTER] performs [ACTION] in [ENVIRONMENT] lit by [LIGHTING], creating [ATMOSPHERE]. Camera [CAMERA_MOVEMENT].",
+            "use_case": "Character-focused scenes"
+          },
+          "CINE": {
+            "name": "Camera-Intent-Narrative-Emotion",
+            "template": "[CAMERA_INTENT]: [SHOT_DESCRIPTION] with [ANGLE] and [MOVEMENT] to convey [NARRATIVE] and evoke [EMOTION].",
+            "use_case": "Cinematic storytelling"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "aspect_ratio": {
+          "type": "enum",
+          "values": ["16:9", "9:16", "1:1"],
+          "default": "16:9",
+          "description": "Image proportions"
+        },
+        "duration": {
+          "type": "range",
+          "min": 5,
+          "max": 10,
+          "unit": "seconds",
+          "default": 5,
+          "description": "Video length"
+        },
+        "camera_movement": {
+          "type": "enum",
+          "values": ["static", "pan", "zoom", "dolly"],
+          "default": "static",
+          "description": "Camera motion type",
+          "temporal_consistency_impact": "high"
+        },
+        "style": {
+          "type": "enum",
+          "values": ["cinematic", "realistic", "artistic"],
+          "default": "cinematic",
+          "description": "Visual style"
+        },
+        "quality": {
+          "type": "enum",
+          "values": ["standard", "high"],
+          "default": "high",
+          "description": "Generation quality"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use detailed descriptions for better coherence",
+          "Avoid sudden lighting changes",
+          "Maintain consistent subject description throughout",
+          "Specify gradual transitions for camera movement"
+        ],
+        "multi_scene_coherence": [
+          "Keep character descriptions consistent",
+          "Maintain environmental context",
+          "Use similar lighting conditions across scenes"
+        ],
+        "failure_modes": [
+          "Character movement instability",
+          "Object distortion during motion",
+          "Lighting inconsistency between frames"
+        ]
+      }
+    },
+    
+    "wan": {
+      "provider": "WAN AI",
+      "specialization": "Dynamic scenes with audio sync",
+      "max_duration": "2-8 seconds",
+      "max_resolution": "4K",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[SUBJECT] [SCENE] [MOTION] [CAMERA_LANGUAGE] [ATMOSPHERE] [STYLING] [AUDIO_SYNCHRONIZATION]",
+        "patterns": {
+          "SPARK": {
+            "name": "Subject-Purpose-Action-Result-Key",
+            "template": "[SUBJECT]: [SCENE_PURPOSE] -> [ACTION] -> [KEY_RESULT] with [CONTEXT]",
+            "use_case": "Creative and artistic scenes"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "style": {
+          "type": "enum",
+          "values": ["realistic", "artistic", "anime", "3d"],
+          "default": "realistic",
+          "description": "Visual style"
+        },
+        "motion_strength": {
+          "type": "range",
+          "min": 0.1,
+          "max": 1.0,
+          "default": 0.5,
+          "description": "Motion intensity",
+          "temporal_consistency_impact": "critical"
+        },
+        "audio_sync": {
+          "type": "boolean",
+          "default": false,
+          "description": "Audio synchronization",
+          "temporal_consistency_impact": "high"
+        },
+        "temporal_consistency": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.8,
+          "description": "Temporal coherence weight",
+          "temporal_consistency_impact": "critical"
+        },
+        "aspect_ratio": {
+          "type": "enum",
+          "values": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+          "default": "16:9",
+          "description": "Image proportions"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Balance temporal_consistency and motion_strength parameters",
+          "Use motion descriptors for precise control",
+          "Test different stylization settings",
+          "Keep motion_strength moderate for stability"
+        ],
+        "multi_scene_coherence": [
+          "Maintain style consistency across scenes",
+          "Synchronize audio transitions between scenes",
+          "Use consistent motion_strength values"
+        ],
+        "failure_modes": [
+          "Audio and motion desynchronization",
+          "Excessive artifacts with high motion_strength",
+          "Style inconsistency throughout video"
+        ]
+      }
+    },
+    
+    "runway": {
+      "provider": "Runway",
+      "specialization": "Creative experimentation and special effects",
+      "max_duration": "4-16 seconds",
+      "max_resolution": "4K",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[SCENE_DESCRIPTION] [VISUAL_EFFECTS] [STYLE] [MOTION_CONTROLS] [TECHNICAL_PARAMETERS]",
+        "patterns": {
+          "EXPERIMENTAL": {
+            "name": "Experimental Pattern",
+            "template": "Experiment 1: [CONVENTIONAL_DESCRIPTION]\nExperiment 2: [ALTERNATIVE_DESCRIPTION]\nExperiment 3: [ABSTRACT_DESCRIPTION]",
+            "use_case": "Creative exploration"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "seed": {
+          "type": "integer",
+          "min": 0,
+          "max": 2147483647,
+          "default": null,
+          "description": "Random seed for reproducibility",
+          "temporal_consistency_impact": "critical"
+        },
+        "duration": {
+          "type": "range",
+          "min": 4,
+          "max": 16,
+          "unit": "seconds",
+          "default": 4,
+          "description": "Video length"
+        },
+        "watermark": {
+          "type": "boolean",
+          "default": true,
+          "description": "Watermark visibility"
+        },
+        "motion_strength": {
+          "type": "float",
+          "min": 0.1,
+          "max": 1.0,
+          "default": 0.5,
+          "description": "Motion intensity",
+          "temporal_consistency_impact": "high"
+        },
+        "aesthetic": {
+          "type": "enum",
+          "values": ["specific", "general"],
+          "default": "general",
+          "description": "Generation aesthetic"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use seed parameter for reproducibility",
+          "Utilize preview mode for rapid iteration",
+          "Test different aesthetic settings",
+          "Keep motion_strength moderate for longer videos"
+        ],
+        "multi_scene_coherence": [
+          "Save successful seed configurations",
+          "Maintain consistent aesthetic across scenes",
+          "Document working parameter combinations"
+        ],
+        "failure_modes": [
+          "Generation instability with long videos",
+          "Difficulties with precise motion control",
+          "Unpredictable results with abstract prompts"
+        ]
+      }
+    },
+    
+    "ltx": {
+      "provider": "Lightricks",
+      "specialization": "Realistic scenes with temporal control",
+      "max_duration": "4-10 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V"],
+      
+      "prompt_structure": {
+        "format": "[SCENE] [CHARACTER] [ACTION] [TIME] [STYLE] [TEMPORAL_CONTROLS]",
+        "patterns": {
+          "NARRATIVE": {
+            "name": "Narrative Pattern",
+            "template": "[OPENING_SCENE]: [CHARACTER] begins [ACTION], which leads to [RESOLUTION]. Camera [MOVEMENT_DESCRIPTION].",
+            "use_case": "Story-driven scenes"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "temporal_weight": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.7,
+          "description": "Temporal consistency weight",
+          "temporal_consistency_impact": "critical"
+        },
+        "camera_control": {
+          "type": "enum",
+          "values": ["auto", "manual"],
+          "default": "auto",
+          "description": "Camera control mode"
+        },
+        "motion_blur": {
+          "type": "range",
+          "min": 0,
+          "max": 100,
+          "default": 50,
+          "description": "Motion blur intensity",
+          "temporal_consistency_impact": "medium"
+        },
+        "frame_interpolation": {
+          "type": "range",
+          "min": 1,
+          "max": 60,
+          "unit": "fps",
+          "default": 24,
+          "description": "Frame interpolation rate",
+          "temporal_consistency_impact": "high"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use moderate temporal_weight for balance",
+          "Test camera_control settings carefully",
+          "Gradually increase video length",
+          "Maintain consistent frame interpolation"
+        ],
+        "multi_scene_coherence": [
+          "Keep temporal_weight consistent across scenes",
+          "Use similar camera control modes",
+          "Match frame interpolation rates"
+        ],
+        "failure_modes": [
+          "Temporal artifacts with incorrect temporal_weight",
+          "Camera instability with manual control",
+          "Object distortion in long videos"
+        ]
+      }
+    },
+    
+    "ltx2": {
+      "provider": "Lightricks",
+      "specialization": "Enhanced movements and stability",
+      "max_duration": "5-15 seconds",
+      "max_resolution": "4K",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[SCENE] [CHARACTER] [ACTION] [TIME] [STYLE] [TEMPORAL_CONTROLS] [EXTENDED_CONTROLS]",
+        "patterns": {
+          "MULTI_STAGE": {
+            "name": "Multi-stage Pattern",
+            "template": "Stage 1: [OPENING_SCENE]\nStage 2: [ACTION_DEVELOPMENT]\nStage 3: [CLIMAX]\nCamera: [OVERALL_CAMERA_MOVEMENT]",
+            "use_case": "Complex sequential scenes"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "enhanced_temporal": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enhanced temporal consistency",
+          "temporal_consistency_impact": "critical"
+        },
+        "multi_camera": {
+          "type": "boolean",
+          "default": false,
+          "description": "Multiple cameras in one scene",
+          "temporal_consistency_impact": "high"
+        },
+        "object_tracking": {
+          "type": "boolean",
+          "default": false,
+          "description": "Object tracking enabled",
+          "temporal_consistency_impact": "high"
+        },
+        "advanced_motion": {
+          "type": "boolean",
+          "default": false,
+          "description": "Advanced motion algorithms"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Enable enhanced_temporal for key scenes",
+          "Test multi_camera configurations carefully",
+          "Use object_tracking for character consistency",
+          "Balance advanced features with stability"
+        ],
+        "multi_scene_coherence": [
+          "Maintain enhanced_temporal across scenes",
+          "Coordinate multi_camera transitions",
+          "Track objects consistently"
+        ],
+        "failure_modes": [
+          "Increased resource consumption with enhanced_temporal",
+          "Multi-camera synchronization difficulties",
+          "Unpredictable results with advanced_motion"
+        ]
+      }
+    },
+    
+    "sora2": {
+      "provider": "OpenAI",
+      "specialization": "Complex coherent narratives",
+      "max_duration": "60 seconds",
+      "max_resolution": "4K",
+      "supported_modes": ["T2V"],
+      
+      "prompt_structure": {
+        "format": "[NARRATIVE] [SCENE] [CHARACTER] [ACTION] [TIME_PERIOD] [VISUAL_STYLE] [NARRATIVE_CONTROLS]",
+        "patterns": {
+          "NARRATIVE": {
+            "name": "Narrative Pattern",
+            "template": "Narrator: [NARRATOR_DESCRIPTION]\nScene 1: [SCENE_1] with [CHARACTER_1] performing [ACTION_1]\nScene 2: [SCENE_2] with [CHARACTER_2] performing [ACTION_2]\nClimax: [CLIMAX_DESCRIPTION]",
+            "use_case": "Multi-scene storytelling"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "narrative_mode": {
+          "type": "enum",
+          "values": ["linear", "non-linear"],
+          "default": "linear",
+          "description": "Narrative mode",
+          "temporal_consistency_impact": "critical"
+        },
+        "scene_transitions": {
+          "type": "enum",
+          "values": ["fade", "cut", "dissolve"],
+          "default": "fade",
+          "description": "Scene transition type",
+          "temporal_consistency_impact": "critical"
+        },
+        "character_consistency": {
+          "type": "boolean",
+          "default": true,
+          "description": "Character consistency across scenes",
+          "temporal_consistency_impact": "critical"
+        },
+        "temporal_coherence": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.9,
+          "description": "Temporal coherence weight",
+          "temporal_consistency_impact": "critical"
+        },
+        "visual_style": {
+          "type": "enum",
+          "values": ["photorealistic", "stylized", "cinematic"],
+          "default": "cinematic",
+          "description": "Visual style"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use narrative_mode for complex stories",
+          "Balance temporal_coherence with scene dynamics",
+          "Test different scene_transitions",
+          "Maintain character_consistency for long videos"
+        ],
+        "multi_scene_coherence": [
+          "Plan scene transitions carefully",
+          "Maintain visual_style consistency",
+          "Keep character descriptions identical",
+          "Use consistent temporal_coherence values"
+        ],
+        "failure_modes": [
+          "Character instability in long videos",
+          "Temporal inconsistency in complex scenes",
+          "Difficulties with narrative control"
+        ]
+      }
+    },
+    
+    "veo3": {
+      "provider": "Google",
+      "specialization": "Audio-visual integration",
+      "max_duration": "60 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[VISUALIZATION] [SCENE] [CHARACTER] [ACTION] [AUDIO] [CAMERA_MOVEMENT] [SPECIAL_EFFECTS]",
+        "patterns": {
+          "AUDIO_VISUAL": {
+            "name": "Audio-Visual Pattern",
+            "template": "[AUDIO_VISUALIZATION]: [SCENE] with [CHARACTER] performing [ACTION] synchronized with [AUDIO]. Camera [MOVEMENT_DESCRIPTION].",
+            "use_case": "Music and audio-driven scenes"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "audio_sync": {
+          "type": "boolean",
+          "default": false,
+          "description": "Audio synchronization",
+          "temporal_consistency_impact": "critical"
+        },
+        "music_style": {
+          "type": "enum",
+          "values": ["classical", "electronic", "ambient"],
+          "default": "ambient",
+          "description": "Music style"
+        },
+        "sound_effects": {
+          "type": "boolean",
+          "default": false,
+          "description": "Sound effects enabled"
+        },
+        "lip_sync": {
+          "type": "boolean",
+          "default": false,
+          "description": "Lip synchronization",
+          "temporal_consistency_impact": "high"
+        },
+        "beat_sync": {
+          "type": "boolean",
+          "default": false,
+          "description": "Beat synchronization",
+          "temporal_consistency_impact": "high"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use beat_sync for dynamic scenes",
+          "Test different music_style options",
+          "Balance audio_sync with visual quality",
+          "Enable lip_sync only when necessary"
+        ],
+        "multi_scene_coherence": [
+          "Maintain music_style across scenes",
+          "Coordinate audio transitions",
+          "Keep beat_sync consistent"
+        ],
+        "failure_modes": [
+          "Audio and video desynchronization",
+          "Music style mismatch with scene",
+          "Lip sync issues with fast motion"
+        ]
+      }
+    },
+    
+    "veo3_1": {
+      "provider": "Google",
+      "specialization": "Enhanced effects and stability",
+      "max_duration": "60 seconds",
+      "max_resolution": "4K",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[VISUALIZATION] [SCENE] [CHARACTER] [ACTION] [AUDIO] [CAMERA_MOVEMENT] [SPECIAL_EFFECTS] [EXTENDED_EFFECTS]",
+        "patterns": {
+          "ADVANCED_EFFECTS": {
+            "name": "Advanced Effects Pattern",
+            "template": "[BASE_SCENE]: [CHARACTER] with [BASE_EFFECT] + [SPECIAL_EFFECTS]\n[DEVELOPMENT]: [FURTHER_DEVELOPMENT] with [ENHANCED_EFFECTS]",
+            "use_case": "Special effects-heavy scenes"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "particle_effects": {
+          "type": "boolean",
+          "default": false,
+          "description": "Particle effects enabled",
+          "temporal_consistency_impact": "medium"
+        },
+        "physics_simulation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Physics simulation enabled",
+          "temporal_consistency_impact": "high"
+        },
+        "advanced_lighting": {
+          "type": "boolean",
+          "default": false,
+          "description": "Advanced lighting enabled"
+        },
+        "motion_vectors": {
+          "type": "boolean",
+          "default": false,
+          "description": "Motion vectors enabled",
+          "temporal_consistency_impact": "high"
+        },
+        "color_grading": {
+          "type": "boolean",
+          "default": false,
+          "description": "Color grading enabled"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use particle_effects sparingly",
+          "Test advanced_lighting settings",
+          "Balance physics_simulation with performance",
+          "Enable motion_vectors for tracking"
+        ],
+        "multi_scene_coherence": [
+          "Maintain color_grading consistency",
+          "Coordinate lighting across scenes",
+          "Keep physics_simulation settings consistent"
+        ],
+        "failure_modes": [
+          "Excessive resource consumption with particle_effects",
+          "Physics artifacts with incorrect settings",
+          "Color distortion with aggressive grading"
+        ]
+      }
+    },
+    
+    "higgsfield": {
+      "provider": "Higgsfield",
+      "specialization": "Dynamic animated scenes",
+      "max_duration": "5-10 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V"],
+      
+      "prompt_structure": {
+        "format": "[ANIMATED_CHARACTER] [SCENE] [EXPRESSION] [ANIMATION_STYLE] [MOTION_CONTROLS]",
+        "patterns": {
+          "EXPRESSION": {
+            "name": "Expression Pattern",
+            "template": "[CHARACTER]: [BASE_EMOTION] -> [TRANSITION_EMOTION] -> [FINAL_EMOTION]\nCamera: [REACTION_SHOT]",
+            "use_case": "Emotional animation"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "expression_strength": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.6,
+          "description": "Expression intensity",
+          "temporal_consistency_impact": "medium"
+        },
+        "motion_smoothness": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.7,
+          "description": "Motion smoothness",
+          "temporal_consistency_impact": "high"
+        },
+        "animation_style": {
+          "type": "enum",
+          "values": ["cartoon", "realistic", "stylized"],
+          "default": "stylized",
+          "description": "Animation style"
+        },
+        "frame_rate": {
+          "type": "enum",
+          "values": [24, 30, 60],
+          "unit": "fps",
+          "default": 24,
+          "description": "Frame rate",
+          "temporal_consistency_impact": "high"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use moderate expression_strength for natural emotions",
+          "Test different animation_style options",
+          "Balance motion_smoothness with dynamics",
+          "Maintain consistent frame_rate"
+        ],
+        "multi_scene_coherence": [
+          "Keep animation_style consistent",
+          "Match frame_rate across scenes",
+          "Maintain expression_strength levels"
+        ],
+        "failure_modes": [
+          "Unnatural expressions with incorrect strength",
+          "Motion blur with excessive smoothness",
+          "Style inconsistency throughout video"
+        ]
+      }
+    },
+    
+    "luma": {
+      "provider": "Luma Labs",
+      "specialization": "Professional camera control",
+      "max_duration": "5-12 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[SCENE] [CHARACTER] [ACTION] [CAMERA_COMPOSITION] [CAMERA_MOVEMENT] [CINEMATIC_STYLE]",
+        "patterns": {
+          "CINEMATIC": {
+            "name": "Cinematic Pattern",
+            "template": "[CAMERA_SHOT]: [DESCRIPTION] with [ANGLE] and [DISTANCE], creating [COMPOSITION].\nCamera movement: [SEQUENCE_OF_MOVEMENTS].\nStyle: [CINEMATIC_STYLE].",
+            "use_case": "Professional cinematography"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "camera_type": {
+          "type": "enum",
+          "values": ["drone", "handheld", "steadicam", "tripod"],
+          "default": "steadicam",
+          "description": "Camera type",
+          "temporal_consistency_impact": "high"
+        },
+        "focal_length": {
+          "type": "range",
+          "min": 14,
+          "max": 200,
+          "unit": "mm",
+          "default": 50,
+          "description": "Focal length"
+        },
+        "aperture": {
+          "type": "enum",
+          "values": ["f/1.4", "f/2.0", "f/2.8", "f/4", "f/5.6", "f/8", "f/11", "f/16", "f/22"],
+          "default": "f/2.8",
+          "description": "Aperture setting"
+        },
+        "shutter_speed": {
+          "type": "string",
+          "default": "1/50s",
+          "description": "Shutter speed"
+        },
+        "iso_sensitivity": {
+          "type": "range",
+          "min": 100,
+          "max": 12800,
+          "default": 400,
+          "description": "ISO sensitivity"
+        },
+        "cinematic_mode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Cinematic mode enabled",
+          "temporal_consistency_impact": "high"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use professional camera parameters",
+          "Test different cinematic_mode settings",
+          "Balance exposure settings carefully",
+          "Match camera_type to scene requirements"
+        ],
+        "multi_scene_coherence": [
+          "Maintain camera_type consistency",
+          "Keep focal_length similar for matching shots",
+          "Coordinate exposure settings"
+        ],
+        "failure_modes": [
+          "Image instability with incorrect camera settings",
+          "Difficulties with cinematic composition",
+          "Unpredictable results with complex movements"
+        ]
+      }
+    },
+    
+    "pika": {
+      "provider": "Pika Labs",
+      "specialization": "Expressive animations",
+      "max_duration": "3-8 seconds",
+      "max_resolution": "1080p",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[ANIMATED_CHARACTER] [SCENE] [EXPRESSION] [ANIMATION_STYLE] [MOTION_CONTROLS]",
+        "patterns": {
+          "EXPRESSION": {
+            "name": "Expression Pattern",
+            "template": "[CHARACTER]: [BASE_EMOTION] -> [TRANSITION_EMOTION] -> [FINAL_EMOTION]\nCamera: [REACTION_SHOT]",
+            "use_case": "Character animation"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "expression_strength": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.5,
+          "description": "Expression intensity"
+        },
+        "motion_smoothness": {
+          "type": "range",
+          "min": 0.0,
+          "max": 1.0,
+          "default": 0.6,
+          "description": "Motion smoothness",
+          "temporal_consistency_impact": "high"
+        },
+        "animation_style": {
+          "type": "enum",
+          "values": ["cartoon", "realistic", "stylized"],
+          "default": "cartoon",
+          "description": "Animation style"
+        },
+        "frame_rate": {
+          "type": "enum",
+          "values": [24, 30, 60],
+          "unit": "fps",
+          "default": 30,
+          "description": "Frame rate"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use appropriate expression_strength for natural emotions",
+          "Test different animation_style options",
+          "Balance motion_smoothness with dynamics"
+        ],
+        "multi_scene_coherence": [
+          "Keep animation_style consistent",
+          "Match frame_rate across scenes"
+        ],
+        "failure_modes": [
+          "Unnatural expressions with incorrect strength",
+          "Motion blur with excessive smoothness"
+        ]
+      }
+    },
+    
+    "stable_video_diffusion": {
+      "provider": "Stability AI",
+      "specialization": "Fine-tunable diffusion models",
+      "max_duration": "4-10 seconds",
+      "max_resolution": "1024p",
+      "supported_modes": ["T2V", "I2V"],
+      
+      "prompt_structure": {
+        "format": "[MAIN_PROMPT] [NEGATIVE_PROMPT] [TECHNICAL_PARAMETERS]",
+        "patterns": {
+          "LAYERED": {
+            "name": "Layered Approach",
+            "template": "Layer 1 (Background): [BACKGROUND]\nLayer 2 (Characters): [CHARACTERS]\nLayer 3 (Details): [DETAILS]\nLayer 4 (Effects): [EFFECTS]",
+            "use_case": "Complex composition control"
+          }
+        }
+      },
+      
+      "controllability_parameters": {
+        "guidance_scale": {
+          "type": "range",
+          "min": 1.0,
+          "max": 20.0,
+          "default": 7.5,
+          "description": "Prompt guidance strength",
+          "temporal_consistency_impact": "critical"
+        },
+        "negative_prompt": {
+          "type": "string",
+          "default": "",
+          "description": "Negative prompt for exclusions"
+        },
+        "num_inference_steps": {
+          "type": "range",
+          "min": 20,
+          "max": 100,
+          "default": 50,
+          "description": "Denoising steps",
+          "temporal_consistency_impact": "high"
+        },
+        "cfg_scale": {
+          "type": "range",
+          "min": 1.0,
+          "max": 30.0,
+          "default": 7.0,
+          "description": "CFG scale"
+        },
+        "sampler": {
+          "type": "enum",
+          "values": ["euler", "euler_a", "dpm++_2m", "dpm++_sde", "ddim"],
+          "default": "euler_a",
+          "description": "Sampling method",
+          "temporal_consistency_impact": "high"
+        },
+        "seed": {
+          "type": "integer",
+          "min": 0,
+          "max": 2147483647,
+          "default": null,
+          "description": "Random seed",
+          "temporal_consistency_impact": "critical"
+        }
+      },
+      
+      "best_practices": {
+        "temporal_consistency": [
+          "Use layered prompts for better composition control",
+          "Test different sampler configurations",
+          "Balance guidance_scale with cfg_scale",
+          "Fix seed for reproducibility"
+        ],
+        "multi_scene_coherence": [
+          "Maintain sampler consistency",
+          "Keep guidance_scale similar",
+          "Use structured negative_prompt"
+        ],
+        "failure_modes": [
+          "Resource consumption with high inference steps",
+          "Generation instability with incorrect parameters",
+          "Poor composition with inadequate layering"
+        ]
+      }
+    }
+  },
+  
+  "universal_best_practices": {
+    "temporal_consistency": {
+      "principles": [
+        "Precision and detail - Clear, specific descriptions lead to better results",
+        "Logical structure - Organized prompts with clear information hierarchy",
+        "Contextualization - Providing appropriate context for the scene",
+        "Iterative refinement - Gradually improving prompts based on results"
+      ],
+      "techniques": [
+        "Use detailed descriptions for better frame-to-frame coherence",
+        "Specify gradual transitions rather than sudden changes",
+        "Maintain consistent lighting descriptions throughout",
+        "Define camera movements explicitly with timing",
+        "Avoid contradictory motion descriptions",
+        "Use temporal anchors (beginning, middle, end descriptions)",
+        "Specify motion blur and smoothness preferences",
+        "Include physics-based motion descriptions"
+      ],
+      "critical_parameters": [
+        "seed (for reproducibility)",
+        "temporal_coherence / temporal_consistency weights",
+        "motion_strength / motion_smoothness",
+        "frame_interpolation / frame_rate",
+        "guidance_scale (for diffusion models)"
+      ]
+    },
+    
+    "multi_scene_coherence": {
+      "principles": [
+        "Character consistency - Maintain identical character descriptions",
+        "Environmental continuity - Keep setting elements consistent",
+        "Lighting coherence - Match lighting conditions and direction",
+        "Style uniformity - Use consistent visual style descriptors",
+        "Temporal flow - Ensure logical progression between scenes"
+      ],
+      "techniques": [
+        "Create character style guides with fixed descriptions",
+        "Document successful parameter combinations",
+        "Use scene templates for consistency",
+        "Plan transition types (fade, cut, dissolve) in advance",
+        "Maintain color palette descriptions across scenes",
+        "Keep camera parameters similar for matching shots",
+        "Use seed values to maintain consistency",
+        "Define clear narrative connections between scenes"
+      ],
+      "shot_transitions": [
+        {
+          "type": "fade",
+          "description": "Gradual opacity change between scenes",
+          "use_case": "Time passage, emotional transitions",
+          "temporal_impact": "low"
+        },
+        {
+          "type": "cut",
+          "description": "Instant scene change",
+          "use_case": "Action sequences, parallel narratives",
+          "temporal_impact": "medium"
+        },
+        {
+          "type": "dissolve",
+          "description": "Blended transition between scenes",
+          "use_case": "Dreamlike sequences, memory transitions",
+          "temporal_impact": "high"
+        }
+      ]
+    },
+    
+    "prompt_engineering_fundamentals": {
+      "effective_prompt_elements": [
+        "Subject description - Main scene elements, appearance, characteristics",
+        "Environment - Action location, background, atmospheric conditions",
+        "Action and movement - Character actions, scene dynamics",
+        "Lighting and atmosphere - Light conditions, mood, color palette",
+        "Camera movement - Angles, shots, cinematic movements",
+        "Visual style - Aesthetics, realism, artistic influences"
+      ],
+      "universal_template": "[SUBJECT_DESCRIPTION] [ACTION/MOVEMENT] [ENVIRONMENT] [LIGHTING] [ATMOSPHERE] [CAMERA_MOVEMENT] [VISUAL_STYLE]",
+      "quality_checklist": [
+        "Temporal consistency maintained",
+        "Character and object realism appropriate",
+        "Lighting quality consistent",
+        "Motion smoothness natural",
+        "Style consistency throughout",
+        "Resolution and detail sufficient",
+        "Prompt responsiveness accurate"
+      ]
+    }
+  },
+  
+  "parameter_glossary": {
+    "common_parameters": {
+      "aspect_ratio": {
+        "description": "Image proportions (width:height)",
+        "typical_values": ["16:9", "9:16", "1:1", "4:3", "21:9"],
+        "impact": "Composition and framing"
+      },
+      "duration": {
+        "description": "Video length in seconds",
+        "typical_range": "2-60 seconds",
+        "impact": "Temporal complexity and stability"
+      },
+      "quality": {
+        "description": "Generation quality level",
+        "typical_values": ["standard", "high", "ultra"],
+        "impact": "Visual fidelity and detail"
+      },
+      "seed": {
+        "description": "Random seed for reproducibility",
+        "typical_range": "0-2147483647",
+        "impact": "Generation determinism",
+        "critical_for": "temporal_consistency"
+      },
+      "style": {
+        "description": "Visual style preset",
+        "typical_values": ["realistic", "cinematic", "artistic", "anime", "3d"],
+        "impact": "Overall aesthetic"
+      }
+    },
+    
+    "motion_parameters": {
+      "camera_motion": {
+        "description": "Camera movement type",
+        "values": {
+          "static": "No camera movement",
+          "pan": "Horizontal rotation",
+          "tilt": "Vertical rotation",
+          "zoom": "Focal length change",
+          "dolly": "Camera position movement",
+          "truck": "Lateral camera movement",
+          "pedestal": "Vertical camera movement",
+          "orbit": "Circular movement around subject",
+          "crane": "Vertical and horizontal combined"
+        },
+        "impact": "Scene dynamics and viewer perspective",
+        "critical_for": "temporal_consistency"
+      },
+      "motion_strength": {
+        "description": "Intensity of movement in scene",
+        "typical_range": "0.0-1.0",
+        "recommended": "0.3-0.7 for stability",
+        "impact": "Scene dynamism vs stability tradeoff",
+        "critical_for": "temporal_consistency"
+      },
+      "motion_blur": {
+        "description": "Motion blur intensity",
+        "typical_range": "0-100",
+        "impact": "Motion smoothness perception"
+      },
+      "motion_smoothness": {
+        "description": "Smoothness of motion transitions",
+        "typical_range": "0.0-1.0",
+        "impact": "Animation fluidity",
+        "critical_for": "temporal_consistency"
+      }
+    },
+    
+    "temporal_parameters": {
+      "temporal_consistency": {
+        "description": "Frame-to-frame coherence weight",
+        "typical_range": "0.0-1.0",
+        "recommended": "0.7-0.9 for most scenes",
+        "impact": "Stability vs dynamics tradeoff",
+        "critical_for": "temporal_consistency"
+      },
+      "temporal_weight": {
+        "description": "Temporal coherence weight",
+        "typical_range": "0.0-1.0",
+        "impact": "Motion vs consistency balance",
+        "critical_for": "temporal_consistency"
+      },
+      "temporal_coherence": {
+        "description": "Temporal coherence strength",
+        "typical_range": "0.0-1.0",
+        "impact": "Multi-frame stability",
+        "critical_for": "temporal_consistency"
+      },
+      "frame_interpolation": {
+        "description": "Frame interpolation rate",
+        "typical_values": "24, 30, 60 fps",
+        "impact": "Motion smoothness",
+        "critical_for": "temporal_consistency"
+      }
+    },
+    
+    "audio_parameters": {
+      "audio_sync": {
+        "description": "Audio synchronization enabled",
+        "typical_values": [true, false],
+        "impact": "Audio-visual coordination",
+        "critical_for": "temporal_consistency"
+      },
+      "beat_sync": {
+        "description": "Synchronize with music beat",
+        "typical_values": [true, false],
+        "impact": "Rhythmic motion alignment",
+        "critical_for": "temporal_consistency"
+      },
+      "lip_sync": {
+        "description": "Lip synchronization enabled",
+        "typical_values": [true, false],
+        "impact": "Speech visual alignment",
+        "critical_for": "temporal_consistency"
+      }
+    },
+    
+    "style_anchors": {
+      "cinematic": "Film-like quality with professional camera work and lighting",
+      "realistic": "Photorealistic rendering with natural physics",
+      "artistic": "Stylized with creative interpretation",
+      "anime": "Japanese animation style",
+      "3d": "Computer-generated 3D aesthetic",
+      "cartoon": "Western animation style",
+      "stylized": "Artistic interpretation with consistent rules",
+      "photorealistic": "Maximum realism matching photography",
+      "documentary": "Authentic, unscripted aesthetic",
+      "commercial": "Polished, aspirational quality"
+    }
+  }
+}

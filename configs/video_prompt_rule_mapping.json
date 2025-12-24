@@ -1,0 +1,464 @@
+{
+  "version": "1.0.0",
+  "description": "Mapping between AI video prompting parameters and ANIMAtiZE movement prediction rules",
+  "last_updated": "2025-01-28",
+  
+  "rule_to_parameter_mapping": {
+    "movement_001_pose_to_action": {
+      "rule_name": "Pose-to-Action Continuation",
+      "category": "character_action",
+      "applicable_when": {
+        "camera_type": ["static", "tripod"],
+        "focus": "subject_movement"
+      },
+      "recommended_parameters": {
+        "motion_strength": {
+          "range": [0.4, 0.7],
+          "description": "Moderate motion for natural character action"
+        },
+        "temporal_consistency": {
+          "range": [0.8, 0.9],
+          "description": "High consistency for smooth pose transitions"
+        },
+        "frame_rate": 30,
+        "motion_smoothness": {
+          "range": [0.7, 0.8],
+          "description": "Smooth character animations"
+        }
+      },
+      "prompt_enhancements": [
+        "Add muscle tension descriptors",
+        "Include weight distribution details",
+        "Specify facial expression evolution",
+        "Define movement path clearly"
+      ]
+    },
+    
+    "movement_002_composition_guided": {
+      "rule_name": "Composition-Guided Camera Flow",
+      "category": "camera_movement",
+      "applicable_when": {
+        "camera_type": ["pan", "tilt", "orbit", "steadicam"],
+        "focus": "compositional_elements"
+      },
+      "recommended_parameters": {
+        "camera_movement": ["pan", "tilt", "orbit"],
+        "temporal_consistency": {
+          "range": [0.85, 0.95],
+          "description": "Very high consistency for smooth camera moves"
+        },
+        "motion_strength": {
+          "range": [0.3, 0.5],
+          "description": "Gentle motion following composition"
+        }
+      },
+      "prompt_enhancements": [
+        "Specify leading lines in composition",
+        "Define rule of thirds positioning",
+        "Describe depth layers explicitly",
+        "Indicate negative space usage"
+      ]
+    },
+    
+    "movement_003_physics_based": {
+      "rule_name": "Physics-Based Environmental Motion",
+      "category": "environment_animation",
+      "applicable_when": {
+        "scene_includes": ["environmental_elements", "particles", "weather"],
+        "focus": "realistic_physics"
+      },
+      "recommended_parameters": {
+        "physics_simulation": true,
+        "particle_effects": true,
+        "motion_blur": {
+          "range": [40, 60],
+          "description": "Natural motion blur for physics"
+        },
+        "temporal_consistency": {
+          "range": [0.75, 0.85],
+          "description": "Balanced consistency for natural variation"
+        }
+      },
+      "prompt_enhancements": [
+        "Specify wind direction and strength",
+        "Define material properties (weight, flexibility)",
+        "Describe atmospheric conditions",
+        "Include gravity effects"
+      ]
+    },
+    
+    "movement_004_emotional_momentum": {
+      "rule_name": "Emotional Momentum Analysis",
+      "category": "character_action",
+      "applicable_when": {
+        "camera_type": ["static", "dolly", "zoom"],
+        "focus": "emotional_expression"
+      },
+      "recommended_parameters": {
+        "expression_strength": {
+          "range": [0.6, 0.8],
+          "description": "Strong but natural emotional expression"
+        },
+        "temporal_consistency": {
+          "range": [0.8, 0.9],
+          "description": "Smooth emotional transitions"
+        },
+        "camera_movement": "dolly",
+        "motion_strength": {
+          "range": [0.3, 0.4],
+          "description": "Subtle motion to enhance emotion"
+        }
+      },
+      "prompt_enhancements": [
+        "Detail micro-expressions",
+        "Describe body tension changes",
+        "Specify eye direction and focus",
+        "Include hand gesture evolution"
+      ]
+    },
+    
+    "movement_005_depth_parallax": {
+      "rule_name": "Depth Layer Parallax",
+      "category": "camera_movement",
+      "applicable_when": {
+        "camera_type": ["dolly", "truck", "orbit", "drone"],
+        "focus": "depth_perception"
+      },
+      "recommended_parameters": {
+        "camera_movement": ["dolly", "truck", "orbit"],
+        "focal_length": {
+          "range": [35, 50],
+          "description": "Natural perspective for parallax"
+        },
+        "temporal_consistency": {
+          "range": [0.85, 0.95],
+          "description": "High consistency for smooth parallax"
+        },
+        "motion_vectors": true
+      },
+      "prompt_enhancements": [
+        "Define foreground, midground, background elements",
+        "Specify relative motion speeds",
+        "Describe distance between layers",
+        "Include depth cues (atmospheric perspective)"
+      ]
+    },
+    
+    "movement_006_atmospheric_response": {
+      "rule_name": "Atmospheric Response System",
+      "category": "environment_animation",
+      "applicable_when": {
+        "scene_includes": ["weather", "time_of_day", "lighting_changes"],
+        "focus": "atmospheric_conditions"
+      },
+      "recommended_parameters": {
+        "advanced_lighting": true,
+        "particle_effects": true,
+        "temporal_consistency": {
+          "range": [0.7, 0.85],
+          "description": "Allow natural atmospheric variation"
+        },
+        "color_grading": true
+      },
+      "prompt_enhancements": [
+        "Specify light quality (hard/soft)",
+        "Define shadow direction and length",
+        "Describe weather element intensity",
+        "Include time progression indicators"
+      ]
+    },
+    
+    "movement_007_interaction_anticipation": {
+      "rule_name": "Interaction Anticipation",
+      "category": "character_action",
+      "applicable_when": {
+        "scene_includes": ["object_interaction", "character_reaching"],
+        "focus": "intentional_action"
+      },
+      "recommended_parameters": {
+        "object_tracking": true,
+        "temporal_consistency": {
+          "range": [0.85, 0.95],
+          "description": "High consistency for precise interaction"
+        },
+        "motion_smoothness": {
+          "range": [0.7, 0.85],
+          "description": "Smooth intentional movements"
+        }
+      },
+      "prompt_enhancements": [
+        "Specify gaze direction toward object",
+        "Describe hand position relative to target",
+        "Define body orientation",
+        "Include anticipatory gestures"
+      ]
+    },
+    
+    "movement_008_emotional_framing": {
+      "rule_name": "Emotional Framing Progression",
+      "category": "camera_movement",
+      "applicable_when": {
+        "camera_type": ["zoom", "dolly"],
+        "focus": "emotional_intensity"
+      },
+      "recommended_parameters": {
+        "camera_movement": ["zoom", "dolly"],
+        "temporal_consistency": {
+          "range": [0.9, 0.95],
+          "description": "Very smooth for emotional progression"
+        },
+        "motion_strength": {
+          "range": [0.2, 0.4],
+          "description": "Gentle movement matching emotion"
+        },
+        "cinematic_mode": true
+      },
+      "prompt_enhancements": [
+        "Define starting frame size (wide, medium, close)",
+        "Specify ending frame size",
+        "Describe emotional transition",
+        "Include subject placement changes"
+      ]
+    }
+  },
+  
+  "parameter_to_rule_mapping": {
+    "camera_movement": {
+      "static": ["movement_001", "movement_004"],
+      "pan": ["movement_002", "movement_005"],
+      "tilt": ["movement_002", "movement_005"],
+      "zoom": ["movement_008"],
+      "dolly": ["movement_005", "movement_008"],
+      "orbit": ["movement_002", "movement_005"],
+      "crane": ["movement_002"],
+      "truck": ["movement_005"]
+    },
+    
+    "physics_simulation": {
+      "enabled": ["movement_003", "movement_006"]
+    },
+    
+    "object_tracking": {
+      "enabled": ["movement_007"]
+    },
+    
+    "expression_strength": {
+      "high": ["movement_004"]
+    },
+    
+    "particle_effects": {
+      "enabled": ["movement_003", "movement_006"]
+    }
+  },
+  
+  "model_specific_mappings": {
+    "kling": {
+      "primary_rules": ["movement_001", "movement_002", "movement_008"],
+      "strengths": ["cinematic_camera_movement", "realistic_character_action"],
+      "optimal_parameters": {
+        "camera_movement": ["dolly", "orbit", "static"],
+        "temporal_consistency": 0.85,
+        "motion_strength": 0.5
+      }
+    },
+    
+    "wan": {
+      "primary_rules": ["movement_003", "movement_006"],
+      "strengths": ["dynamic_scenes", "audio_sync", "stylistic_flexibility"],
+      "optimal_parameters": {
+        "motion_strength": 0.5,
+        "temporal_consistency": 0.8,
+        "audio_sync": true
+      }
+    },
+    
+    "sora2": {
+      "primary_rules": ["movement_001", "movement_002", "movement_004", "movement_008"],
+      "strengths": ["complex_narratives", "character_consistency", "long_duration"],
+      "optimal_parameters": {
+        "narrative_mode": "linear",
+        "character_consistency": true,
+        "temporal_coherence": 0.9,
+        "scene_transitions": "fade"
+      }
+    },
+    
+    "luma": {
+      "primary_rules": ["movement_002", "movement_005", "movement_008"],
+      "strengths": ["professional_camera_control", "cinematic_composition"],
+      "optimal_parameters": {
+        "camera_type": "steadicam",
+        "focal_length": 50,
+        "cinematic_mode": true,
+        "aperture": "f/2.8"
+      }
+    },
+    
+    "veo3": {
+      "primary_rules": ["movement_003", "movement_004", "movement_006"],
+      "strengths": ["audio_visual_integration", "lip_sync", "beat_sync"],
+      "optimal_parameters": {
+        "audio_sync": true,
+        "beat_sync": true,
+        "temporal_consistency": 0.85
+      }
+    },
+    
+    "veo3_1": {
+      "primary_rules": ["movement_003", "movement_006"],
+      "strengths": ["special_effects", "physics_simulation", "particle_effects"],
+      "optimal_parameters": {
+        "particle_effects": true,
+        "physics_simulation": true,
+        "advanced_lighting": true,
+        "temporal_consistency": 0.8
+      }
+    },
+    
+    "ltx": {
+      "primary_rules": ["movement_001", "movement_007"],
+      "strengths": ["temporal_control", "realistic_interactions"],
+      "optimal_parameters": {
+        "temporal_weight": 0.8,
+        "camera_control": "auto",
+        "frame_interpolation": 30
+      }
+    },
+    
+    "ltx2": {
+      "primary_rules": ["movement_001", "movement_005", "movement_007"],
+      "strengths": ["enhanced_movements", "object_tracking", "multi_camera"],
+      "optimal_parameters": {
+        "enhanced_temporal": true,
+        "object_tracking": true,
+        "temporal_weight": 0.85
+      }
+    },
+    
+    "higgsfield": {
+      "primary_rules": ["movement_001", "movement_004"],
+      "strengths": ["expressive_animation", "character_emotion"],
+      "optimal_parameters": {
+        "expression_strength": 0.6,
+        "motion_smoothness": 0.7,
+        "animation_style": "stylized"
+      }
+    },
+    
+    "pika": {
+      "primary_rules": ["movement_001", "movement_004"],
+      "strengths": ["character_animation", "expressive_motion"],
+      "optimal_parameters": {
+        "expression_strength": 0.5,
+        "motion_smoothness": 0.6,
+        "animation_style": "cartoon"
+      }
+    }
+  },
+  
+  "workflow_recommendations": {
+    "single_scene_generation": {
+      "steps": [
+        {
+          "step": 1,
+          "action": "Analyze scene description for primary movement type",
+          "rules_to_consider": "Identify which ANIMAtiZE rules apply"
+        },
+        {
+          "step": 2,
+          "action": "Select appropriate model based on scene requirements",
+          "model_selection_criteria": ["duration", "style", "complexity"]
+        },
+        {
+          "step": 3,
+          "action": "Apply rule-specific parameters",
+          "parameter_optimization": "Use recommended_parameters from rule mapping"
+        },
+        {
+          "step": 4,
+          "action": "Enhance prompt with rule-specific details",
+          "prompt_enhancements": "Add elements from prompt_enhancements list"
+        },
+        {
+          "step": 5,
+          "action": "Set temporal consistency parameters",
+          "temporal_setup": "Match parameters to movement type"
+        }
+      ]
+    },
+    
+    "multi_scene_generation": {
+      "steps": [
+        {
+          "step": 1,
+          "action": "Plan scene sequence and transitions",
+          "considerations": ["character_consistency", "environmental_continuity"]
+        },
+        {
+          "step": 2,
+          "action": "Identify primary rules for each scene",
+          "rule_consistency": "Maintain compatible rules across scenes"
+        },
+        {
+          "step": 3,
+          "action": "Set base seed and sequential seeds",
+          "seed_strategy": "base_seed + scene_index"
+        },
+        {
+          "step": 4,
+          "action": "Maintain consistent parameters across scenes",
+          "consistency_params": ["style", "temporal_consistency", "character_description"]
+        },
+        {
+          "step": 5,
+          "action": "Define transition types between scenes",
+          "transition_selection": "Match transitions to narrative flow"
+        }
+      ]
+    }
+  },
+  
+  "integration_examples": {
+    "example_1_character_closeup": {
+      "description": "Close-up of character showing emotion",
+      "primary_rules": ["movement_004_emotional_momentum", "movement_008_emotional_framing"],
+      "model": "luma",
+      "parameters": {
+        "camera_type": "steadicam",
+        "camera_movement": "dolly",
+        "focal_length": 85,
+        "motion_strength": 0.3,
+        "temporal_consistency": 0.9,
+        "cinematic_mode": true
+      },
+      "prompt_template": "[Character close-up]: [Subject] shows [emotion] through [micro-expression]. Camera slowly dollies in from medium to close-up, increasing intimacy. [Lighting] highlights emotional state. Cinematic, [style]."
+    },
+    
+    "example_2_environmental_scene": {
+      "description": "Forest scene with wind and particles",
+      "primary_rules": ["movement_003_physics_based", "movement_006_atmospheric_response"],
+      "model": "veo3_1",
+      "parameters": {
+        "particle_effects": true,
+        "physics_simulation": true,
+        "advanced_lighting": true,
+        "temporal_consistency": 0.75,
+        "motion_strength": 0.4
+      },
+      "prompt_template": "[Environment]: [Location] with [weather_condition]. Wind moves [elements] realistically with [physics_behavior]. [Light_quality] creates [atmospheric_effect]. Particles float naturally. [Style]."
+    },
+    
+    "example_3_action_sequence": {
+      "description": "Character performing action with camera tracking",
+      "primary_rules": ["movement_001_pose_to_action", "movement_002_composition_guided"],
+      "model": "kling",
+      "parameters": {
+        "camera_movement": "dolly",
+        "motion_strength": 0.6,
+        "temporal_consistency": 0.8,
+        "frame_rate": 60
+      },
+      "prompt_template": "[Subject] transitions from [starting_pose] into [action], with [body_mechanics]. Camera follows along [compositional_lines], maintaining [framing]. Fast, dynamic, cinematic."
+    }
+  }
+}
