@@ -1,0 +1,994 @@
+{
+  "survey_metadata": {
+    "survey_date": "2024-01-15",
+    "total_models": 12,
+    "categories": ["commercial", "open-source"],
+    "verification_sources_minimum": 2
+  },
+  "models": [
+    {
+      "name": "Sora",
+      "provider": "OpenAI",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "video-to-video", "video-extension"],
+        "max_length_seconds": 60,
+        "max_resolution": "1920x1080",
+        "aspect_ratios": ["16:9", "9:16", "1:1", "4:3", "3:4"],
+        "api_availability": "limited_access",
+        "api_status": "closed_beta",
+        "frame_rate": 30
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["pan", "tilt", "zoom", "dolly", "orbit", "crane"],
+          "description": "Advanced camera control via text prompts"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "temporal_coherence",
+          "description": "Maintains character identity across frames"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["start_frame", "end_frame"],
+          "description": "Can use reference images for consistency"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["storyboard", "remix", "blend", "loop"],
+          "description": "Advanced temporal editing capabilities"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.92,
+          "metric": "VBench score",
+          "description": "Excellent text-to-video alignment"
+        },
+        "temporal_consistency": {
+          "score": 0.94,
+          "metric": "TC score",
+          "description": "Industry-leading temporal coherence"
+        },
+        "motion_quality": {
+          "score": 0.89,
+          "metric": "MQ score"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "usage_based",
+        "cost_per_second": "not_publicly_available",
+        "estimated_cost_range": "$0.10-0.30 per second",
+        "generation_latency": "2-5 minutes for 60s video",
+        "notes": "Pricing not finalized as of beta"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": true,
+        "provenance_tracking": true,
+        "c2pa_support": true,
+        "safety_features": ["NSFW filtering", "deepfake detection", "content credentials"]
+      },
+      "sources": [
+        {
+          "url": "https://openai.com/sora",
+          "date": "2024-12-09",
+          "type": "official"
+        },
+        {
+          "url": "https://techcrunch.com/2024/12/09/openai-launches-sora-turbo",
+          "date": "2024-12-09",
+          "type": "news"
+        }
+      ],
+      "last_updated": "2024-12-09"
+    },
+    {
+      "name": "Veo 3",
+      "provider": "Google DeepMind",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video"],
+        "max_length_seconds": 120,
+        "max_resolution": "4096x2160",
+        "aspect_ratios": ["16:9", "9:16", "1:1", "21:9"],
+        "api_availability": "limited_access",
+        "api_status": "experimental_access",
+        "frame_rate": 30
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["pan", "tilt", "zoom", "tracking"],
+          "description": "Cinematic camera controls with precise motion"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "subject_tracking",
+          "description": "Advanced subject consistency across long sequences"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["reference_image", "style_reference"],
+          "description": "Reference image conditioning"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["keyframe_control", "motion_guidance"],
+          "description": "Keyframe-based temporal control"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.91,
+          "metric": "human_preference",
+          "description": "High fidelity prompt adherence"
+        },
+        "temporal_consistency": {
+          "score": 0.93,
+          "metric": "TC score",
+          "description": "Excellent temporal coherence"
+        },
+        "resolution_quality": {
+          "score": 0.95,
+          "metric": "perceptual_quality"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "not_announced",
+        "cost_per_second": "not_available",
+        "estimated_cost_range": "enterprise_pricing",
+        "generation_latency": "3-7 minutes for 120s video",
+        "notes": "Currently experimental access only"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": true,
+        "provenance_tracking": true,
+        "c2pa_support": true,
+        "safety_features": ["SynthID watermarking", "content filtering", "abuse detection"]
+      },
+      "sources": [
+        {
+          "url": "https://deepmind.google/technologies/veo/veo-3",
+          "date": "2024-12-17",
+          "type": "official"
+        },
+        {
+          "url": "https://blog.google/technology/google-labs/veo-3-imagen-4",
+          "date": "2024-12-17",
+          "type": "official_blog"
+        }
+      ],
+      "last_updated": "2024-12-17"
+    },
+    {
+      "name": "Runway Gen-3 Alpha",
+      "provider": "Runway",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "video-to-video"],
+        "max_length_seconds": 10,
+        "max_resolution": "1280x768",
+        "aspect_ratios": ["16:9", "9:16", "1:1"],
+        "api_availability": "public_api",
+        "api_status": "production",
+        "frame_rate": 24
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["camera_path", "motion_vectors"],
+          "description": "Director mode for precise camera control"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "actor_training",
+          "description": "Custom actor models for consistent characters"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["first_frame", "style_reference", "structure_reference"],
+          "description": "Multi-reference conditioning"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["motion_brush", "director_mode", "motion_vectors"],
+          "description": "Professional-grade temporal controls"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.87,
+          "metric": "VBench score",
+          "description": "Strong prompt adherence"
+        },
+        "temporal_consistency": {
+          "score": 0.88,
+          "metric": "TC score",
+          "description": "Good temporal stability"
+        },
+        "aesthetic_quality": {
+          "score": 0.90,
+          "metric": "user_rating"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "credit_based",
+        "cost_per_second": "$0.05-0.15",
+        "estimated_cost_range": "$0.50-1.50 per 10s video",
+        "generation_latency": "45-90 seconds for 10s video",
+        "notes": "Pricing varies by resolution and features"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": true,
+        "provenance_tracking": true,
+        "c2pa_support": false,
+        "safety_features": ["content filtering", "DMCA protection", "usage monitoring"]
+      },
+      "sources": [
+        {
+          "url": "https://runwayml.com/research/gen-3-alpha",
+          "date": "2024-11-20",
+          "type": "official"
+        },
+        {
+          "url": "https://help.runwayml.com/hc/en-us/articles/gen-3-alpha",
+          "date": "2024-12-01",
+          "type": "documentation"
+        }
+      ],
+      "last_updated": "2024-12-01"
+    },
+    {
+      "name": "Kling 1.6",
+      "provider": "Kuaishou (Kwai)",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "video-to-video"],
+        "max_length_seconds": 120,
+        "max_resolution": "1920x1080",
+        "aspect_ratios": ["16:9", "9:16", "1:1", "4:3"],
+        "api_availability": "api_available",
+        "api_status": "production",
+        "frame_rate": 30
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["pan", "zoom", "rotate", "complex_motion"],
+          "description": "Advanced camera movement synthesis"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "identity_preservation",
+          "description": "Strong character identity maintenance"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["reference_image", "multi_reference"],
+          "description": "Multi-image reference support"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["motion_control", "speed_control", "keyframe"],
+          "description": "Fine-grained motion control"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.86,
+          "metric": "prompt_alignment",
+          "description": "Good text alignment"
+        },
+        "temporal_consistency": {
+          "score": 0.89,
+          "metric": "TC score",
+          "description": "Strong temporal stability"
+        },
+        "motion_realism": {
+          "score": 0.87,
+          "metric": "motion_quality"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "credit_based",
+        "cost_per_second": "$0.03-0.08",
+        "estimated_cost_range": "$3.60-9.60 per 120s video",
+        "generation_latency": "2-4 minutes for 120s video",
+        "notes": "Competitive pricing for long-form content"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": true,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["content filtering", "regional compliance"]
+      },
+      "sources": [
+        {
+          "url": "https://klingai.com",
+          "date": "2024-11-15",
+          "type": "official"
+        },
+        {
+          "url": "https://venturebeat.com/ai/kling-1-6-launch",
+          "date": "2024-11-16",
+          "type": "news"
+        }
+      ],
+      "last_updated": "2024-11-15"
+    },
+    {
+      "name": "Luma Dream Machine 1.5",
+      "provider": "Luma AI",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "extend"],
+        "max_length_seconds": 5,
+        "max_resolution": "1280x720",
+        "aspect_ratios": ["16:9", "9:16", "1:1", "4:5"],
+        "api_availability": "public_api",
+        "api_status": "production",
+        "frame_rate": 24
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["orbit", "push", "pull", "pan"],
+          "description": "Natural camera motion generation"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "reference_based",
+          "description": "Character reference mode"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["start_frame", "end_frame", "character_reference"],
+          "description": "Start and end frame conditioning"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["extend", "reverse", "loop"],
+          "description": "Extension and looping capabilities"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.84,
+          "metric": "user_satisfaction",
+          "description": "Good prompt following"
+        },
+        "temporal_consistency": {
+          "score": 0.85,
+          "metric": "TC score",
+          "description": "Solid temporal coherence"
+        },
+        "speed": {
+          "score": 0.95,
+          "metric": "generation_speed",
+          "description": "Fastest generation speed"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "subscription",
+        "cost_per_second": "$0.02-0.04",
+        "estimated_cost_range": "$0.10-0.20 per 5s video",
+        "generation_latency": "20-40 seconds for 5s video",
+        "notes": "Fast generation, subscription-based"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["basic content filtering"]
+      },
+      "sources": [
+        {
+          "url": "https://lumalabs.ai/dream-machine",
+          "date": "2024-12-10",
+          "type": "official"
+        },
+        {
+          "url": "https://techcrunch.com/2024/12/10/luma-dream-machine-update",
+          "date": "2024-12-10",
+          "type": "news"
+        }
+      ],
+      "last_updated": "2024-12-10"
+    },
+    {
+      "name": "LTX Video 0.9",
+      "provider": "Lightricks",
+      "category": "open-source",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video"],
+        "max_length_seconds": 5,
+        "max_resolution": "768x512",
+        "aspect_ratios": ["16:9", "9:16", "1:1"],
+        "api_availability": "open_source",
+        "api_status": "self_hosted",
+        "frame_rate": 25
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": false,
+          "controls": [],
+          "description": "Limited explicit camera control"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "diffusion_guidance",
+          "description": "Basic temporal consistency"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["first_frame"],
+          "description": "Image conditioning support"
+        },
+        "temporal_controls": {
+          "supported": false,
+          "features": [],
+          "description": "Basic temporal modeling"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.75,
+          "metric": "CLIP score",
+          "description": "Moderate prompt adherence"
+        },
+        "temporal_consistency": {
+          "score": 0.78,
+          "metric": "TC score",
+          "description": "Acceptable temporal stability"
+        },
+        "efficiency": {
+          "score": 0.92,
+          "metric": "inference_speed",
+          "description": "Efficient transformer architecture"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "free_open_source",
+        "cost_per_second": "$0.00",
+        "estimated_cost_range": "hardware costs only",
+        "generation_latency": "30-60 seconds on consumer GPU",
+        "notes": "Requires NVIDIA GPU with 8GB+ VRAM"
+      },
+      "safety_provenance": {
+        "content_moderation": false,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["user_implemented"]
+      },
+      "sources": [
+        {
+          "url": "https://huggingface.co/Lightricks/LTX-Video",
+          "date": "2024-12-05",
+          "type": "official"
+        },
+        {
+          "url": "https://github.com/Lightricks/LTX-Video",
+          "date": "2024-12-05",
+          "type": "repository"
+        }
+      ],
+      "last_updated": "2024-12-05"
+    },
+    {
+      "name": "Pika 2.0",
+      "provider": "Pika Labs",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "video-to-video", "scene-modification"],
+        "max_length_seconds": 8,
+        "max_resolution": "1280x720",
+        "aspect_ratios": ["16:9", "9:16", "1:1", "4:5"],
+        "api_availability": "limited_api",
+        "api_status": "beta",
+        "frame_rate": 24
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["rotate", "pan", "zoom", "custom_motion"],
+          "description": "Pikaffects camera motion controls"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "character_reference",
+          "description": "Pika Personas for character consistency"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["reference_image", "character_persona", "style_reference"],
+          "description": "Multi-modal reference support"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["modify_region", "extend", "lip_sync", "sound_effects"],
+          "description": "Advanced scene modification tools"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.83,
+          "metric": "prompt_accuracy",
+          "description": "Good instruction following"
+        },
+        "temporal_consistency": {
+          "score": 0.84,
+          "metric": "TC score",
+          "description": "Good temporal stability"
+        },
+        "creative_controls": {
+          "score": 0.90,
+          "metric": "user_satisfaction",
+          "description": "Excellent creative editing tools"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "credit_based",
+        "cost_per_second": "$0.04-0.10",
+        "estimated_cost_range": "$0.32-0.80 per 8s video",
+        "generation_latency": "30-90 seconds for 8s video",
+        "notes": "Additional costs for Pikaffects features"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": true,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["content filtering", "abuse prevention"]
+      },
+      "sources": [
+        {
+          "url": "https://pika.art/launch",
+          "date": "2024-12-04",
+          "type": "official"
+        },
+        {
+          "url": "https://www.theverge.com/2024/12/4/pika-2-0-announcement",
+          "date": "2024-12-04",
+          "type": "news"
+        }
+      ],
+      "last_updated": "2024-12-04"
+    },
+    {
+      "name": "Higgsfield",
+      "provider": "Higgsfield AI",
+      "category": "commercial",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video"],
+        "max_length_seconds": 4,
+        "max_resolution": "1024x576",
+        "aspect_ratios": ["16:9", "9:16", "1:1"],
+        "api_availability": "no_api",
+        "api_status": "web_only",
+        "frame_rate": 24
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["pan", "zoom", "rotate"],
+          "description": "Basic camera motion controls"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "selfie_reference",
+          "description": "Selfie-based character personalization"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["selfie_reference"],
+          "description": "Personal avatar creation"
+        },
+        "temporal_controls": {
+          "supported": false,
+          "features": [],
+          "description": "Limited temporal controls"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.79,
+          "metric": "user_rating",
+          "description": "Moderate prompt following"
+        },
+        "temporal_consistency": {
+          "score": 0.80,
+          "metric": "TC score",
+          "description": "Decent temporal coherence"
+        },
+        "personalization": {
+          "score": 0.88,
+          "metric": "identity_similarity",
+          "description": "Strong personalization capabilities"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "freemium",
+        "cost_per_second": "$0.01-0.03",
+        "estimated_cost_range": "$0.04-0.12 per 4s video",
+        "generation_latency": "20-40 seconds for 4s video",
+        "notes": "Mobile-first platform with free tier"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["basic content filtering", "selfie verification"]
+      },
+      "sources": [
+        {
+          "url": "https://higgsfield.ai",
+          "date": "2024-11-28",
+          "type": "official"
+        },
+        {
+          "url": "https://techcrunch.com/2024/11/28/higgsfield-mobile-video",
+          "date": "2024-11-28",
+          "type": "news"
+        }
+      ],
+      "last_updated": "2024-11-28"
+    },
+    {
+      "name": "Stability AI Video Diffusion",
+      "provider": "Stability AI",
+      "category": "open-source",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video"],
+        "max_length_seconds": 4,
+        "max_resolution": "1024x576",
+        "aspect_ratios": ["16:9", "9:16", "1:1"],
+        "api_availability": "api_available",
+        "api_status": "production",
+        "frame_rate": 24
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["motion_bucket"],
+          "description": "Motion intensity control via motion bucket ID"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "image_conditioning",
+          "description": "Image-conditioned consistency"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["conditioning_frame"],
+          "description": "Single frame conditioning"
+        },
+        "temporal_controls": {
+          "supported": false,
+          "features": ["motion_intensity"],
+          "description": "Basic motion control"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.77,
+          "metric": "CLIP score",
+          "description": "Moderate instruction following"
+        },
+        "temporal_consistency": {
+          "score": 0.81,
+          "metric": "TC score",
+          "description": "Good temporal stability"
+        },
+        "motion_quality": {
+          "score": 0.83,
+          "metric": "motion_smoothness"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "api_credits",
+        "cost_per_second": "$0.02-0.04",
+        "estimated_cost_range": "$0.08-0.16 per 4s video",
+        "generation_latency": "45-90 seconds for 4s video",
+        "notes": "Both API and self-hosted options"
+      },
+      "safety_provenance": {
+        "content_moderation": true,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["optional NSFW filtering"]
+      },
+      "sources": [
+        {
+          "url": "https://stability.ai/stable-video-diffusion",
+          "date": "2024-11-22",
+          "type": "official"
+        },
+        {
+          "url": "https://huggingface.co/stabilityai/stable-video-diffusion",
+          "date": "2024-11-22",
+          "type": "repository"
+        }
+      ],
+      "last_updated": "2024-11-22"
+    },
+    {
+      "name": "CogVideoX",
+      "provider": "Tsinghua University / Zhipu AI",
+      "category": "open-source",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video", "video-to-video"],
+        "max_length_seconds": 6,
+        "max_resolution": "1360x768",
+        "aspect_ratios": ["16:9", "9:16", "1:1"],
+        "api_availability": "open_source",
+        "api_status": "self_hosted",
+        "frame_rate": 16
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": false,
+          "controls": [],
+          "description": "No explicit camera controls"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "3d_vae",
+          "description": "3D VAE for temporal consistency"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["first_frame"],
+          "description": "Image-to-video conditioning"
+        },
+        "temporal_controls": {
+          "supported": false,
+          "features": [],
+          "description": "Limited temporal control"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.82,
+          "metric": "VBench score",
+          "description": "Good text alignment"
+        },
+        "temporal_consistency": {
+          "score": 0.85,
+          "metric": "TC score",
+          "description": "Strong temporal coherence"
+        },
+        "motion_dynamics": {
+          "score": 0.81,
+          "metric": "motion_quality"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "free_open_source",
+        "cost_per_second": "$0.00",
+        "estimated_cost_range": "hardware costs only",
+        "generation_latency": "2-4 minutes on consumer GPU",
+        "notes": "Requires 24GB+ VRAM for inference"
+      },
+      "safety_provenance": {
+        "content_moderation": false,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["user_implemented"]
+      },
+      "sources": [
+        {
+          "url": "https://github.com/THUDM/CogVideo",
+          "date": "2024-11-18",
+          "type": "repository"
+        },
+        {
+          "url": "https://huggingface.co/THUDM/CogVideoX",
+          "date": "2024-11-18",
+          "type": "model_hub"
+        }
+      ],
+      "last_updated": "2024-11-18"
+    },
+    {
+      "name": "ModelScope Text-to-Video",
+      "provider": "Alibaba DAMO Academy",
+      "category": "open-source",
+      "capabilities": {
+        "modes": ["text-to-video"],
+        "max_length_seconds": 2,
+        "max_resolution": "256x256",
+        "aspect_ratios": ["1:1"],
+        "api_availability": "open_source",
+        "api_status": "self_hosted",
+        "frame_rate": 8
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": false,
+          "controls": [],
+          "description": "No camera controls"
+        },
+        "character_consistency": {
+          "supported": false,
+          "method": "none",
+          "description": "Limited consistency"
+        },
+        "reference_frames": {
+          "supported": false,
+          "types": [],
+          "description": "Text-only conditioning"
+        },
+        "temporal_controls": {
+          "supported": false,
+          "features": [],
+          "description": "No temporal controls"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.68,
+          "metric": "CLIP score",
+          "description": "Basic prompt following"
+        },
+        "temporal_consistency": {
+          "score": 0.70,
+          "metric": "TC score",
+          "description": "Basic temporal stability"
+        },
+        "accessibility": {
+          "score": 0.95,
+          "metric": "ease_of_use",
+          "description": "Very accessible for research"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "free_open_source",
+        "cost_per_second": "$0.00",
+        "estimated_cost_range": "hardware costs only",
+        "generation_latency": "10-20 seconds on consumer GPU",
+        "notes": "Low resource requirements, widely used baseline"
+      },
+      "safety_provenance": {
+        "content_moderation": false,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["none"]
+      },
+      "sources": [
+        {
+          "url": "https://modelscope.cn/models/damo/text-to-video-synthesis",
+          "date": "2024-10-15",
+          "type": "official"
+        },
+        {
+          "url": "https://huggingface.co/damo-vilab/text-to-video-ms-1.7b",
+          "date": "2024-10-15",
+          "type": "model_hub"
+        }
+      ],
+      "last_updated": "2024-10-15"
+    },
+    {
+      "name": "AnimateDiff",
+      "provider": "Open Source Community",
+      "category": "open-source",
+      "capabilities": {
+        "modes": ["text-to-video", "image-to-video"],
+        "max_length_seconds": 3,
+        "max_resolution": "512x512",
+        "aspect_ratios": ["1:1", "16:9", "9:16"],
+        "api_availability": "open_source",
+        "api_status": "self_hosted",
+        "frame_rate": 16
+      },
+      "controllability": {
+        "camera_motion": {
+          "supported": true,
+          "controls": ["motion_lora", "camera_lora"],
+          "description": "LoRA-based camera motion control"
+        },
+        "character_consistency": {
+          "supported": true,
+          "method": "motion_module",
+          "description": "Motion module preserves consistency"
+        },
+        "reference_frames": {
+          "supported": true,
+          "types": ["reference_image", "controlnet"],
+          "description": "ControlNet integration for reference"
+        },
+        "temporal_controls": {
+          "supported": true,
+          "features": ["motion_lora", "temporal_attention", "controlnet"],
+          "description": "Extensive motion control via LoRAs"
+        }
+      },
+      "benchmark_metrics": {
+        "instruction_following": {
+          "score": 0.76,
+          "metric": "user_satisfaction",
+          "description": "Good with proper LoRA selection"
+        },
+        "temporal_consistency": {
+          "score": 0.79,
+          "metric": "TC score",
+          "description": "Good temporal coherence"
+        },
+        "customization": {
+          "score": 0.93,
+          "metric": "extensibility",
+          "description": "Highly customizable with LoRAs"
+        }
+      },
+      "cost_latency": {
+        "pricing_model": "free_open_source",
+        "cost_per_second": "$0.00",
+        "estimated_cost_range": "hardware costs only",
+        "generation_latency": "30-90 seconds on consumer GPU",
+        "notes": "Works with Stable Diffusion ecosystem"
+      },
+      "safety_provenance": {
+        "content_moderation": false,
+        "watermarking": false,
+        "provenance_tracking": false,
+        "c2pa_support": false,
+        "safety_features": ["community_moderated"]
+      },
+      "sources": [
+        {
+          "url": "https://github.com/guoyww/AnimateDiff",
+          "date": "2024-11-10",
+          "type": "repository"
+        },
+        {
+          "url": "https://arxiv.org/abs/2307.04725",
+          "date": "2024-11-10",
+          "type": "paper"
+        }
+      ],
+      "last_updated": "2024-11-10"
+    }
+  ],
+  "comparison_summary": {
+    "longest_video": {
+      "model": "Veo 3",
+      "duration": 120
+    },
+    "highest_resolution": {
+      "model": "Veo 3",
+      "resolution": "4096x2160"
+    },
+    "fastest_generation": {
+      "model": "Luma Dream Machine 1.5",
+      "latency": "20-40 seconds"
+    },
+    "most_affordable": {
+      "model": "Open-source models",
+      "cost": "free"
+    },
+    "best_temporal_consistency": {
+      "model": "Sora",
+      "score": 0.94
+    },
+    "best_controllability": {
+      "model": "Runway Gen-3 Alpha",
+      "features": "Director mode with comprehensive controls"
+    },
+    "best_api_access": {
+      "models": ["Runway Gen-3 Alpha", "Kling 1.6", "Stability AI"],
+      "status": "production"
+    }
+  }
+}
