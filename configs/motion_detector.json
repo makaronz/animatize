@@ -1,0 +1,32 @@
+{
+  "motion_threshold": 25,
+  "min_contour_area": 100,
+  "background_history": 500,
+  "var_threshold": 16,
+  "optical_flow_params": {
+    "winSize": [15, 15],
+    "maxLevel": 2,
+    "criteria": [3, 10, 0.03]
+  },
+  "frame_skip": 1,
+  "output_format": "json",
+  "save_frames": false,
+  "cache_results": true,
+  "analysis_settings": {
+    "max_motion_events": 1000,
+    "intensity_bins": 10,
+    "spatial_grid_size": 50,
+    "temporal_smoothing": true
+  },
+  "video_settings": {
+    "max_fps": 30,
+    "resize_width": 640,
+    "resize_height": 480,
+    "quality_threshold": 0.8
+  },
+  "output_settings": {
+    "include_frames": false,
+    "include_visualizations": false,
+    "compression_level": 6
+  }
+}

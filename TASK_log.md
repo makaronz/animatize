@@ -1,0 +1,9 @@
+14:52 2024-07-29 - Rozpoczęto zadanie: Stworzenie testowego promptu na podstawie przesłanych zdjęć.
+14:57 2024-07-29 - Zakończono zadanie: Wygenerowano trzy przykładowe prompty na podstawie nazw plików graficznych i szablonów cinematograficznych.
+15:02 2024-07-29 - Rozpoczęto zadanie: Analiza promptu zewnętrznego i stworzenie własnego zgodnego z zasadami repozytorium ANIMAtiZE.
+15:15 2024-07-29 - Zakończono zadanie: Przeanalizowano zewnętrzny prompt i stworzono nowy zgodny z filozofią ANIMAtiZE Framework - skupiający się na predykcji ruchu z obrazów statycznych, stosowaniu 47+ reguł kinematograficznych i generowaniu promptów zoptymalizowanych dla modeli Flux/Imagen/OpenAI.
+15:18 2024-07-29 - Rozpoczęto zadanie: Analiza zdjęcia przedstawiającego wnętrze tramwaju z pasażerami oraz generowanie kinematograficznego promptu zgodnego z zasadami ANIMAtiZE.
+15:22 2024-07-29 - Zakończono zadanie: Przeprowadzono pełną analizę ANIMAtiZE zdjęcia tramwaju, zidentyfikowano elementy kompozycyjne, przewidziano naturalne ruchy postaci i środowiska, wygenerowano zoptymalizowane prompty dla trzech modeli AI (Flux/Imagen/OpenAI) z pewnością 0.92.
+15:24 2024-07-29 - Rozpoczęto zadanie: Ponowna analiza tego samego zdjęcia tramwaju z jeszcze bardziej szczegółowym zastosowaniem reguł ANIMAtiZE.
+15:32 2024-07-29 - Zakończono zadanie: Przeprowadzono kompletną analizę z użyciem wszystkich 47 reguł kinematograficznych, zastosowano 10 priorytetowych reguł z uzasadnieniem fizycznym i narracyjnym, wygenerowano trzy zoptymalizowane prompty z pewnością 0.94.
+15:35 2024-07-29 - Rozpoczęto zadanie: Analiza nowego zdjęcia (pasażerowie w tramwaju, tablica 139/Bronowice) i generowanie promptu ANIMAtiZE.

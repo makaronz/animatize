@@ -1,0 +1,34 @@
+{
+  "model": "gpt-4-turbo-preview",
+  "max_tokens": 800,
+  "temperature": 0.7,
+  "cache_ttl": 3600,
+  "max_retries": 3,
+  "timeout": 30,
+  "rate_limit_delay": 1,
+  "cache_size": 128,
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  },
+  "templates": {
+    "base": "base_expansion.txt",
+    "cinematic": "cinematic_expansion.txt",
+    "motion": "motion_prompt.txt",
+    "composition": "composition_focus.txt"
+  },
+  "fallback_rules": [
+    {
+      "id": "fallback_composition",
+      "name": "Basic Composition",
+      "snippet": "well-composed shot with clear focal point and balanced framing",
+      "priority": 0.5
+    },
+    {
+      "id": "fallback_lighting",
+      "name": "Natural Lighting",
+      "snippet": "soft, natural lighting that enhances the scene's mood",
+      "priority": 0.5
+    }
+  ]
+}

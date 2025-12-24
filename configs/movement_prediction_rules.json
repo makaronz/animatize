@@ -1,0 +1,304 @@
+{
+  "version": "1.0.0",
+  "framework": "ANiMAtiZE Movement Prediction",
+  "description": "Cinematic movement prediction rules for generating justified video prompts from static images",
+  "last_updated": "2025-01-28",
+  "must_do_rules": {
+    "priority_level": "CRITICAL",
+    "enforcement": "MANDATORY",
+    "description": "These rules MUST be applied when predicting movement from static images",
+    "flux_model_requirements": {
+      "frame_rate": "24fps",
+      "motion_blur": "cinematic",
+      "keyframe_smoothness": "high",
+      "physics_accuracy": "realistic"
+    },
+    "imagen_model_requirements": {
+      "temporal_coherence": "consistent",
+      "motion_justification": "narrative_serving",
+      "emotional_continuity": "maintained"
+    },
+    "openai_model_requirements": {
+      "prompt_structure": "cinematic_directing_language",
+      "movement_justification": "explicit",
+      "technical_specs": "included"
+    },
+    "core_principles": [
+      "Every movement must serve the narrative",
+      "Physics must be consistent and realistic",
+      "Emotional beats must be maintained",
+      "Composition must guide viewer attention",
+      "Timing must feel natural and cinematic"
+    ]
+  },
+  "movement_categories": {
+    "character_action": {
+      "description": "Justified character movements based on pose, expression and environment",
+      "priority": 1.0,
+      "must_analyze": ["body_language", "facial_expression", "environmental_context", "gravity_flow"]
+    },
+    "camera_movement": {
+      "description": "Cinematic camera movements justified by composition and narrative",
+      "priority": 1.0,
+      "must_analyze": ["composition_balance", "leading_lines", "depth_layers", "emotional_focus"]
+    },
+    "environment_animation": {
+      "description": "Environmental elements movement based on physics and mood",
+      "priority": 0.9,
+      "must_analyze": ["natural_forces", "atmospheric_conditions", "material_properties", "mood_indicators"]
+    }
+  },
+  "movement_prediction_rules": [
+    {
+      "id": "movement_001",
+      "category": "character_action",
+      "rule_name": "Pose-to-Action Continuation",
+      "priority": 1.0,
+      "must_do": true,
+      "description": "Analyze body pose to predict the most natural next movement",
+      "analysis_points": [
+        "Weight distribution indicates direction of movement",
+        "Muscle tension suggests imminent action",
+        "Facial expression reveals emotional momentum",
+        "Environmental obstacles determine movement path"
+      ],
+      "prompt_template": "Character continues from {current_pose} into {predicted_action}, maintaining {emotional_state} while navigating {environment_context}",
+      "examples": [
+        {
+          "pose": "weight on back foot, leaning forward",
+          "predicted_action": "taking first step into run",
+          "justification": "momentum and body angle indicate forward motion"
+        },
+        {
+          "pose": "hand reaching upward, eyes following",
+          "predicted_action": "stretching to grasp object above",
+          "justification": "gesture completion and eye tracking"
+        }
+      ]
+    },
+    {
+      "id": "movement_002",
+      "category": "camera_movement",
+      "rule_name": "Composition-Guided Camera Flow",
+      "priority": 1.0,
+      "must_do": true,
+      "description": "Use compositional elements to determine justified camera movement",
+      "analysis_points": [
+        "Leading lines direct camera path",
+        "Rule of thirds guides movement timing",
+        "Depth layers suggest parallax movement",
+        "Negative space indicates movement direction"
+      ],
+      "prompt_template": "Camera {movement_type} following {compositional_element}, revealing {hidden_element} while maintaining {visual_balance}",
+      "examples": [
+        {
+          "composition": "strong diagonal leading line",
+          "camera_movement": "tracking along diagonal",
+          "justification": "lines naturally guide viewer eye movement"
+        },
+        {
+          "composition": "subject at rule of thirds intersection",
+          "camera_movement": "slow push to center",
+          "justification": "emphasizing subject importance"
+        }
+      ]
+    },
+    {
+      "id": "movement_003",
+      "category": "environment_animation",
+      "rule_name": "Physics-Based Environmental Motion",
+      "priority": 0.95,
+      "must_do": true,
+      "description": "Apply realistic physics to environmental elements",
+      "analysis_points": [
+        "Wind direction from fabric/clothing movement",
+        "Light source position creates moving shadows",
+        "Material properties determine motion behavior",
+        "Atmospheric conditions affect particle movement"
+      ],
+      "prompt_template": "{environment_element} moves with {physics_property} responding to {natural_force}, creating {atmospheric_effect}",
+      "examples": [
+        {
+          "element": "tree branches",
+          "motion": "gentle sway in breeze",
+          "justification": "clothing indicates wind direction"
+        },
+        {
+          "element": "dust particles",
+          "motion": "floating in shaft of light",
+          "justification": "light beam visible through atmosphere"
+        }
+      ]
+    },
+    {
+      "id": "movement_004",
+      "category": "character_action",
+      "rule_name": "Emotional Momentum Analysis",
+      "priority": 0.9,
+      "must_do": true,
+      "description": "Use facial expression and body language to predict emotional movement",
+      "analysis_points": [
+        "Micro-expressions reveal emotional trajectory",
+        "Body tension indicates emotional intensity",
+        "Eye direction shows attention focus",
+        "Hand gestures suggest emotional expression"
+      ],
+      "prompt_template": "Character's {current_emotion} evolves into {predicted_emotion} through {emotional_action}, reflecting {internal_state}",
+      "examples": [
+        {
+          "emotion": "furrowed brow, clenched fists",
+          "predicted_action": "slow exhale, shoulders relaxing",
+          "justification": "tension release indicates emotional resolution"
+        },
+        {
+          "emotion": "wide eyes, slight smile",
+          "predicted_action": "turning toward source of wonder",
+          "justification": "expression indicates discovery"
+        }
+      ]
+    },
+    {
+      "id": "movement_005",
+      "category": "camera_movement",
+      "rule_name": "Depth Layer Parallax",
+      "priority": 0.85,
+      "must_do": true,
+      "description": "Create parallax movement based on depth separation",
+      "analysis_points": [
+        "Foreground, midground, background separation",
+        "Distance between layers determines parallax speed",
+        "Focal length affects parallax intensity",
+        "Layer content guides movement direction"
+      ],
+      "prompt_template": "Camera movement creates {parallax_type} with {foreground_element} moving {speed_relation} to {background_element}",
+      "examples": [
+        {
+          "layers": "tree branches foreground, subject midground, mountains background",
+          "parallax": "branches move faster across frame",
+          "justification": "depth creates natural parallax"
+        }
+      ]
+    },
+    {
+      "id": "movement_006",
+      "category": "environment_animation",
+      "rule_name": "Atmospheric Response System",
+      "priority": 0.8,
+      "must_do": true,
+      "description": "Environmental elements respond to atmospheric conditions",
+      "analysis_points": [
+        "Light quality indicates time of day",
+        "Shadow direction shows sun movement",
+        "Weather elements affect visibility",
+        "Seasonal indicators guide motion"
+      ],
+      "prompt_template": "{atmospheric_condition} causes {environmental_response} over {time_duration}, creating {mood_evolution}",
+      "examples": [
+        {
+          "condition": "golden hour light",
+          "response": "lengthening shadows across ground",
+          "justification": "sun angle creates temporal progression"
+        }
+      ]
+    },
+    {
+      "id": "movement_007",
+      "category": "character_action",
+      "rule_name": "Interaction Anticipation",
+      "priority": 0.85,
+      "must_do": true,
+      "description": "Predict character interactions with environment and objects",
+      "analysis_points": [
+        "Gaze direction indicates intended interaction",
+        "Hand position suggests reaching/grasping",
+        "Body orientation shows approach vector",
+        "Object proximity determines interaction type"
+      ],
+      "prompt_template": "Character {interaction_verb} {target_object} with {intention_purpose}, demonstrating {skill_level}",
+      "examples": [
+        {
+          "gaze": "looking down at book",
+          "hands": "positioned near book edge",
+          "predicted_action": "carefully turning page",
+          "justification": "hand-eye coordination indicates precise action"
+        }
+      ]
+    },
+    {
+      "id": "movement_008",
+      "category": "camera_movement",
+      "rule_name": "Emotional Framing Progression",
+      "priority": 0.8,
+      "must_do": true,
+      "description": "Camera movement that enhances emotional narrative",
+      "analysis_points": [
+        "Subject placement indicates emotional state",
+        "Frame size affects intimacy level",
+        "Angle changes reveal power dynamics",
+        "Movement timing matches emotional rhythm"
+      ],
+      "prompt_template": "Camera {movement_type} to {frame_size} as character experiences {emotional_transition}, maintaining {visual_connection}",
+      "examples": [
+        {
+          "framing": "medium shot to close-up",
+          "emotion": "growing realization",
+          "justification": "intimacy increases with emotional intensity"
+        }
+      ]
+    }
+  ],
+  "movement_validation_rules": [
+    {
+      "rule": "physics_consistency",
+      "description": "All movements must obey basic physics",
+      "checks": [
+        "Gravity affects all objects consistently",
+        "Momentum follows conservation laws",
+        "Friction affects movement realistically",
+        "Timing matches natural rhythms"
+      ]
+    },
+    {
+      "rule": "narrative_justification",
+      "description": "Every movement must serve story or emotion",
+      "checks": [
+        "Movement reveals character motivation",
+        "Camera movement supports narrative focus",
+        "Environmental motion enhances mood",
+        "Timing serves dramatic purpose"
+      ]
+    },
+    {
+      "rule": "visual_coherence",
+      "description": "Movements must maintain visual continuity",
+      "checks": [
+        "Lighting direction remains consistent",
+        "Shadows move naturally with light source",
+        "Reflections respond to movement",
+        "Color temperature stays coherent"
+      ]
+    }
+  ],
+  "prompt_generation_templates": {
+    "character_movement": "From static pose: {pose_description}, character naturally transitions into {predicted_movement} with {emotion_quality}, lasting {duration_seconds} seconds",
+    "camera_movement": "Camera {movement_type} justified by {compositional_reason}, revealing {progressive_discovery} over {movement_duration}",
+    "environmental_animation": "{environment_element} responds to {natural_force} with {physics_behavior}, creating {atmospheric_contribution} throughout {scene_duration}",
+    "combined_scene": "Unified movement where {character_action} synchronizes with {camera_movement} while {environment_response} enhances {overall_mood}"
+  },
+  "quality_assurance": {
+    "mandatory_checks": [
+      "All movements must be justified by static image analysis",
+      "No arbitrary or random movements allowed",
+      "Physics laws must be respected",
+      "Emotional progression must be coherent",
+      "Visual continuity must be maintained"
+    ],
+    "rejection_criteria": [
+      "Movement contradicts image evidence",
+      "Physics violations detected",
+      "Emotional progression makes no sense",
+      "Visual inconsistencies present",
+      "No clear justification provided"
+    ]
+  }
+}

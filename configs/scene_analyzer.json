@@ -1,0 +1,31 @@
+{
+  "confidence_threshold": 0.5,
+  "max_objects": 50,
+  "depth_model": "midas",
+  "object_classes": [
+    "person", "car", "building", "tree", "sky", "road", 
+    "water", "mountain", "animal", "furniture", "plant",
+    "cloud", "grass", "rock", "bridge", "street", "house"
+  ],
+  "composition_weights": {
+    "rule_of_thirds": 0.3,
+    "leading_lines": 0.2,
+    "symmetry": 0.2,
+    "depth": 0.3
+  },
+  "aesthetics_weights": {
+    "composition": 0.4,
+    "depth": 0.3,
+    "color_harmony": 0.2,
+    "clarity": 0.1
+  },
+  "scene_thresholds": {
+    "sky_ratio": 0.3,
+    "green_ratio": 0.2,
+    "building_ratio": 0.3,
+    "water_ratio": 0.1
+  },
+  "cache_enabled": true,
+  "cache_size": 100,
+  "output_format": "detailed"
+}

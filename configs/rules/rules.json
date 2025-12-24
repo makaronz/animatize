@@ -1,0 +1,778 @@
+{
+  "version": "2.0.0",
+  "last_updated": "2025-01-28",
+  "metadata": {
+    "total_rules": 47,
+    "categories": ["composition", "camera_movement", "lighting", "visual_effects", "depth", "motion", "emotional"],
+    "ai_models": ["Flux", "Imagen", "OpenAI"],
+    "framework": "ANiMAtiZE"
+  },
+  "rules": [
+    {
+      "id": "rule_001",
+      "name": "Rule of Thirds",
+      "category": "composition",
+      "priority": 0.95,
+      "description": "Subject should be placed at intersection points of a 3x3 grid",
+      "condition": "subject_position NOT in center AND subject_position NEAR intersection",
+      "snippet": "camera positioned to frame subject at rule of thirds intersection, creating dynamic visual balance",
+      "examples": [
+        "subject at left third intersection",
+        "subject at top-right intersection point",
+        "horizon line on lower third"
+      ],
+      "tags": ["composition", "balance", "dynamic"],
+      "weight": 1.0
+    },
+    {
+      "id": "rule_002",
+      "name": "Leading Lines",
+      "category": "composition",
+      "priority": 0.85,
+      "description": "Use natural or artificial lines to guide viewer's eye toward subject",
+      "condition": "lines_present AND lines_lead_to_subject",
+      "snippet": "strong leading lines drawing the eye directly to the subject, creating depth and focus",
+      "examples": [
+        "railroad tracks converging on subject",
+        "road lines leading to distant figure",
+        "architectural lines pointing to subject"
+      ],
+      "tags": ["composition", "depth", "focus"],
+      "weight": 0.9
+    },
+    {
+      "id": "rule_003",
+      "name": "Pan Following",
+      "category": "camera_movement",
+      "priority": 0.9,
+      "description": "Horizontal camera movement following subject motion",
+      "condition": "subject_moving_horizontally AND subject_speed_detected",
+      "snippet": "smooth horizontal pan tracking the subject's movement across the scene",
+      "examples": [
+        "tracking shot following walking person",
+        "pan with moving car",
+        "following subject through crowd"
+      ],
+      "tags": ["movement", "tracking", "horizontal"],
+      "weight": 0.85
+    },
+    {
+      "id": "rule_004",
+      "name": "Tilt Reveal",
+      "category": "camera_movement",
+      "priority": 0.8,
+      "description": "Vertical camera movement revealing information",
+      "condition": "vertical_reveal_needed OR height_difference",
+      "snippet": "dramatic tilt up revealing the full scale and majesty of the scene",
+      "examples": [
+        "tilt up from feet to reveal towering building",
+        "tilt down from sky to reveal subject",
+        "vertical reveal of landscape"
+      ],
+      "tags": ["movement", "reveal", "vertical"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_005",
+      "name": "Dolly Push",
+      "category": "camera_movement",
+      "priority": 0.85,
+      "description": "Camera moves physically closer to subject for intimacy",
+      "condition": "emotional_intensity_required OR subject_importance",
+      "snippet": "slow dolly push creating intimate connection with subject",
+      "examples": [
+        "dolly in on character's emotional moment",
+        "push in to reveal important detail",
+        "approach shot for dramatic impact"
+      ],
+      "tags": ["movement", "intimacy", "emotional"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_006",
+      "name": "Dolly Pull",
+      "category": "camera_movement",
+      "priority": 0.8,
+      "description": "Camera moves away to reveal context or isolation",
+      "condition": "context_reveal_needed OR isolation_effect",
+      "snippet": "gradual dolly pull revealing the subject's isolation within the vast environment",
+      "examples": [
+        "pull back to show character alone in space",
+        "reveal full scene context",
+        "create sense of loneliness"
+      ],
+      "tags": ["movement", "context", "isolation"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_007",
+      "name": "Crane Shot",
+      "category": "camera_movement",
+      "priority": 0.85,
+      "description": "Elevated camera movement for bird's-eye or establishing views",
+      "condition": "establishing_shot OR elevated_perspective",
+      "snippet": "sweeping crane shot rising above to provide majestic aerial perspective",
+      "examples": [
+        "crane up for establishing shot",
+        "aerial reveal of location",
+        "bird's-eye view of action"
+      ],
+      "tags": ["movement", "aerial", "establishing"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_008",
+      "name": "Handheld Movement",
+      "category": "camera_movement",
+      "priority": 0.75,
+      "description": "Intentional camera shake for realism or tension",
+      "condition": "tension_scene OR documentary_style OR chaos",
+      "snippet": "subtle handheld movement adding raw authenticity and tension to the scene",
+      "examples": [
+        "handheld during intense conversation",
+        "documentary-style movement",
+        "chaotic action sequence"
+      ],
+      "tags": ["movement", "authenticity", "tension"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_009",
+      "name": "Steadicam Flow",
+      "category": "camera_movement",
+      "priority": 0.85,
+      "description": "Smooth floating camera movement following complex paths",
+      "condition": "complex_path_needed OR continuous_shot",
+      "snippet": "fluid steadicam movement gliding through the environment with cinematic grace",
+      "examples": [
+        "long take through multiple rooms",
+        "following subject through crowd",
+        "smooth tracking through action"
+      ],
+      "tags": ["movement", "smooth", "continuous"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_010",
+      "name": "Zoom In",
+      "category": "camera_movement",
+      "priority": 0.7,
+      "description": "Lens zoom for emphasis or discovery",
+      "condition": "detail_reveal OR emotional_emphasis",
+      "snippet": "slow zoom in drawing attention to crucial emotional detail",
+      "examples": [
+        "zoom in on character's eyes",
+        "focus on important object",
+        "emphasize reaction"
+      ],
+      "tags": ["movement", "emphasis", "detail"],
+      "weight": 0.65
+    },
+    {
+      "id": "rule_011",
+      "name": "Zoom Out",
+      "category": "camera_movement",
+      "priority": 0.7,
+      "description": "Lens zoom revealing broader context",
+      "condition": "context_reveal OR scale_establishment",
+      "snippet": "gradual zoom out revealing the subject's place within the larger world",
+      "examples": [
+        "zoom out to show environment",
+        "establish scale of scene",
+        "reveal isolation"
+      ],
+      "tags": ["movement", "context", "scale"],
+      "weight": 0.65
+    },
+    {
+      "id": "rule_012",
+      "name": "Arc Shot",
+      "category": "camera_movement",
+      "priority": 0.8,
+      "description": "Circular movement around subject for 360° perspective",
+      "condition": "subject_central AND 360_view_needed",
+      "snippet": "circular arc movement orbiting the subject to reveal their complete environment",
+      "examples": [
+        "360° around character",
+        "circular reveal of surroundings",
+        "orbital perspective shot"
+      ],
+      "tags": ["movement", "circular", "360"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_013",
+      "name": "Rack Focus",
+      "category": "depth",
+      "priority": 0.85,
+      "description": "Shifting focus between foreground and background",
+      "condition": "multiple_depth_planes AND focus_shift_needed",
+      "snippet": "precise rack focus shifting attention between foreground and background elements",
+      "examples": [
+        "focus shift from face to background",
+        "reveal background detail",
+        "foreground to background transition"
+      ],
+      "tags": ["depth", "focus", "transition"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_014",
+      "name": "Shallow Depth",
+      "category": "depth",
+      "priority": 0.8,
+      "description": "Selective focus isolating subject from background",
+      "condition": "subject_isolation_needed OR portrait_style",
+      "snippet": "beautiful shallow depth of field isolating the subject with creamy bokeh background",
+      "examples": [
+        "portrait with blurred background",
+        "subject isolation",
+        "cinematic bokeh"
+      ],
+      "tags": ["depth", "isolation", "bokeh"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_015",
+      "name": "Deep Focus",
+      "category": "depth",
+      "priority": 0.75,
+      "description": "Everything in focus for complex staging",
+      "condition": "complex_staging OR deep_space",
+      "snippet": "deep focus keeping all planes sharp for intricate staging and layered composition",
+      "examples": [
+        "deep staging with multiple subjects",
+        "everything in focus",
+        "complex layered composition"
+      ],
+      "tags": ["depth", "staging", "sharp"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_016",
+      "name": "Golden Hour Lighting",
+      "category": "lighting",
+      "priority": 0.9,
+      "description": "Warm, directional light during sunrise/sunset",
+      "condition": "time_golden_hour OR warm_lighting",
+      "snippet": "golden hour magic with warm, directional light creating long shadows and rich color",
+      "examples": [
+        "sunset backlighting",
+        "golden hour portrait",
+        "warm directional light"
+      ],
+      "tags": ["lighting", "golden_hour", "warm"],
+      "weight": 0.85
+    },
+    {
+      "id": "rule_017",
+      "name": "Backlighting",
+      "category": "lighting",
+      "priority": 0.85,
+      "description": "Light from behind subject creating rim light and silhouettes",
+      "condition": "backlight_present OR silhouette_effect",
+      "snippet": "dramatic backlighting creating luminous rim light around subject edges",
+      "examples": [
+        "backlit silhouette",
+        "rim lighting on hair",
+        "sun behind subject"
+      ],
+      "tags": ["lighting", "backlight", "silhouette"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_018",
+      "name": "Side Lighting",
+      "category": "lighting",
+      "priority": 0.8,
+      "description": "Light from side creating depth and texture",
+      "condition": "side_light_present OR texture_emphasis",
+      "snippet": "moody side lighting sculpting form and revealing texture with dramatic shadows",
+      "examples": [
+        "window light from side",
+        "split lighting on face",
+        "textural side illumination"
+      ],
+      "tags": ["lighting", "side", "texture"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_019",
+      "name": "Hard Light",
+      "category": "lighting",
+      "priority": 0.75,
+      "description": "Sharp, defined shadows for dramatic effect",
+      "condition": "hard_shadows OR dramatic_lighting",
+      "snippet": "piercing hard light creating sharp, defined shadows for dramatic impact",
+      "examples": [
+        "noon sunlight shadows",
+        "spotlight effect",
+        "harsh directional light"
+      ],
+      "tags": ["lighting", "hard", "dramatic"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_020",
+      "name": "Soft Light",
+      "category": "lighting",
+      "priority": 0.8,
+      "description": "Diffused light with gentle shadows",
+      "condition": "soft_shadows OR diffused_lighting",
+      "snippet": "beautiful soft diffused light wrapping the subject with gentle, flattering shadows",
+      "examples": [
+        "cloudy day lighting",
+        "softbox illumination",
+        "window diffused light"
+      ],
+      "tags": ["lighting", "soft", "diffused"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_021",
+      "name": "Lens Flare",
+      "category": "visual_effects",
+      "priority": 0.7,
+      "description": "Light artifacts from lens for atmosphere",
+      "condition": "bright_light_source AND lens_flare_present",
+      "snippet": "organic lens flare adding cinematic atmosphere and visual interest",
+      "examples": [
+        "sun flare streaks",
+        "anamorphic lens flare",
+        "light source artifacts"
+      ],
+      "tags": ["effects", "flare", "atmosphere"],
+      "weight": 0.65
+    },
+    {
+      "id": "rule_022",
+      "name": "Film Grain",
+      "category": "visual_effects",
+      "priority": 0.65,
+      "description": "Textured grain for vintage film look",
+      "condition": "film_look OR vintage_style",
+      "snippet": "subtle film grain texture adding authentic cinematic character",
+      "examples": [
+        "35mm film grain",
+        "vintage texture overlay",
+        "organic grain structure"
+      ],
+      "tags": ["effects", "grain", "vintage"],
+      "weight": 0.6
+    },
+    {
+      "id": "rule_023",
+      "name": "Vignetting",
+      "category": "visual_effects",
+      "priority": 0.7,
+      "description": "Darkened edges focusing attention center",
+      "condition": "center_focus OR vintage_look",
+      "snippet": "gentle vignetting naturally drawing focus to the center of the frame",
+      "examples": [
+        "subtle edge darkening",
+        "vintage lens vignette",
+        "focus enhancement"
+      ],
+      "tags": ["effects", "vignette", "focus"],
+      "weight": 0.65
+    },
+    {
+      "id": "rule_024",
+      "name": "Motion Blur",
+      "category": "visual_effects",
+      "priority": 0.75,
+      "description": "Blur from camera or subject movement",
+      "condition": "motion_present AND blur_appropriate",
+      "snippet": "dynamic motion blur conveying speed and movement energy",
+      "examples": [
+        "background motion blur",
+        "subject motion streaks",
+        "speed blur effect"
+      ],
+      "tags": ["effects", "blur", "motion"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_025",
+      "name": "Bokeh Effects",
+      "category": "visual_effects",
+      "priority": 0.8,
+      "description": "Aesthetic blur in out-of-focus areas",
+      "condition": "shallow_depth AND background_lights",
+      "snippet": "beautiful bokeh circles creating dreamy, cinematic background",
+      "examples": [
+        "city lights bokeh",
+        "christmas light blur",
+        "circular bokeh balls"
+      ],
+      "tags": ["effects", "bokeh", "aesthetic"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_026",
+      "name": "Symmetrical Composition",
+      "category": "composition",
+      "priority": 0.85,
+      "description": "Balanced, mirror-like composition",
+      "condition": "symmetry_present OR formal_balance",
+      "snippet": "perfectly symmetrical composition creating formal, powerful visual impact",
+      "examples": [
+        "centered subject symmetry",
+        "mirror reflection composition",
+        "architectural symmetry"
+      ],
+      "tags": ["composition", "symmetry", "formal"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_027",
+      "name": "Asymmetrical Balance",
+      "category": "composition",
+      "priority": 0.8,
+      "description": "Dynamic balance through visual weight distribution",
+      "condition": "asymmetry_present AND visual_balance",
+      "snippet": "dynamic asymmetrical balance creating tension and visual interest",
+      "examples": [
+        "off-center subject with balance",
+        "weighted composition",
+        "dynamic imbalance"
+      ],
+      "tags": ["composition", "asymmetry", "dynamic"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_028",
+      "name": "Framing Within Frame",
+      "category": "composition",
+      "priority": 0.85,
+      "description": "Use foreground elements to frame subject",
+      "condition": "natural_frame_present",
+      "snippet": "clever framing within frame using foreground elements to focus attention",
+      "examples": [
+        "doorway framing subject",
+        "window frame composition",
+        "architectural framing"
+      ],
+      "tags": ["composition", "framing", "focus"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_029",
+      "name": "Negative Space",
+      "category": "composition",
+      "priority": 0.8,
+      "description": "Empty space emphasizing subject through isolation",
+      "condition": "significant_negative_space",
+      "snippet": "powerful use of negative space emphasizing the subject through isolation",
+      "examples": [
+        "subject in vast empty space",
+        "minimalist composition",
+        "isolation through space"
+      ],
+      "tags": ["composition", "minimalism", "isolation"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_030",
+      "name": "Diagonal Lines",
+      "category": "composition",
+      "priority": 0.8,
+      "description": "Dynamic diagonal elements creating energy",
+      "condition": "diagonal_lines_present",
+      "snippet": "dynamic diagonal lines injecting energy and movement into the frame",
+      "examples": [
+        "diagonal architectural lines",
+        "slanted horizon for tension",
+        "diagonal subject placement"
+      ],
+      "tags": ["composition", "diagonal", "energy"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_031",
+      "name": "S-Curve",
+      "category": "composition",
+      "priority": 0.85,
+      "description": "Gentle S-shaped leading line",
+      "condition": "s_curve_present",
+      "snippet": "elegant S-curve leading the eye gracefully through the composition",
+      "examples": [
+        "winding path S-curve",
+        "river S-curve",
+        "road S-bend"
+      ],
+      "tags": ["composition", "curve", "elegant"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_032",
+      "name": "Z-Axis Movement",
+      "category": "camera_movement",
+      "priority": 0.8,
+      "description": "Movement toward or away from camera",
+      "condition": "depth_movement_required",
+      "snippet": "compelling movement along Z-axis creating depth and spatial dynamics",
+      "examples": [
+        "subject walking toward camera",
+        "camera pushing through space",
+        "depth movement along street"
+      ],
+      "tags": ["movement", "depth", "z-axis"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_033",
+      "name": "Tracking Shot",
+      "category": "camera_movement",
+      "priority": 0.9,
+      "description": "Camera follows subject maintaining consistent distance",
+      "condition": "subject_moving AND consistent_tracking",
+      "snippet": "smooth tracking shot maintaining perfect distance while following subject movement",
+      "examples": [
+        "parallel tracking with walking subject",
+        "tracking alongside car",
+        "consistent distance following"
+      ],
+      "tags": ["movement", "tracking", "consistent"],
+      "weight": 0.85
+    },
+    {
+      "id": "rule_034",
+      "name": "Push In",
+      "category": "camera_movement",
+      "priority": 0.85,
+      "description": "Camera moves closer for emotional emphasis",
+      "condition": "emotional_moment OR revelation",
+      "snippet": "intimate push in emphasizing the emotional weight of the moment",
+      "examples": [
+        "push in on character realization",
+        "emphasize emotional reaction",
+        "reveal intimate detail"
+      ],
+      "tags": ["movement", "emphasis", "emotional"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_035",
+      "name": "Pull Back",
+      "category": "camera_movement",
+      "priority": 0.8,
+      "description": "Camera pulls back revealing broader context",
+      "condition": "context_reveal OR scale_establishment",
+      "snippet": "dramatic pull back revealing the full scope and context of the situation",
+      "examples": [
+        "pull back to show entire scene",
+        "reveal subject's environment",
+        "establish dramatic scale"
+      ],
+      "tags": ["movement", "reveal", "context"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_036",
+      "name": "Over-the-Shoulder",
+      "category": "composition",
+      "priority": 0.85,
+      "description": "Shot from behind subject looking at subject of interest",
+      "condition": "dialogue_scene OR POV_needed",
+      "snippet": "intimate over-the-shoulder shot creating connection between viewer and subject",
+      "examples": [
+        "conversation over shoulder",
+        "looking at computer screen",
+        "POV from behind character"
+      ],
+      "tags": ["composition", "POV", "intimate"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_037",
+      "name": "Low Angle",
+      "category": "composition",
+      "priority": 0.8,
+      "description": "Camera positioned low looking up for power dynamic",
+      "condition": "power_dynamic OR heroic_effect",
+      "snippet": "low angle shot making the subject appear powerful and dominant",
+      "examples": [
+        "heroic low angle",
+        "intimidating perspective",
+        "powerful character framing"
+      ],
+      "tags": ["composition", "angle", "power"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_038",
+      "name": "High Angle",
+      "category": "composition",
+      "priority": 0.8,
+      "description": "Camera positioned high looking down for vulnerability",
+      "condition": "vulnerability_effect OR isolation",
+      "snippet": "high angle shot emphasizing the subject's vulnerability or isolation",
+      "examples": [
+        "bird's-eye view of subject",
+        "looking down on character",
+        "isolation through height"
+      ],
+      "tags": ["composition", "angle", "vulnerability"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_039",
+      "name": "Dutch Angle",
+      "category": "composition",
+      "priority": 0.75,
+      "description": "Tilted camera for unease or tension",
+      "condition": "tension_scene OR unease_needed",
+      "snippet": "subtle Dutch angle creating psychological tension and unease",
+      "examples": [
+        "tilted horizon for tension",
+        "unbalanced composition",
+        "psychological tilt"
+      ],
+      "tags": ["composition", "tilt", "tension"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_040",
+      "name": "Silhouette",
+      "category": "lighting",
+      "priority": 0.85,
+      "description": "Subject as dark shape against bright background",
+      "condition": "strong_backlight AND subject_dark",
+      "snippet": "dramatic silhouette reducing subject to essential shape and form",
+      "examples": [
+        "sunset silhouette",
+        "backlit figure",
+        "shape against bright sky"
+      ],
+      "tags": ["lighting", "silhouette", "shape"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_041",
+      "name": "Chiaroscuro",
+      "category": "lighting",
+      "priority": 0.9,
+      "description": "Strong contrast between light and dark",
+      "condition": "high_contrast_lighting AND dramatic_effect",
+      "snippet": "dramatic chiaroscuro lighting with bold contrast between light and shadow",
+      "examples": [
+        "noir lighting style",
+        "strong light/shadow contrast",
+        "dramatic shadow play"
+      ],
+      "tags": ["lighting", "contrast", "dramatic"],
+      "weight": 0.85
+    },
+    {
+      "id": "rule_042",
+      "name": "Practical Lighting",
+      "category": "lighting",
+      "priority": 0.8,
+      "description": "Visible light sources within scene",
+      "condition": "visible_light_sources OR realistic_lighting",
+      "snippet": "motivated practical lighting from visible sources within the scene",
+      "examples": [
+        "table lamp lighting",
+        "window light source",
+        "neon sign illumination"
+      ],
+      "tags": ["lighting", "practical", "realistic"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_043",
+      "name": "Color Temperature",
+      "category": "lighting",
+      "priority": 0.85,
+      "description": "Warm vs cool color temperature for mood",
+      "condition": "mood_lighting OR temperature_contrast",
+      "snippet": "carefully balanced color temperature creating specific emotional atmosphere",
+      "examples": [
+        "warm tungsten glow",
+        "cool blue moonlight",
+        "temperature contrast"
+      ],
+      "tags": ["lighting", "color", "temperature"],
+      "weight": 0.8
+    },
+    {
+      "id": "rule_044",
+      "name": "Edge Light",
+      "category": "lighting",
+      "priority": 0.8,
+      "description": "Light separating subject from background",
+      "condition": "subject_separation_needed",
+      "snippet": "subtle edge light perfectly separating subject from background",
+      "examples": [
+        "rim light on hair",
+        "edge separation light",
+        "hair light accent"
+      ],
+      "tags": ["lighting", "separation", "edge"],
+      "weight": 0.75
+    },
+    {
+      "id": "rule_045",
+      "name": "Fill Light",
+      "category": "lighting",
+      "priority": 0.75,
+      "description": "Soft light reducing harsh shadows",
+      "condition": "shadow_detail_needed OR soft_lighting",
+      "snippet": "gentle fill light softening shadows while maintaining natural contrast",
+      "examples": [
+        "soft fill for portraits",
+        "shadow detail recovery",
+        "natural shadow balance"
+      ],
+      "tags": ["lighting", "fill", "soft"],
+      "weight": 0.7
+    },
+    {
+      "id": "rule_046",
+      "name": "Motivated Camera Movement",
+      "category": "emotional",
+      "priority": 0.95,
+      "description": "Camera movement driven by story or emotion",
+      "condition": "emotional_storytelling OR narrative_purpose",
+      "snippet": "emotionally motivated camera movement serving the story and character journey",
+      "examples": [
+        "movement following emotion",
+        "camera motivated by story",
+        "narrative-driven movement"
+      ],
+      "tags": ["emotional", "narrative", "motivated"],
+      "weight": 0.9
+    },
+    {
+      "id": "rule_047",
+      "name": "Character-Driven Movement",
+      "category": "emotional",
+      "priority": 0.95,
+      "description": "Camera movement reflecting character psychology",
+      "condition": "character_psychology OR internal_state",
+      "snippet": "character-driven camera movement reflecting internal psychological state",
+      "examples": [
+        "movement showing character emotion",
+        "camera as character psychology",
+        "internal state externalized"
+      ],
+      "tags": ["emotional", "character", "psychology"],
+      "weight": 0.9
+    }
+  ],
+  "rule_groups": {
+    "composition": [1, 2, 26, 27, 28, 29, 30, 31, 36, 37, 38, 39],
+    "camera_movement": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 32, 33, 34, 35],
+    "depth": [13, 14, 15],
+    "lighting": [16, 17, 18, 19, 20, 40, 41, 42, 43, 44, 45],
+    "visual_effects": [21, 22, 23, 24, 25],
+    "emotional": [46, 47]
+  },
+  "validation_schema": {
+    "required_fields": ["id", "name", "category", "priority", "description", "condition", "snippet"],
+    "categories": ["composition", "camera_movement", "lighting", "visual_effects", "depth", "motion", "emotional"],
+    "priority_range": [0.0, 1.0],
+    "weight_range": [0.0, 1.0]
+  }
+}

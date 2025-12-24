@@ -1,0 +1,84 @@
+{
+  "default_api": "dalle",
+  "fallback_apis": ["flux", "imagen"],
+  "quality_settings": {
+    "low": {
+      "width": 512,
+      "height": 512,
+      "quality": "standard",
+      "steps": 20
+    },
+    "medium": {
+      "width": 768,
+      "height": 768,
+      "quality": "standard",
+      "steps": 30
+    },
+    "high": {
+      "width": 1024,
+      "height": 1024,
+      "quality": "hd",
+      "steps": 50
+    },
+    "ultra": {
+      "width": 1024,
+      "height": 1024,
+      "quality": "hd",
+      "steps": 100
+    }
+  },
+  "api_configs": {
+    "flux": {
+      "endpoint": "https://api.flux.ai/v1/generate",
+      "max_concurrent": 3,
+      "timeout": 60,
+      "retry_attempts": 3,
+      "rate_limit": 10
+    },
+    "imagen": {
+      "endpoint": "https://imagen.googleapis.com/v1/images:generate",
+      "max_concurrent": 2,
+      "timeout": 90,
+      "retry_attempts": 3,
+      "rate_limit": 5
+    },
+    "dalle": {
+      "endpoint": "https://api.openai.com/v1/images/generations",
+      "max_concurrent": 5,
+      "timeout": 30,
+      "retry_attempts": 3,
+      "rate_limit": 50
+    }
+  },
+  "cache_settings": {
+    "enabled": true,
+    "ttl_hours": 24,
+    "max_cache_size_mb": 1000,
+    "compression": true
+  },
+  "quality_validation": {
+    "min_resolution": 512,
+    "min_quality_score": 0.7,
+    "check_format": true,
+    "allowed_formats": ["PNG", "JPEG", "WEBP"]
+  },
+  "prompt_templates": {
+    "cinematic": {
+      "prefix": "Cinematic shot, professional photography, ",
+      "suffix": ", 8K resolution, high quality"
+    },
+    "portrait": {
+      "prefix": "Professional portrait, ",
+      "suffix": ", studio lighting, sharp focus"
+    },
+    "landscape": {
+      "prefix": "Epic landscape, ",
+      "suffix": ", wide angle, dramatic lighting"
+    }
+  },
+  "negative_prompts": {
+    "default": "blurry, low quality, distorted, artifacts, watermark, text, logo",
+    "portrait": "blurry, low quality, distorted face, extra limbs, deformed",
+    "landscape": "blurry, low quality, overexposed, underexposed"
+  }
+}

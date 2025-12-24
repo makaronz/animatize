@@ -1,0 +1,14 @@
+description:
+globs:
+alwaysApply: true
+---
+# English-Only Prompts Rule
+
+**MANDATORY**: All generated prompts, responses, and code comments must be written exclusively in English. 
+
+- Do NOT use Polish or any other language in prompts
+- Translate any non-English content if needed
+- This applies to all AI-generated text outputs
+
+Rationale: User specifically requested 'write prompts only in english' to standardize communication.
+
