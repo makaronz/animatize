@@ -14,7 +14,23 @@ This module contains the 8 strategic wedge features that create a defensible moa
 
 from .film_grammar import FilmGrammarEngine
 from .shot_list_compiler import ShotListCompiler
-from .consistency_engine import ConsistencyEngine, ReferenceManager
+from .consistency_engine import (
+    ConsistencyEngine,
+    ConsistencyType,
+    ReferenceManager,
+    ReferenceLibrary,
+    ReferenceFrame,
+    CharacterReference,
+    StyleAnchor,
+    WorldReference,
+    ConsistencyViolation,
+    ContinuityRule,
+    ColorConsistencyRule,
+    LightingContinuityRule,
+    SpatialCoherenceRule,
+    StyleExtractor,
+    CrossShotValidator
+)
 from .evaluation_harness import EvaluationHarness, GoldenDataset
 from .temporal_control import TemporalControlLayer, KeyframeEditor
 from .quality_assurance import QualityAssuranceSystem, QualityScorer
@@ -25,7 +41,20 @@ __all__ = [
     'FilmGrammarEngine',
     'ShotListCompiler',
     'ConsistencyEngine',
+    'ConsistencyType',
     'ReferenceManager',
+    'ReferenceLibrary',
+    'ReferenceFrame',
+    'CharacterReference',
+    'StyleAnchor',
+    'WorldReference',
+    'ConsistencyViolation',
+    'ContinuityRule',
+    'ColorConsistencyRule',
+    'LightingContinuityRule',
+    'SpatialCoherenceRule',
+    'StyleExtractor',
+    'CrossShotValidator',
     'EvaluationHarness',
     'GoldenDataset',
     'TemporalControlLayer',

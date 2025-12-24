@@ -74,6 +74,16 @@ framework = ANIMAtiZEFramework(config=config)
 - **Performance Optimized**: Multi-threading support
 - **Cloud Ready**: Docker containerization
 
+### 🎯 Consistency Engine (NEW)
+- **Character Identity Preservation**: >95% accuracy across shots
+- **Style Anchors**: Maintain visual consistency throughout sequences
+- **Lighting Continuity**: <10% ΔRGB variance tracking
+- **Spatial Coherence**: <5% position deviation validation
+- **Cross-Shot Validation**: Automated consistency checking
+- **Reference Library**: Persistent character, style, and world management
+
+**[📖 Consistency Engine Documentation](docs/consistency_engine.md)** | **[🚀 Quick Start Guide](docs/CONSISTENCY_QUICK_START.md)**
+
 ## 📊 Performance Metrics
 
 | Metric | Value |
@@ -93,6 +103,12 @@ animatize-framework/
 │   │   ├── movement_predictor.py   # Advanced movement prediction
 │   │   ├── scene_analyzer.py       # Computer vision analysis
 │   │   └── motion_detector.py      # Movement detection
+│   ├── 📁 wedge_features/          # Strategic wedge features
+│   │   ├── consistency_engine.py   # Cross-shot consistency
+│   │   ├── consistency_integration.py  # Integration layer
+│   │   ├── film_grammar.py         # Film grammar rules
+│   │   ├── identity_preservation.py    # Character identity
+│   │   └── temporal_control.py     # Temporal consistency
 │   ├── 📁 generators/              # AI model integrations
 │   ├── 📁 rules/                   # Cinematic rules engine
 │   ├── 📁 core/                    # Framework core

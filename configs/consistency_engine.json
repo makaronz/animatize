@@ -1,0 +1,61 @@
+{
+  "thresholds": {
+    "character_identity": 0.95,
+    "lighting": 0.85,
+    "color_grading": 0.90,
+    "spatial_relationship": 0.88,
+    "object_appearance": 0.92,
+    "style": 0.88,
+    "world": 0.85
+  },
+  "continuity_rules": {
+    "color_consistency": {
+      "enabled": true,
+      "threshold": 0.1,
+      "weight": 1.0,
+      "description": "Maintains consistent color grading across shots"
+    },
+    "lighting_continuity": {
+      "enabled": true,
+      "threshold": 0.15,
+      "weight": 1.2,
+      "description": "Maintains consistent lighting across shots"
+    },
+    "spatial_coherence": {
+      "enabled": true,
+      "threshold": 0.2,
+      "weight": 1.0,
+      "description": "Maintains consistent spatial relationships"
+    }
+  },
+  "validation": {
+    "min_frames_per_shot": 2,
+    "max_frames_per_validation": 100,
+    "parallel_validation": true,
+    "cache_embeddings": true
+  },
+  "embedding": {
+    "visual_dimension": 512,
+    "style_dimension": 64,
+    "character_dimension": 256,
+    "world_dimension": 128
+  },
+  "reference_library": {
+    "storage_path": "data/reference_library",
+    "auto_backup": true,
+    "backup_interval_hours": 24,
+    "max_cache_size": 1000
+  },
+  "style_extraction": {
+    "color_palette_size": 10,
+    "min_color_ratio": 0.05,
+    "texture_analysis": true,
+    "composition_analysis": true
+  },
+  "reporting": {
+    "generate_visualizations": false,
+    "include_thumbnails": false,
+    "detailed_metrics": true,
+    "export_format": "json"
+  }
+}
