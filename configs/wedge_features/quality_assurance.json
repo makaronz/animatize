@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "thresholds": {
+    "overall": 0.80,
+    "resolution": 0.75,
+    "artifacts": 0.85,
+    "motion_blur": 0.82,
+    "composition": 0.80,
+    "lighting": 0.83,
+    "color_accuracy": 0.88,
+    "temporal_coherence": 0.85,
+    "sharpness": 0.80
+  },
+  "quality_metrics": {
+    "resolution": {
+      "enabled": true,
+      "weight": 0.15,
+      "min_resolution": [1920, 1080]
+    },
+    "artifacts": {
+      "enabled": true,
+      "weight": 0.20,
+      "detection_sensitivity": 0.8
+    },
+    "sharpness": {
+      "enabled": true,
+      "weight": 0.10,
+      "min_laplacian_variance": 100
+    }
+  },
+  "technical_validation": {
+    "check_fps": true,
+    "check_codec": true,
+    "check_bitrate": true,
+    "check_audio": true
+  },
+  "broadcast_standards": {
+    "hd_resolution": [1920, 1080],
+    "standard_fps": [23.976, 24, 25, 29.97, 30],
+    "approved_codecs": ["prores", "dnxhd", "h264"],
+    "min_bitrate": 5000
+  },
+  "auto_fix": {
+    "enabled": true,
+    "fix_artifacts": true,
+    "apply_sharpening": false,
+    "color_correction": false
+  },
+  "metrics": {
+    "target_accuracy": 0.90,
+    "max_false_positive_rate": 0.05,
+    "max_processing_overhead_ms": 200,
+    "target_prevention_rate": 0.95
+  }
+}

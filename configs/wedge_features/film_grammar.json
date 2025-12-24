@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "database_path": "data/film_grammar_db.json",
+  "learning_rate": 0.1,
+  "confidence_threshold": 0.85,
+  "validation_settings": {
+    "strict_mode": false,
+    "expert_validation_required": false,
+    "auto_learning_enabled": true
+  },
+  "supported_genres": [
+    "neo_noir",
+    "documentary",
+    "commercial",
+    "art_house",
+    "action",
+    "drama",
+    "comedy",
+    "horror",
+    "romance",
+    "thriller",
+    "sci_fi",
+    "western",
+    "musical",
+    "animation",
+    "experimental"
+  ],
+  "cultural_contexts": [
+    "hollywood",
+    "european_art",
+    "japanese",
+    "korean",
+    "bollywood",
+    "french_new_wave",
+    "italian_neorealism",
+    "soviet_montage"
+  ],
+  "metrics": {
+    "target_rule_coverage": 0.95,
+    "target_accuracy": 0.92,
+    "min_genre_support": 15,
+    "target_nps": 50
+  }
+}

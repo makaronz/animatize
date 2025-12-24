@@ -86,3 +86,13 @@ claude-flow
 # Removed Windows wrapper files per user request
 hive-mind-prompt-*.txt
 z_gemi/
+
+# Wedge Features - Generated/Runtime Data
+data/film_grammar_db/*.json
+data/golden_dataset/*
+!data/golden_dataset/manifest.json
+data/reference_library/*
+data/character_library/*
+data/projects/*
+data/collaboration/*
+configs/wedge_features/*.local.json

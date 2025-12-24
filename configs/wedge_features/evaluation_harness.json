@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "golden_dataset_path": "data/golden_dataset",
+  "test_scenarios": [
+    "character_animation",
+    "camera_movement",
+    "lighting_change",
+    "object_interaction",
+    "scene_transition",
+    "complex_motion",
+    "edge_case"
+  ],
+  "quality_thresholds": {
+    "temporal_coherence": 0.85,
+    "motion_smoothness": 0.90,
+    "identity_preservation": 0.95,
+    "physics_realism": 0.88,
+    "composition_maintained": 0.90
+  },
+  "benchmark_settings": {
+    "max_runtime_seconds": 300,
+    "parallel_execution": true,
+    "regression_threshold": 0.05,
+    "baseline_auto_update": false
+  },
+  "reporting": {
+    "generate_detailed_report": true,
+    "include_visualizations": true,
+    "export_format": "json"
+  },
+  "metrics": {
+    "target_scenarios": 50,
+    "target_runtime": 300,
+    "regression_detection_rate": 1.0,
+    "target_industry_adoption": 5
+  }
+}

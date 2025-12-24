@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "thresholds": {
+    "character_identity": 0.95,
+    "lighting": 0.85,
+    "color_grading": 0.90,
+    "spatial_relationship": 0.88,
+    "object_appearance": 0.92,
+    "environmental": 0.80,
+    "temporal": 0.87
+  },
+  "reference_storage": "data/reference_library",
+  "consistency_models": {
+    "character_recognition": "arcface",
+    "color_matching": "histogram_correlation",
+    "spatial_tracking": "optical_flow"
+  },
+  "validation_settings": {
+    "cross_shot_validation": true,
+    "real_time_feedback": true,
+    "auto_correction_enabled": false
+  },
+  "metrics": {
+    "target_consistency": 0.85,
+    "target_identity_f1": 0.95,
+    "max_lighting_variance": 0.10,
+    "max_spatial_deviation": 0.05
+  }
+}
