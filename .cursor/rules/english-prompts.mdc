@@ -1,7 +1,9 @@
-description:
-globs:
+---
+description: "All generated prompts, responses, and code comments must be written exclusively in English"
+globs: ["*"]
 alwaysApply: true
 ---
+
 # English-Only Prompts Rule
 
 **MANDATORY**: All generated prompts, responses, and code comments must be written exclusively in English. 
