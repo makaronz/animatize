@@ -1,0 +1,609 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Director UX Control Surface Schemas",
+  "description": "JSON schemas for Director UX control structures",
+  "definitions": {
+    "CameraControl": {
+      "type": "object",
+      "description": "Professional camera control parameters",
+      "properties": {
+        "movement_type": {
+          "type": "string",
+          "enum": [
+            "static", "pan", "tilt", "dolly", "track", "crane", 
+            "zoom", "orbit", "handheld", "steadicam", "push", "pull", "whip_pan"
+          ],
+          "default": "static",
+          "description": "Type of camera movement"
+        },
+        "angle": {
+          "type": "string",
+          "enum": [
+            "eye_level", "high_angle", "low_angle", "birds_eye", 
+            "worms_eye", "dutch_angle", "overhead"
+          ],
+          "default": "eye_level",
+          "description": "Camera angle relative to subject"
+        },
+        "shot_type": {
+          "type": "string",
+          "enum": [
+            "extreme_wide", "wide", "full", "medium", "closeup", 
+            "extreme_closeup", "over_shoulder", "pov", "insert", 
+            "cutaway", "two_shot", "group_shot"
+          ],
+          "default": "medium",
+          "description": "Shot framing type"
+        },
+        "focal_length": {
+          "type": "integer",
+          "minimum": 12,
+          "maximum": 200,
+          "default": 50,
+          "description": "Lens focal length in millimeters"
+        },
+        "speed": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 5.0,
+          "default": 1.0,
+          "description": "Movement speed multiplier"
+        },
+        "strength": {
+          "type": "string",
+          "enum": ["none", "subtle", "moderate", "strong", "extreme"],
+          "default": "moderate",
+          "description": "Movement intensity level"
+        },
+        "easing": {
+          "type": "string",
+          "enum": ["linear", "ease_in", "ease_out", "ease_in_out"],
+          "default": "linear",
+          "description": "Motion easing curve"
+        },
+        "start_time": {
+          "type": "number",
+          "minimum": 0.0,
+          "default": 0.0,
+          "description": "When movement starts in seconds"
+        },
+        "end_time": {
+          "type": ["number", "null"],
+          "minimum": 0.0,
+          "default": null,
+          "description": "When movement ends in seconds (null = end of clip)"
+        }
+      },
+      "required": ["movement_type", "angle", "shot_type"],
+      "additionalProperties": false
+    },
+    "TimingControl": {
+      "type": "object",
+      "description": "Timing and tempo control parameters",
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 60.0,
+          "default": 5.0,
+          "description": "Total clip duration in seconds"
+        },
+        "fps": {
+          "type": "integer",
+          "enum": [12, 15, 24, 25, 30, 48, 50, 60, 120],
+          "default": 24,
+          "description": "Frames per second"
+        },
+        "speed_factor": {
+          "type": "number",
+          "minimum": 0.25,
+          "maximum": 4.0,
+          "default": 1.0,
+          "description": "Playback speed multiplier (slow motion / time lapse)"
+        },
+        "start_offset": {
+          "type": "number",
+          "minimum": 0.0,
+          "default": 0.0,
+          "description": "Trim from start in seconds"
+        }
+      },
+      "required": ["duration", "fps"],
+      "additionalProperties": false
+    },
+    "MotionControl": {
+      "type": "object",
+      "description": "Subject and scene motion control parameters",
+      "properties": {
+        "overall_strength": {
+          "type": "string",
+          "enum": ["none", "subtle", "moderate", "strong", "extreme"],
+          "default": "moderate",
+          "description": "Global motion intensity"
+        },
+        "subject_motion": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.5,
+          "description": "Subject movement amount"
+        },
+        "camera_motion": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.5,
+          "description": "Camera movement amount"
+        },
+        "background_motion": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.3,
+          "description": "Background movement amount"
+        },
+        "motion_blur": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable motion blur"
+        },
+        "motion_blur_amount": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.5,
+          "description": "Motion blur strength"
+        }
+      },
+      "required": ["overall_strength"],
+      "additionalProperties": false
+    },
+    "TransitionControl": {
+      "type": "object",
+      "description": "Shot transition control parameters",
+      "properties": {
+        "style": {
+          "type": "string",
+          "enum": [
+            "cut", "fade", "dissolve", "wipe", "match_cut", 
+            "jump_cut", "smash_cut", "crossfade", "fade_to_black", "fade_from_black"
+          ],
+          "default": "cut",
+          "description": "Transition type"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 5.0,
+          "default": 1.0,
+          "description": "Transition duration in seconds"
+        },
+        "offset": {
+          "type": "number",
+          "minimum": 0.0,
+          "default": 0.0,
+          "description": "Offset from shot end in seconds"
+        },
+        "parameters": {
+          "type": "object",
+          "default": {},
+          "description": "Style-specific parameters"
+        }
+      },
+      "required": ["style"],
+      "additionalProperties": false
+    },
+    "ParameterLock": {
+      "type": "object",
+      "description": "Lock status for iteration workflow",
+      "properties": {
+        "locked": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether parameter is locked"
+        },
+        "locked_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when locked"
+        },
+        "locked_value": {
+          "description": "Value when locked (any type)"
+        },
+        "notes": {
+          "type": "string",
+          "default": "",
+          "description": "Notes about why parameter is locked"
+        }
+      },
+      "required": ["locked"],
+      "additionalProperties": false
+    },
+    "GenerationComparison": {
+      "type": "object",
+      "description": "Comparison data for iteration workflow",
+      "properties": {
+        "generation_id": {
+          "type": "string",
+          "description": "Unique generation identifier"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Parameters used for this generation"
+        },
+        "result_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL to generated video"
+        },
+        "thumbnail_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL to video thumbnail"
+        },
+        "rating": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "User rating (1-5 stars)"
+        },
+        "notes": {
+          "type": "string",
+          "default": "",
+          "description": "User notes about this generation"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when created"
+        }
+      },
+      "required": ["generation_id", "parameters", "created_at"],
+      "additionalProperties": false
+    },
+    "DirectorControls": {
+      "type": "object",
+      "description": "Complete director control surface",
+      "properties": {
+        "control_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique control identifier"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["auto", "pro"],
+          "default": "auto",
+          "description": "Operating mode"
+        },
+        "camera": {
+          "$ref": "#/definitions/CameraControl",
+          "description": "Camera control parameters"
+        },
+        "timing": {
+          "$ref": "#/definitions/TimingControl",
+          "description": "Timing control parameters"
+        },
+        "motion": {
+          "$ref": "#/definitions/MotionControl",
+          "description": "Motion control parameters"
+        },
+        "transition": {
+          "oneOf": [
+            {"$ref": "#/definitions/TransitionControl"},
+            {"type": "null"}
+          ],
+          "description": "Transition control parameters (optional)"
+        },
+        "style_preset": {
+          "type": ["string", "null"],
+          "enum": [
+            "documentary", "commercial", "art_house", "action", 
+            "drama", "thriller", "comedy", "horror", "music_video", 
+            "corporate", "editorial", "experimental", null
+          ],
+          "description": "Applied style preset"
+        },
+        "visual_style": {
+          "type": "string",
+          "default": "cinematic",
+          "description": "Overall visual aesthetic"
+        },
+        "mood": {
+          "type": "string",
+          "default": "neutral",
+          "description": "Emotional tone"
+        },
+        "color_grade": {
+          "type": "string",
+          "default": "natural",
+          "description": "Color treatment"
+        },
+        "depth_of_field": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.5,
+          "description": "Bokeh/focus range (0=deep focus, 1=shallow)"
+        },
+        "lighting_style": {
+          "type": "string",
+          "default": "natural",
+          "description": "Lighting approach"
+        },
+        "composition_rule": {
+          "type": "string",
+          "default": "rule_of_thirds",
+          "description": "Framing guideline"
+        },
+        "aspect_ratio": {
+          "type": "string",
+          "default": "16:9",
+          "enum": ["16:9", "4:3", "21:9", "1:1", "9:16", "4:5"],
+          "description": "Frame dimensions"
+        },
+        "locked_parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ParameterLock"
+          },
+          "default": {},
+          "description": "Parameter locks for iteration"
+        },
+        "generation_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GenerationComparison"
+          },
+          "default": [],
+          "description": "Iteration history"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when created"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when last modified"
+        },
+        "version": {
+          "type": "string",
+          "default": "1.0",
+          "description": "Schema version"
+        }
+      },
+      "required": [
+        "control_id", "mode", "camera", "timing", "motion",
+        "created_at", "modified_at", "version"
+      ],
+      "additionalProperties": false
+    },
+    "StylePreset": {
+      "type": "object",
+      "description": "Professional style preset definition",
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "documentary", "commercial", "art_house", "action",
+            "drama", "thriller", "comedy", "horror", "music_video",
+            "corporate", "editorial", "experimental"
+          ],
+          "description": "Preset name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Preset description"
+        },
+        "use_case": {
+          "type": "string",
+          "description": "Recommended use cases"
+        },
+        "controls": {
+          "$ref": "#/definitions/DirectorControls",
+          "description": "Complete control configuration"
+        }
+      },
+      "required": ["name", "description", "use_case", "controls"],
+      "additionalProperties": false
+    },
+    "AutoModeInput": {
+      "type": "object",
+      "description": "Simplified input for auto mode",
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "enum": ["product", "interview", "artistic", "sport", "story", "music"],
+          "description": "Type of content being created"
+        },
+        "mood": {
+          "type": "string",
+          "enum": ["calm", "exciting", "dramatic", "peaceful", "energetic", "mysterious"],
+          "description": "Desired emotional tone"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 60.0,
+          "description": "Desired duration in seconds"
+        }
+      },
+      "required": ["content_type", "mood", "duration"],
+      "additionalProperties": false
+    },
+    "InternalParameters": {
+      "type": "object",
+      "description": "Internal parameter format for model adapters",
+      "properties": {
+        "camera_motion": {
+          "type": "object",
+          "properties": {
+            "type": {"type": "string"},
+            "speed": {"type": "number"},
+            "strength": {"type": "string"},
+            "easing": {"type": "string"},
+            "start_time": {"type": "number"},
+            "end_time": {"type": ["number", "null"]}
+          }
+        },
+        "camera_angle": {"type": "string"},
+        "shot_type": {"type": "string"},
+        "focal_length": {"type": "integer"},
+        "duration": {"type": "number"},
+        "fps": {"type": "integer"},
+        "speed_factor": {"type": "number"},
+        "motion_strength": {"type": "string"},
+        "subject_motion": {"type": "number"},
+        "camera_motion_amount": {"type": "number"},
+        "background_motion": {"type": "number"},
+        "enable_motion_blur": {"type": "boolean"},
+        "motion_blur_strength": {"type": "number"},
+        "transition": {
+          "type": ["object", "null"],
+          "properties": {
+            "transition_type": {"type": "string"},
+            "duration": {"type": "number"},
+            "offset": {"type": "number"}
+          }
+        },
+        "visual_style": {"type": "string"},
+        "mood": {"type": "string"},
+        "color_grade": {"type": "string"},
+        "depth_of_field": {"type": "number"},
+        "lighting_style": {"type": "string"},
+        "composition_rule": {"type": "string"},
+        "aspect_ratio": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "RefinementSuggestion": {
+      "type": "object",
+      "description": "AI-generated parameter refinement suggestion",
+      "properties": {
+        "parameter": {
+          "type": "string",
+          "description": "Parameter path (e.g., 'camera.speed')"
+        },
+        "current_value": {
+          "description": "Current parameter value (any type)"
+        },
+        "suggested_value": {
+          "description": "Suggested new value (any type)"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Explanation for suggestion"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Confidence in suggestion (optional)"
+        }
+      },
+      "required": ["parameter", "current_value", "suggested_value", "reason"],
+      "additionalProperties": false
+    }
+  },
+  "examples": [
+    {
+      "example_name": "Pro Mode Commercial Setup",
+      "data": {
+        "control_id": "ctrl_abc123",
+        "mode": "pro",
+        "camera": {
+          "movement_type": "dolly",
+          "angle": "eye_level",
+          "shot_type": "medium",
+          "focal_length": 50,
+          "speed": 0.6,
+          "strength": "moderate",
+          "easing": "ease_in_out",
+          "start_time": 0.0,
+          "end_time": null
+        },
+        "timing": {
+          "duration": 5.0,
+          "fps": 30,
+          "speed_factor": 1.0,
+          "start_offset": 0.0
+        },
+        "motion": {
+          "overall_strength": "moderate",
+          "subject_motion": 0.5,
+          "camera_motion": 0.7,
+          "background_motion": 0.3,
+          "motion_blur": true,
+          "motion_blur_amount": 0.5
+        },
+        "transition": {
+          "style": "dissolve",
+          "duration": 0.8,
+          "offset": 0.0,
+          "parameters": {}
+        },
+        "style_preset": "commercial",
+        "visual_style": "polished",
+        "mood": "aspirational",
+        "color_grade": "vibrant",
+        "depth_of_field": 0.4,
+        "lighting_style": "three_point",
+        "composition_rule": "golden_ratio",
+        "aspect_ratio": "16:9",
+        "locked_parameters": {
+          "camera.movement_type": {
+            "locked": true,
+            "locked_at": "2025-01-28T10:30:00Z",
+            "locked_value": "dolly",
+            "notes": "Perfect smooth dolly motion"
+          },
+          "timing.fps": {
+            "locked": true,
+            "locked_at": "2025-01-28T10:30:00Z",
+            "locked_value": 30,
+            "notes": "30fps matches target platform"
+          }
+        },
+        "generation_history": [],
+        "created_at": "2025-01-28T10:00:00Z",
+        "modified_at": "2025-01-28T10:30:00Z",
+        "version": "1.0"
+      }
+    },
+    {
+      "example_name": "Auto Mode Quick Setup",
+      "data": {
+        "content_type": "product",
+        "mood": "exciting",
+        "duration": 5.0
+      }
+    },
+    {
+      "example_name": "Generation Comparison",
+      "data": {
+        "generation_id": "gen_001",
+        "parameters": {
+          "camera": {"speed": 0.8},
+          "motion": {"overall_strength": "subtle"}
+        },
+        "result_url": "https://cdn.example.com/video_001.mp4",
+        "thumbnail_url": "https://cdn.example.com/thumb_001.jpg",
+        "rating": 4,
+        "notes": "Good balance but slightly slow",
+        "created_at": "2025-01-28T10:15:00Z"
+      }
+    },
+    {
+      "example_name": "Refinement Suggestion",
+      "data": {
+        "parameter": "camera.speed",
+        "current_value": 1.5,
+        "suggested_value": 1.05,
+        "reason": "Reduce camera speed for smoother motion based on 'too fast' feedback",
+        "confidence": 0.85
+      }
+    }
+  ]
+}
