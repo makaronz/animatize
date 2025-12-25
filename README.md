@@ -112,11 +112,50 @@ animatize-framework/
 │   ├── 📁 generators/              # AI model integrations
 │   ├── 📁 rules/                   # Cinematic rules engine
 │   ├── 📁 core/                    # Framework core
+│   │   └── product_backlog.py      # Product backlog management
+│   ├── 📁 models/                  # Data models
+│   │   ├── product-backlog.ts      # TypeScript backlog
+│   │   └── backlog-visualization.ts # Visualization tools
 │   └── 📁 web/                     # Web interface
 ├── 📁 configs/                     # Configuration files
 ├── 📁 tests/                       # Comprehensive test suite
 ├── 📁 docs/                        # Documentation
+├── 📁 scripts/                     # Utility scripts
 └── 📁 examples/                    # Usage examples
+```
+
+## 📋 Product Backlog Management
+
+The project includes a comprehensive **Product Backlog Management System** with 32 prioritized items across 4 development phases.
+
+### Quick Access
+- **[📖 Backlog Documentation](docs/PRODUCT_BACKLOG_README.md)** - Complete system overview
+- **[🚀 Quick Reference](docs/BACKLOG_QUICK_REFERENCE.md)** - Cheat sheet for common operations
+- **[📊 Usage Guide](docs/BACKLOG_USAGE.md)** - Detailed usage instructions
+
+### Features
+- ✅ **32 Comprehensive Items** with impact/effort/risk scoring
+- ✅ **Smart Prioritization** using (impact/effort) × (1 - risk×0.1)
+- ✅ **Phase Organization** (Foundation → Core → Enhancement → Enterprise)
+- ✅ **Refactor Tracking** with module maturity scoring (must-do vs later)
+- ✅ **Dependency Management** with full graph generation
+- ✅ **Multiple Export Formats** (JSON, Markdown, HTML)
+- ✅ **CLI Tools** for Python and TypeScript
+- ✅ **Visualization Support** with charts and analytics
+
+### Quick Start
+
+```python
+# Python
+from src.core.product_backlog import ProductBacklog
+backlog = ProductBacklog()
+backlog.export_json("data/backlog.json")
+```
+
+```bash
+# CLI
+python scripts/generate_backlog.py --format both
+node src/models/product-backlog-cli.js generate
 ```
 
 ## 🧪 Testing

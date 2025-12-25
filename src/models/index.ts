@@ -4,3 +4,5 @@
 
 export * from './model-comparison';
 export { default as surveyData } from './video-generation-models.json';
+export * from './product-backlog';
+export * from './backlog-visualization';
