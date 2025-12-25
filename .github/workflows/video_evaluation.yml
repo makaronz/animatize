@@ -1,0 +1,166 @@
+# GitHub Actions Workflow for Video Generation Evaluation
+
+name: Video Generation Evaluation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      test_version:
+        description: 'Version to test'
+        required: true
+        default: 'main'
+      baseline_version:
+        description: 'Baseline version for comparison'
+        required: false
+        default: 'latest'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  evaluate:
+    name: Run Video Generation Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements-cv.txt
+    
+    - name: Download test videos
+      run: |
+        # Placeholder - replace with actual download/generation logic
+        mkdir -p test_videos
+        echo "Test videos would be downloaded or generated here"
+    
+    - name: Run evaluation tests
+      run: |
+        python -m src.evaluation.ci_integration \
+          --test-videos test_videos/manifest.json \
+          --test-version ${{ github.event.inputs.test_version || github.sha }} \
+          --baseline-version ${{ github.event.inputs.baseline_version || 'latest' }} \
+          --output-dir ci_reports
+    
+    - name: Generate reports
+      if: always()
+      run: |
+        python examples/evaluation_examples.py
+    
+    - name: Upload evaluation reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: evaluation-reports
+        path: |
+          ci_reports/
+          evaluation_results/
+    
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Read summary if it exists
+          let summary = 'Evaluation completed. Check artifacts for detailed reports.';
+          try {
+            if (fs.existsSync('ci_reports/github_summary.md')) {
+              summary = fs.readFileSync('ci_reports/github_summary.md', 'utf8');
+            }
+          } catch (err) {
+            console.log('Could not read summary:', err);
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: summary
+          });
+    
+    - name: Check evaluation status
+      if: always()
+      run: |
+        if [ -f "ci_reports/ci_results.json" ]; then
+          STATUS=$(python -c "import json; data=json.load(open('ci_reports/ci_results.json')); print(data['status'])")
+          if [ "$STATUS" != "PASS" ]; then
+            echo "::error::Video generation evaluation failed"
+            exit 1
+          fi
+        fi
+
+  performance-benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: evaluate
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install -r requirements-cv.txt
+    
+    - name: Run performance benchmarks
+      run: |
+        python -c "
+from src.evaluation import PerformanceBenchmark
+import json
+
+benchmark = PerformanceBenchmark(results_dir='benchmark_results')
+
+# Mock inference for benchmarking
+def mock_inference(**kwargs):
+    import time
+    time.sleep(2.0)
+    return {'frames_generated': 60, 'processing_time': 2.0}
+
+# Run benchmark
+result = benchmark.benchmark_inference(
+    inference_fn=mock_inference,
+    scenario_id='TS_CHAR_001',
+    model_version='${{ github.sha }}',
+    num_runs=5
+)
+
+# Generate report
+benchmark.generate_benchmark_report(
+    results=[result],
+    output_path='benchmark_results/report.json'
+)
+
+print('Benchmark completed')
+print(f'Average latency: {result.avg_latency_ms:.0f}ms')
+print(f'Passed: {result.passed}')
+        "
+    
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-benchmarks
+        path: benchmark_results/

@@ -1,0 +1,60 @@
+# CI/CD Configuration for Video Generation Evaluation
+
+# Test configuration
+test_config:
+  # Version information
+  test_version: "${TEST_VERSION}"  # Set via environment variable
+  baseline_version: "${BASELINE_VERSION:-latest}"  # Default to latest
+  
+  # Test selection
+  scenarios:
+    - TS_CHAR_001  # Character walking
+    - TS_CHAR_002  # Character running
+    - TS_CAM_001   # Camera pan
+    - TS_CAM_002   # Camera tilt
+    - TS_ENV_001   # Wind effects
+    - TS_LIGHT_001 # Day/night transition
+  
+  # Quality thresholds
+  thresholds:
+    max_failures: 0
+    max_degradations: 2
+    min_pass_rate: 95.0  # percentage
+  
+  # Performance thresholds
+  performance:
+    enabled: true
+    max_latency_regression: 10.0  # percentage
+    max_memory_regression: 15.0   # percentage
+    min_throughput: 1.0  # fps
+
+# Paths
+paths:
+  golden_set: "data/golden_set"
+  test_videos: "${TEST_VIDEOS_PATH}"
+  output_dir: "ci_reports"
+
+# Metric weights (for scoring)
+metric_weights:
+  temporal_consistency: 0.25
+  instruction_following: 0.20
+  clip_similarity: 0.20
+  ssim: 0.15
+  perceptual_quality: 0.20
+
+# Reporting
+reports:
+  generate_html: true
+  generate_markdown: true
+  generate_json: true
+  github_actions_summary: true
+  badge_generation: true
+
+# Notifications (placeholder for future integration)
+notifications:
+  slack:
+    enabled: false
+    webhook_url: "${SLACK_WEBHOOK_URL}"
+  email:
+    enabled: false
+    recipients: []
