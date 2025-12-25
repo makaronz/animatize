@@ -1,180 +1,156 @@
-# Video Generation Evaluation System - Quick Reference
+# Test Plan Quick Reference
 
-## 🚀 Quick Start (3 lines)
+## File Locations
 
-```python
-from src.evaluation import EvaluationHarness
-harness = EvaluationHarness()
-result = harness.evaluate_video("video.mp4", "TS_CHAR_001", "v1.0.0")
+### Documentation
+- `docs/TEST_PLAN_SPECIFICATION.md` - Complete test plan (1200+ lines)
+- `docs/GOLDEN_SET_USAGE_GUIDE.md` - Usage guide (500+ lines)
+- `docs/TEST_PLAN_IMPLEMENTATION_SUMMARY.md` - Implementation summary
+- `docs/QUICK_REFERENCE.md` - This file
+
+### Code
+- `src/evaluation/test_scenarios.py` - 25+ test scenarios
+- `src/evaluation/golden_set.py` - Golden set management
+- `src/evaluation/regression_system.py` - Regression testing
+- `src/evaluation/metrics.py` - Metrics computation
+- `src/evaluation/ci_integration.py` - CI/CD integration
+
+### Tests
+- `tests/fixtures/video_generation_fixtures.py` - Pytest fixtures
+- `tests/test_golden_set_integration.py` - Integration tests
+- `tests/conftest.py` - Pytest configuration
+- `pytest.ini` - Pytest settings
+
+### Scripts
+- `scripts/add_golden_reference.py` - Add golden reference
+- `scripts/validate_golden_reference.py` - Validate reference
+- `scripts/export_golden_summary.py` - Export summary
+
+### Data
+- `data/golden_prompts/prompt_library.json` - Golden prompts
+- `data/golden_set/` - Golden reference videos and metadata
+
+## Test Scenarios (12+ Core Scenes)
+
+### Portrait (2)
+- `TS_CHAR_004` - Subtle facial expression (Advanced, 36 frames)
+- `TS_CHAR_005` - Head turn with eye tracking (Advanced, 48 frames)
+
+### Landscape (2)
+- `TS_CAM_001` - Slow horizontal pan (Basic, 72 frames)
+- `TS_LIGHT_001` - Day to night transition (Advanced, 120 frames)
+
+### Multi-Character (2)
+- `TS_CHAR_001` - Character walking forward (Basic, 60 frames)
+- `TS_CHAR_002` - Sprint running lateral (Intermediate, 48 frames)
+
+### Dynamic Motion (2)
+- `TS_CHAR_006` - Full body rotation 360° (Expert, 96 frames)
+- `TS_CAM_006` - Dynamic subject tracking (Advanced, 90 frames)
+
+### Lighting Change (2)
+- `TS_LIGHT_003` - Light intensity change (Intermediate, 60 frames)
+- `TS_LIGHT_004` - Color temperature shift (Advanced, 72 frames)
+
+### Multi-Shot (2)
+- `TS_MULTI_001` - Character continuity (Expert, 3 scenes)
+- `TS_MULTI_002` - Lighting continuity (Expert, 2 scenes)
+
+### Edge Cases (3)
+- `TS_ENV_002` - Flowing water surface (Advanced, 84 frames)
+- `TS_ENV_003` - Particle simulation (Advanced, 60 frames)
+- `TS_ENV_004` - Weather transition (Expert, 96 frames)
+
+## Acceptance Criteria Thresholds
+
+| Metric | Threshold | Critical |
+|--------|-----------|----------|
+| Temporal Consistency | ≥ 0.85 | ≥ 0.75 |
+| CLIP Score | ≥ 0.80 | ≥ 0.70 |
+| SSIM | ≥ 0.75 | ≥ 0.65 |
+| Perceptual Quality | ≥ 0.80 | ≥ 0.70 |
+| Instruction Following | ≥ 0.90 | ≥ 0.80 |
+| Optical Flow | ≥ 0.80 | ≥ 0.70 |
+| Latency | ≤ 5000ms | ≤ 8000ms |
+| Throughput | ≥ 1.0 FPS | ≥ 0.5 FPS |
+
+## Common Commands
+
+### Testing
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run integration tests
+pytest tests/test_golden_set_integration.py -v
+
+# Run with coverage
+pytest tests/ --cov=src.evaluation --cov-report=html
+
+# Run specific markers
+pytest tests/ -m regression -v
+pytest tests/ -m "not slow" -v
 ```
 
-## 📋 All Test Scenarios
+### Golden Set Management
+```bash
+# Add reference
+python scripts/add_golden_reference.py \
+  --scenario TS_CHAR_001 \
+  --video video.mp4 \
+  --model-version v1.0.0 \
+  --approver email@example.com \
+  --compute-metrics
 
-| ID | Name | Type | Difficulty | Frames |
-|----|------|------|------------|--------|
-| **CHARACTER MOVEMENT** |
-| TS_CHAR_001 | Natural Walking | Walk | Basic | 60 |
-| TS_CHAR_002 | Sprint Running | Run | Intermediate | 48 |
-| TS_CHAR_003 | Hand Gestures | Gesture | Intermediate | 72 |
-| TS_CHAR_004 | Facial Expression | Facial | Advanced | 36 |
-| TS_CHAR_005 | Head Turn | Head | Advanced | 48 |
-| TS_CHAR_006 | Body Rotation | Body | Expert | 96 |
-| **CAMERA MOVEMENT** |
-| TS_CAM_001 | Horizontal Pan | Pan | Basic | 72 |
-| TS_CAM_002 | Vertical Tilt | Tilt | Basic | 60 |
-| TS_CAM_003 | Dynamic Zoom | Zoom | Intermediate | 54 |
-| TS_CAM_004 | Dolly Push | Dolly | Intermediate | 84 |
-| TS_CAM_005 | Circular Orbit | Orbit | Advanced | 96 |
-| TS_CAM_006 | Subject Tracking | Track | Advanced | 90 |
-| **ENVIRONMENT** |
-| TS_ENV_001 | Wind Through Trees | Wind | Intermediate | 72 |
-| TS_ENV_002 | Flowing Water | Water | Advanced | 84 |
-| TS_ENV_003 | Particle Simulation | Particles | Advanced | 60 |
-| TS_ENV_004 | Weather Transition | Weather | Expert | 96 |
-| TS_ENV_005 | Vegetation Movement | Vegetation | Intermediate | 78 |
-| **LIGHTING** |
-| TS_LIGHT_001 | Day to Night | Day/Night | Advanced | 120 |
-| TS_LIGHT_002 | Shadow Movement | Shadows | Intermediate | 84 |
-| TS_LIGHT_003 | Intensity Change | Intensity | Intermediate | 60 |
-| TS_LIGHT_004 | Color Temperature | Color | Advanced | 72 |
-| **MULTI-SCENE** |
-| TS_MULTI_001 | Character Continuity | Continuity | Expert | 168 |
-| TS_MULTI_002 | Lighting Continuity | Continuity | Expert | 144 |
+# Validate reference
+python scripts/validate_golden_reference.py \
+  --reference-id REF_TS_CHAR_001_v1.0.0_20240115 \
+  --approver email@example.com \
+  --recompute-metrics
 
-## 📊 All Metrics
-
-| Metric | Range | Default Threshold | Description |
-|--------|-------|-------------------|-------------|
-| temporal_consistency | 0-1 | 0.85 | Frame-to-frame coherence (SSIM) |
-| optical_flow_consistency | 0-1 | 0.80 | Motion vector stability |
-| ssim | 0-1 | 0.75 | Structural similarity |
-| perceptual_quality | 0-1 | 0.80 | Sharpness + contrast + brightness |
-| instruction_following | 0-1 | 0.90 | Prompt adherence (requires CLIP) |
-| clip_similarity | 0-1 | 0.80 | Text-image similarity (requires CLIP) |
-
-## 🔧 Common Operations
-
-### Evaluate Single Video
-```python
-result = harness.evaluate_video(
-    video_path="test.mp4",
-    scenario_id="TS_CHAR_001",
-    model_version="v1.0.0",
-    save_to_golden_set=True,  # Save if passed
-    expert_approved=True       # Mark as approved
-)
-print(f"Passed: {result['all_metrics_passed']}")
+# Export summary
+python scripts/export_golden_summary.py \
+  --output reports/summary.json \
+  --format json
 ```
 
-### Run Regression Tests
-```python
-results = harness.run_regression_tests(
-    test_videos={
-        "TS_CHAR_001": "v2_walking.mp4",
-        "TS_CAM_001": "v2_pan.mp4"
-    },
-    test_version="v2.0.0",
-    baseline_version="v1.0.0",
-    generate_report=True
-)
-```
-
-### Compare Two Models
-```python
-comparison = harness.compare_models(
-    model_a_videos={"TS_CHAR_001": "modelA.mp4"},
-    model_b_videos={"TS_CHAR_001": "modelB.mp4"},
-    model_a_name="ModelA",
-    model_b_name="ModelB",
-    generate_report=True
-)
-print(f"Winner: {comparison['summary']['overall_winner']}")
-```
-
-### Benchmark Performance
-```python
-def inference_fn(prompt, duration_frames):
-    video = generate_video(prompt, duration_frames)
-    return {"video_path": video, "frames_generated": duration_frames}
-
-result = harness.benchmark_performance(
-    inference_fn=inference_fn,
-    scenario_id="TS_CHAR_001",
-    model_version="v1.0.0",
-    num_runs=10
-)
-print(f"Avg latency: {result['avg_latency_ms']:.0f}ms")
-```
-
-### Evaluate Multiple Scenarios
-```python
-results = harness.evaluate_scenario_suite(
-    videos={
-        "TS_CHAR_001": "walking.mp4",
-        "TS_CHAR_002": "running.mp4",
-        "TS_CAM_001": "pan.mp4"
-    },
-    model_version="v1.0.0",
-    save_best_to_golden_set=True
-)
-print(f"Pass rate: {results['pass_rate']:.1f}%")
-```
-
-## 🎯 CI/CD Commands
-
-### Command Line
+### CI Integration
 ```bash
 # Run CI tests
 python -m src.evaluation.ci_integration \
-  --test-videos test_videos.json \
-  --test-version v2.0.0 \
+  --test-videos manifest.json \
+  --test-version v1.1.0 \
   --baseline-version v1.0.0 \
   --output-dir ci_reports
-
-# Run with specific scenarios
-python -m src.evaluation.ci_integration \
-  --test-videos test_videos.json \
-  --test-version v2.0.0 \
-  --scenarios TS_CHAR_001 TS_CAM_001
 ```
 
-### Python
-```python
-from src.evaluation import CIIntegration, CITestConfig
+## Python API Quick Start
 
-ci = CIIntegration()
-config = CITestConfig(
-    test_version="v2.0.0",
-    max_failures=0,
-    max_degradations=2,
-    min_pass_rate=95.0
+### Load Test Scenarios
+```python
+from src.evaluation import TestScenarioLibrary
+
+library = TestScenarioLibrary()
+scenario = library.get_scenario("TS_CHAR_001")
+print(f"Prompt: {scenario.prompt}")
+print(f"Duration: {scenario.duration_frames} frames")
+```
+
+### Compute Metrics
+```python
+from src.evaluation import MetricsEngine
+
+engine = MetricsEngine()
+results = engine.compute_all(
+    video_path="video.mp4",
+    reference_data={"prompt": "Person walks forward"}
 )
 
-results = ci.run_ci_tests(test_videos, config)
-exit_code = 0 if results['status'] == 'PASS' else 1
+for name, result in results.items():
+    print(f"{name}: {result.score:.3f} (passed: {result.passed})")
 ```
 
-## 📁 File Structure
-
-```
-src/evaluation/
-├── __init__.py                 # Main exports
-├── evaluation_harness.py       # Orchestrator (USE THIS)
-├── test_scenarios.py           # 25+ scenarios
-├── metrics.py                  # 6 metrics
-├── golden_set.py               # Reference management
-├── regression_system.py        # Regression tests
-├── performance_benchmarks.py   # Performance tests
-├── ci_integration.py           # CI/CD hooks
-└── report_generator.py         # Report generation
-
-examples/evaluation_examples.py # 9 examples
-scripts/run_evaluation_demo.py  # Interactive demo
-tests/test_evaluation_system.py # Unit tests
-```
-
-## 🔍 Golden Set Operations
-
+### Golden Set Operations
 ```python
 from src.evaluation import GoldenSetManager
 
@@ -183,156 +159,165 @@ manager = GoldenSetManager("data/golden_set")
 # Add reference
 ref_id = manager.add_reference(
     scenario_id="TS_CHAR_001",
-    video_path="reference.mp4",
+    video_path="video.mp4",
     model_version="v1.0.0",
-    expert_approved=True
+    metric_results={"temporal_consistency": 0.89},
+    expert_approved=True,
+    approver="email@example.com"
 )
 
-# Get latest reference
-latest = manager.get_latest_reference(
+# Get reference
+ref = manager.get_reference(ref_id)
+print(f"Video: {ref.video_path}")
+print(f"Metrics: {ref.metric_results}")
+```
+
+### Run Regression Test
+```python
+from src.evaluation import RegressionTestSuite, GoldenSetManager, MetricsEngine, TestScenarioLibrary
+
+golden_set = GoldenSetManager("data/golden_set")
+metrics = MetricsEngine()
+scenarios = TestScenarioLibrary()
+
+suite = RegressionTestSuite(golden_set, metrics, scenarios)
+
+result = suite.run_regression_test(
+    test_video_path="new_video.mp4",
     scenario_id="TS_CHAR_001",
-    expert_approved_only=True
+    test_version="v1.1.0",
+    baseline_version="v1.0.0"
 )
 
-# Compare videos
-comparison = manager.compare_videos(
-    "video1.mp4", "video2.mp4",
-    comparison_level="hash"  # or "frames"
-)
+print(f"Status: {result.status}")
+print(f"Pass Rate: {result.metrics_passed}/{result.metrics_passed + result.metrics_failed}")
 ```
 
-## 📊 Report Generation
+## Pytest Fixtures
 
+### Use in Tests
 ```python
-from src.evaluation import generate_all_reports
-
-reports = generate_all_reports(
-    comparison_data=comparison_results,
-    title="Model Comparison Report",
-    output_dir="reports"
-)
-# Generates: HTML, Markdown, JSON
-```
-
-## 🧪 Custom Metrics
-
-```python
-from src.evaluation.metrics import VideoMetric, MetricResult
-
-class MyMetric(VideoMetric):
-    def get_name(self):
-        return "my_metric"
+def test_scenario(scenario_id):
+    """Test runs for each parametrized scenario"""
+    # scenario_id will be TS_CHAR_001, TS_CHAR_004, etc.
     
-    def compute(self, video_path, reference_data=None):
-        score = compute_my_score(video_path)
-        return MetricResult(
-            metric_name=self.get_name(),
-            score=score,
-            passed=score >= self.threshold,
-            threshold=self.threshold
-        )
-
-# Register
-harness.metrics_engine.register_metric(MyMetric(threshold=0.85))
+def test_with_video(sample_test_video):
+    """Test with auto-generated video"""
+    # sample_test_video is path to 640x480, 60 frame video
+    
+def test_with_golden_set(golden_set_manager):
+    """Test with golden set manager"""
+    # golden_set_manager is shared across all tests
 ```
 
-## ⚙️ Configuration
+## Storage Format
 
-### Update Thresholds
-```python
-harness.metrics_engine.update_thresholds({
-    "temporal_consistency": 0.90,
-    "ssim": 0.85,
-    "perceptual_quality": 0.88
-})
+### Video File Naming
+```
+REF_{scenario_id}_{model_version}_{timestamp}.mp4
+
+Example:
+REF_TS_CHAR_001_v1.0.0_20240115_103000.mp4
 ```
 
-### CI Config (YAML)
-```yaml
-# configs/ci_config.yaml
-test_config:
-  thresholds:
-    max_failures: 0
-    max_degradations: 2
-    min_pass_rate: 95.0
+### Directory Structure
+```
+data/golden_set/
+├── metadata.json
+├── videos/
+│   └── REF_*.mp4
+├── frames/
+│   └── REF_*/frame_*.png
+├── embeddings/
+│   └── REF_*.npy
+└── metrics/
+    └── REF_*.json
 ```
 
-## 📈 Status Codes
+## Markers
 
-### Regression Status
-- `PASS`: All metrics meet thresholds
-- `FAIL`: One or more metrics fail
-- `DEGRADED`: Significant decline (>5%)
-- `IMPROVED`: Better than baseline
-- `UNSTABLE`: Inconsistent results
-- `ERROR`: Test execution error
+Use with `-m` flag:
 
-### CI Exit Codes
-- `0`: Tests passed
-- `1`: Tests failed
+- `slow` - Slow tests (skip with `-m "not slow"`)
+- `integration` - Integration tests
+- `regression` - Regression tests
+- `performance` - Performance benchmarks
+- `requires_golden` - Needs golden set
 
-## 🎓 Examples
+Example:
+```bash
+pytest tests/ -m "regression and not slow" -v
+```
+
+## Environment Variables
 
 ```bash
-# Run demo (no videos needed)
-python scripts/run_evaluation_demo.py
-
-# Run examples
-python examples/evaluation_examples.py
-
-# Run tests
-pytest tests/test_evaluation_system.py -v
-
-# Run specific example
-python -c "from examples.evaluation_examples import example_6_explore_test_scenarios; example_6_explore_test_scenarios()"
+# Optional configuration
+export GOLDEN_SET_PATH="data/golden_set"
+export TEST_OUTPUT_DIR="ci_reports"
+export PYTEST_WORKERS="auto"  # For parallel execution
 ```
 
-## 📚 Documentation
+## Troubleshooting
 
-- **Full Guide**: `docs/evaluation_system_guide.md`
-- **README**: `docs/EVALUATION_README.md`
-- **Summary**: `docs/IMPLEMENTATION_SUMMARY.md`
-- **This File**: `docs/QUICK_REFERENCE.md`
+### Test Failures
+```bash
+# Run with verbose output
+pytest tests/test_golden_set_integration.py -vv
 
-## 🐛 Troubleshooting
+# Run with debug logging
+pytest tests/ --log-cli-level=DEBUG
 
-### Import Error
-```python
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-from src.evaluation import EvaluationHarness
+# Run single test
+pytest tests/test_golden_set_integration.py::TestGoldenSetIntegration::test_scenario_library_completeness -v
 ```
 
 ### Missing Dependencies
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-cv.txt
+pip install pytest pytest-cov
 ```
 
-### Video Reading Issues
-```python
-# Check if OpenCV can read video
-import cv2
-cap = cv2.VideoCapture("video.mp4")
-print(f"Can read: {cap.isOpened()}")
-cap.release()
+### Video Issues
+```bash
+# Check video file
+ffprobe video.mp4
+
+# Verify video format
+python -c "import cv2; cap = cv2.VideoCapture('video.mp4'); print(f'Frames: {int(cap.get(cv2.CAP_PROP_FRAME_COUNT))}, FPS: {cap.get(cv2.CAP_PROP_FPS)}')"
 ```
 
-## 💡 Tips
+## Key Metrics Reference
 
-1. **Start Simple**: Use `example_6_explore_test_scenarios()` to understand scenarios
-2. **Test Coverage**: Run `harness.get_test_coverage_report()` to see status
-3. **Custom Scenarios**: Add to `TestScenarioLibrary._initialize_scenarios()`
-4. **Golden Set**: Always get expert approval before adding references
-5. **CI/CD**: Start with relaxed thresholds, tighten over time
-6. **Reports**: HTML for humans, JSON for automation
-7. **Performance**: Use `num_runs=3` for quick tests, `10+` for production
+| Metric Name | Description | Good Range |
+|-------------|-------------|------------|
+| temporal_consistency | Frame-to-frame SSIM | 0.85-0.95 |
+| optical_flow_consistency | Motion coherence | 0.80-0.90 |
+| ssim | Structural similarity | 0.75-0.90 |
+| perceptual_quality | Sharpness/contrast | 0.80-0.95 |
+| clip_similarity | Text-video alignment | 0.80-0.95 |
+| instruction_following | Prompt adherence | 0.90-0.98 |
 
-## 🔗 Quick Links
+## Golden Prompt Categories
 
-- GitHub Actions: `.github/workflows/video_evaluation.yml`
-- CI Config: `configs/ci_config.yaml`
-- Main Module: `src/evaluation/evaluation_harness.py`
-- Examples: `examples/evaluation_examples.py`
-- Tests: `tests/test_evaluation_system.py`
+- `characters/locomotion` - 6 prompts
+- `characters/facial_expressions` - 3 prompts
+- `characters/gestures` - 2 prompts
+- `characters/rotations` - 2 prompts
+- `camera/pan_tilt` - 2 prompts
+- `camera/zoom` - 2 prompts
+- `camera/dolly` - 1 prompt
+- `camera/tracking` - 2 prompts
+- `environment/*` - 4 prompts
+- `lighting/*` - 4 prompts
+
+Total: 20+ validated prompts
+
+## Resources
+
+- [Full Specification](TEST_PLAN_SPECIFICATION.md)
+- [Usage Guide](GOLDEN_SET_USAGE_GUIDE.md)
+- [Implementation Summary](TEST_PLAN_IMPLEMENTATION_SUMMARY.md)
+- [Test Scenarios Code](../src/evaluation/test_scenarios.py)
+- [Golden Set Code](../src/evaluation/golden_set.py)
