@@ -96,3 +96,11 @@ data/character_library/*
 data/projects/*
 data/collaboration/*
 configs/wedge_features/*.local.json
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
