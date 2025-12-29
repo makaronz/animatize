@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2024-01-15T00:00:00Z",
+  "total_prompts": 20,
+  "categories": [
+    "characters/locomotion",
+    "characters/facial_expressions",
+    "characters/gestures",
+    "characters/rotations",
+    "camera/pan_tilt",
+    "camera/zoom",
+    "camera/dolly",
+    "camera/tracking",
+    "environment/weather",
+    "environment/particles",
+    "environment/water",
+    "environment/vegetation",
+    "lighting/time_of_day",
+    "lighting/intensity",
+    "lighting/color_temperature",
+    "lighting/shadows"
+  ],
+  "prompts": {
+    "GP_CHAR_001": {
+      "prompt_id": "GP_CHAR_001",
+      "category": "characters/locomotion",
+      "template": "Person walks {direction} with {gait_style}, {speed} pace",
+      "canonical_prompt": "Person walks naturally forward with steady, confident gait",
+      "variables": {
+        "direction": ["forward", "backward", "sideways"],
+        "gait_style": ["confident", "casual", "hurried", "steady"],
+        "speed": ["slow", "moderate", "brisk"]
+      },
+      "tested_scenarios": ["TS_CHAR_001"],
+      "performance": {
+        "avg_clip_score": 0.89,
+        "avg_temporal_consistency": 0.88,
+        "avg_ssim": 0.82,
+        "success_rate": 0.94
+      },
+      "expert_validated": true,
+      "validation_date": "2024-01-15"
+    },
+    "GP_CHAR_004": {
+      "prompt_id": "GP_CHAR_004",
+      "category": "characters/facial_expressions",
+      "canonical_prompt": "Subtle smile forming with slight eye movement and eyebrow raise",
+      "template": "{expression} forming with {intensity} eye movement and {facial_detail}",
+      "tested_scenarios": ["TS_CHAR_004"],
+      "performance": {
+        "avg_clip_score": 0.85,
+        "avg_temporal_consistency": 0.92,
+        "success_rate": 0.87
+      },
+      "expert_validated": true
+    },
+    "GP_CAM_001": {
+      "prompt_id": "GP_CAM_001",
+      "category": "camera/pan_tilt",
+      "canonical_prompt": "Slow, steady pan from left to right revealing scenic vista",
+      "tested_scenarios": ["TS_CAM_001"],
+      "performance": {
+        "avg_temporal_consistency": 0.90,
+        "success_rate": 0.93
+      },
+      "expert_validated": true
+    },
+    "GP_LIGHT_001": {
+      "prompt_id": "GP_LIGHT_001",
+      "category": "lighting/time_of_day",
+      "canonical_prompt": "Scene transitions from bright day to dusk with natural color grading",
+      "tested_scenarios": ["TS_LIGHT_001"],
+      "performance": {
+        "avg_temporal_consistency": 0.86,
+        "success_rate": 0.88
+      },
+      "expert_validated": true
+    }
+  }
+}
