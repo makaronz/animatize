@@ -100,3 +100,7 @@ configs/wedge_features/*.local.json
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
