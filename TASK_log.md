@@ -8,3 +8,4 @@
 15:32 2024-07-29 - Zakończono zadanie: Przeprowadzono kompletną analizę z użyciem wszystkich 47 reguł kinematograficznych, zastosowano 10 priorytetowych reguł z uzasadnieniem fizycznym i narracyjnym, wygenerowano trzy zoptymalizowane prompty z pewnością 0.94.
 15:35 2024-07-29 - Rozpoczęto zadanie: Analiza nowego zdjęcia (pasażerowie w tramwaju, tablica 139/Bronowice) i generowanie promptu ANIMAtiZE.
 13:15 2025-12-25 - Dodano konfigurację github.com/contextstream/mcp-server do globalnego pliku MCP settings (~/.cursor/mcp.json).
+13:20 2025-12-25 - Usunięto zahardkodowany CONTEXTSTREAM_API_KEY z ~/.cursor/mcp.json i dodano do zmiennych środowiskowych w ~/.zshrc dla bezpieczeństwa.
