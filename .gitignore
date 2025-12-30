@@ -104,3 +104,4 @@ configs/wedge_features/*.local.json
 # Environment files
 *.env
 *.env.*
+TASK_log.md
