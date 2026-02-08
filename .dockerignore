@@ -1,0 +1,80 @@
+# Git
+.git
+.gitignore
+.gitconfig
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.tox/
+
+# Documentation
+docs/_build/
+*.md
+
+# CI/CD
+.circleci/
+.github/
+.emergent/
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+data/
+logs/
+test_videos/
+ci_reports/
+evaluation_results/
+benchmark_results/
+tmp/
+*.tmp
+
+# Claude config
+.claude/

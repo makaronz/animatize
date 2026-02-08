@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  animatize:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: animatize:latest
+    container_name: animatize-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ANIMATIZE_ENV=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./configs:/app/configs:ro
+    healthcheck:
+      test: ["CMD", "python", "scripts/deploy/health_check.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - animatize-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: animatize-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - animatize-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Optional: Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: animatize-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - animatize-network
+    profiles:
+      - monitoring
+
+networks:
+  animatize-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  prometheus-data:
