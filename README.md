@@ -18,6 +18,15 @@ ANIMAtiZE is a production-ready Python framework that leverages computer vision 
 pip install animatize-framework
 ```
 
+### Deployment Options
+
+- **🐳 Docker**: One-command deployment with `./scripts/deploy/deploy.sh deploy`
+- **☸️ Kubernetes**: Enterprise-ready with included manifests
+- **📦 PyPI**: Install as Python package
+- **🖥️ Manual**: Direct server installation
+
+**👉 See [QUICKSTART.md](QUICKSTART.md) for 5-minute deployment or [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for comprehensive guide.**
+
 ### Basic Usage
 
 ```python
@@ -242,14 +251,20 @@ python src/main.py --dev
 ### Docker Deployment
 
 ```bash
-# Build container
-docker build -t animatize:latest .
+# Quick deployment with automation script
+./scripts/deploy/deploy.sh deploy
 
-# Run container
+# Or manually with Docker
+docker build -t animatize:latest .
 docker run -p 8000:8000 \
   -e OPENAI_API_KEY=your_key \
   animatize:latest
+
+# Or using Docker Compose
+docker compose up -d
 ```
+
+**📖 See [QUICKSTART.md](QUICKSTART.md) for quick deployment or [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for comprehensive deployment guide.**
 
 ## 🌍 API Reference
 
