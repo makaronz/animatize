@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: animatize
+  labels:
+    name: animatize
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: animatize-config
+  namespace: animatize
+data:
+  ANIMATIZE_ENV: "production"
+  LOG_LEVEL: "info"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: animatize-secrets
+  namespace: animatize
+type: Opaque
+stringData:
+  OPENAI_API_KEY: "your_openai_api_key_here"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: animatize
+  namespace: animatize
+  labels:
+    app: animatize
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: animatize
+  template:
+    metadata:
+      labels:
+        app: animatize
+    spec:
+      containers:
+      - name: animatize
+        image: ghcr.io/makaronz/animatize:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ANIMATIZE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: animatize-config
+              key: ANIMATIZE_ENV
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: animatize-secrets
+              key: OPENAI_API_KEY
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - scripts/deploy/health_check.py
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - scripts/deploy/health_check.py
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: data
+          mountPath: /app/data
+        - name: logs
+          mountPath: /app/logs
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: animatize-data
+      - name: logs
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: animatize
+  namespace: animatize
+  labels:
+    app: animatize
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: animatize
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: animatize-data
+  namespace: animatize
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: animatize
+  namespace: animatize
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: animatize
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
