@@ -261,7 +261,7 @@ class TestPresetLibrary:
     def test_get_art_house_preset(self):
         controls = PresetLibrary.get_preset(StylePreset.ART_HOUSE)
         assert controls.style_preset == StylePreset.ART_HOUSE
-        assert controls.camera.movement_type == CameraMovementType.TRACK
+        assert controls.camera.movement_type == CameraMovementType.TRACKING_SHOT
         assert controls.timing.duration == 12.0
         assert controls.color_grade == "desaturated"
     

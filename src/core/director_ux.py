@@ -60,7 +60,6 @@ class CameraMovementType(str, Enum):
     PAN = "pan"
     TILT = "tilt"
     DOLLY = "dolly"
-    TRACK = "track"
     TRACKING_SHOT = "tracking_shot"
     CRANE = "crane"
     ZOOM = "zoom"
