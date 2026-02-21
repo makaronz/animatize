@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANIMAtiZE V1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#mainContent">Skip to content</a>
+
+    <header class="app-header" role="banner">
+      <div class="brand-wrap">
+        <span class="brand-chip">V1</span>
+        <div>
+          <h1>ANIMAtiZE</h1>
+          <p>Intent-first sequence workflow</p>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Main">
+        <button class="nav-btn is-active" data-view="createView">Create</button>
+        <button class="nav-btn" data-view="historyView">History</button>
+        <button class="nav-btn" data-view="favoritesView">Favorites</button>
+        <button class="nav-btn" data-view="presetsView">Presets</button>
+        <button class="nav-btn" data-view="settingsView">Settings</button>
+      </nav>
+    </header>
+
+    <main id="mainContent" class="app-main" role="main">
+      <section id="createView" class="view is-active" aria-labelledby="createTitle">
+        <div class="workspace-grid">
+          <section class="creation-stage" aria-labelledby="createTitle">
+            <div class="stage-heading">
+              <div>
+                <h2 id="createTitle">Create new sequence</h2>
+                <p>Upload an image, describe intent, and generate variants fast.</p>
+              </div>
+              <button id="generateButton" class="btn btn-primary" disabled>
+                Generate
+              </button>
+            </div>
+
+            <article id="emptyStateCard" class="state-card state-empty">
+              <h3>Start with image + intent</h3>
+              <p>
+                Drag an image into the canvas, then describe the scene intention.
+                Smart defaults are preselected to reduce setup friction.
+              </p>
+            </article>
+
+            <section class="upload-intent" aria-labelledby="intentLabel">
+              <div
+                id="dropZone"
+                class="drop-zone"
+                tabindex="0"
+                role="button"
+                aria-label="Upload source image"
+              >
+                <input id="fileInput" type="file" accept="image/*" hidden />
+                <img id="sourcePreview" alt="Uploaded source image preview" />
+                <div id="dropZoneText" class="drop-zone-text">
+                  <strong>Drop image here</strong>
+                  <span>or click to browse</span>
+                </div>
+              </div>
+
+              <div class="intent-wrap">
+                <label id="intentLabel" for="intentInput">Intent</label>
+                <textarea
+                  id="intentInput"
+                  rows="4"
+                  placeholder="Example: Slow cinematic push-in on the subject with warm evening tone and subtle environmental motion."
+                ></textarea>
+                <div class="intent-examples" aria-label="Intent examples">
+                  <button class="chip" data-intent="Dreamy neo-noir camera drift with coherent character motion.">
+                    Neo-noir drift
+                  </button>
+                  <button class="chip" data-intent="Commercial-style energetic motion with clean transitions and high coherence.">
+                    Commercial energy
+                  </button>
+                  <button class="chip" data-intent="Documentary natural camera movement and grounded environmental dynamics.">
+                    Documentary realism
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <div id="statusLive" class="sr-only" aria-live="polite"></div>
+
+            <section class="result-section" aria-labelledby="resultTitle">
+              <div class="result-head">
+                <h3 id="resultTitle">Generated results</h3>
+                <div class="result-actions">
+                  <button id="openCompareButton" class="btn btn-secondary" disabled>
+                    Compare selected
+                  </button>
+                  <span id="runSummary" class="run-summary">No runs yet</span>
+                </div>
+              </div>
+              <div id="resultGrid" class="result-grid" aria-live="polite"></div>
+            </section>
+
+            <section id="comparePanel" class="compare-panel" aria-labelledby="compareTitle" hidden>
+              <div class="compare-head">
+                <h3 id="compareTitle">Compare variants</h3>
+                <button id="closeCompareButton" class="btn btn-secondary">Close</button>
+              </div>
+              <div id="compareGrid" class="compare-grid"></div>
+            </section>
+          </section>
+
+          <aside class="parameter-panel" aria-labelledby="parameterTitle">
+            <h2 id="parameterTitle">Generation setup</h2>
+            <p>Basic controls first. Advanced options stay hidden unless needed.</p>
+
+            <div class="field">
+              <label for="providerSelect">Provider</label>
+              <select id="providerSelect">
+                <option value="auto">Auto (best available)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="presetSelect">Preset</label>
+              <select id="presetSelect">
+                <option value="cinematic-balanced">Cinematic balanced</option>
+                <option value="coherence-first">Coherence first</option>
+                <option value="speed-first">Speed first</option>
+              </select>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="durationInput">Duration (sec)</label>
+                <input id="durationInput" type="number" min="2" max="20" value="6" />
+              </div>
+              <div class="field">
+                <label for="variantCountInput">Variants</label>
+                <input id="variantCountInput" type="number" min="2" max="5" value="3" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="aspectSelect">Aspect ratio</label>
+              <select id="aspectSelect">
+                <option value="16:9">16:9</option>
+                <option value="9:16">9:16</option>
+                <option value="1:1">1:1</option>
+                <option value="4:5">4:5</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="motionInput">Motion intensity</label>
+              <input id="motionInput" type="range" min="1" max="10" value="6" />
+            </div>
+
+            <button id="toggleAdvancedButton" class="btn btn-ghost" aria-expanded="false">
+              Show advanced
+            </button>
+            <div id="advancedPanel" class="advanced-panel" hidden>
+              <div class="field">
+                <label for="qualitySelect">Quality mode</label>
+                <select id="qualitySelect">
+                  <option value="balanced">Balanced</option>
+                  <option value="high">High quality</option>
+                  <option value="fast">Fast</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="negativeIntentInput">Negative intent (optional)</label>
+                <textarea
+                  id="negativeIntentInput"
+                  rows="3"
+                  placeholder="Avoid abrupt camera shake, identity drift, visual noise."
+                ></textarea>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="timeline-wrap" aria-labelledby="timelineTitle">
+          <div class="timeline-head">
+            <h3 id="timelineTitle">Generation timeline</h3>
+            <button id="clearTimelineButton" class="btn btn-ghost">Clear</button>
+          </div>
+          <div id="timelineList" class="timeline-list"></div>
+        </section>
+      </section>
+
+      <section id="historyView" class="view" aria-labelledby="historyTitle">
+        <h2 id="historyTitle">History</h2>
+        <p>Chronological runs with quick reopen, compare, and one-click regenerate.</p>
+        <div id="historyList" class="list-grid"></div>
+      </section>
+
+      <section id="favoritesView" class="view" aria-labelledby="favoritesTitle">
+        <h2 id="favoritesTitle">Favorites</h2>
+        <p>Saved variants for reuse and rapid regeneration.</p>
+        <div id="favoritesList" class="list-grid"></div>
+      </section>
+
+      <section id="presetsView" class="view" aria-labelledby="presetsTitle">
+        <h2 id="presetsTitle">Presets</h2>
+        <p>Smart defaults reduce setup friction and keep first output quality high.</p>
+        <div class="preset-list">
+          <article class="preset-card">
+            <h3>Cinematic balanced</h3>
+            <p>Recommended starting profile for most creator workflows.</p>
+          </article>
+          <article class="preset-card">
+            <h3>Coherence first</h3>
+            <p>Prioritizes continuity and intent fidelity in multi-shot flow.</p>
+          </article>
+          <article class="preset-card">
+            <h3>Speed first</h3>
+            <p>Faster turnaround when exploring ideas or rough concepts.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="settingsView" class="view" aria-labelledby="settingsTitle">
+        <h2 id="settingsTitle">Settings</h2>
+        <div class="settings-grid">
+          <article class="setting-card">
+            <h3>Accessibility</h3>
+            <label class="toggle">
+              <input id="reducedMotionToggle" type="checkbox" />
+              <span>Reduced motion</span>
+            </label>
+          </article>
+          <article class="setting-card">
+            <h3>Default behavior</h3>
+            <label class="toggle">
+              <input id="autoFavoriteToggle" type="checkbox" />
+              <span>Auto-favorite selected winner</span>
+            </label>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
