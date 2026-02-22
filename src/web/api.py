@@ -1,26 +1,25 @@
 """
-ANIMAtiZE Framework - API Module
-Simple FastAPI application for serving the framework
+Legacy API compatibility module.
+
+This module is intentionally minimal and does not return simulated generation
+results. The canonical runtime app is `src.web.app:app`.
 """
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
-import os
-import sys
-from pathlib import Path
+from __future__ import annotations
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+import os
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
 
 app = FastAPI(
-    title="ANIMAtiZE Framework API",
-    description="Transform static images into cinematic masterpieces",
-    version="1.0.0"
+    title="ANIMAtiZE Legacy API",
+    description="Deprecated compatibility surface. Use src.web.app endpoints.",
+    version="1.0.1",
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
@@ -30,95 +29,55 @@ app.add_middleware(
 )
 
 
-class HealthResponse(BaseModel):
-    status: str
-    version: str
-    environment: str
-
-
-class ImageAnalysisRequest(BaseModel):
-    image_path: str
-    model: Optional[str] = "flux"
-    cinematic_style: Optional[str] = "neo_noir"
-
-
-class ImageAnalysisResponse(BaseModel):
-    prompt: str
-    confidence: float
-    metadata: Dict[str, Any]
-
-
 @app.get("/")
-async def root():
-    """Root endpoint"""
-    return {
-        "name": "ANIMAtiZE Framework API",
-        "version": "1.0.0",
-        "status": "running",
-        "docs": "/docs"
-    }
-
-
-@app.get("/health", response_model=HealthResponse)
-async def health_check():
-    """Health check endpoint"""
-    return HealthResponse(
-        status="healthy",
-        version="1.0.0",
-        environment=os.getenv("ANIMATIZE_ENV", "development")
-    )
-
-
-@app.get("/metrics")
-async def metrics():
-    """Prometheus metrics endpoint"""
-    # TODO: Implement actual metrics
-    return {
-        "requests_total": 0,
-        "requests_successful": 0,
-        "requests_failed": 0,
-        "processing_time_avg": 0.0
-    }
-
-
-@app.post("/analyze", response_model=ImageAnalysisResponse)
-async def analyze_image(request: ImageAnalysisRequest):
-    """
-    Analyze image and generate cinematic prompt
-    
-    This is a placeholder endpoint. Actual implementation would:
-    1. Load the image from the provided path
-    2. Run scene analysis
-    3. Predict movement
-    4. Generate cinematic prompt
-    """
-    # TODO: Implement actual image analysis
-    # For now, return a mock response
-    
-    if not Path(request.image_path).exists():
-        raise HTTPException(status_code=404, detail="Image file not found")
-    
-    return ImageAnalysisResponse(
-        prompt=f"Cinematic prompt for {request.image_path}",
-        confidence=0.95,
-        metadata={
-            "model": request.model,
-            "style": request.cinematic_style,
-            "processing_time_ms": 2300
+async def root() -> JSONResponse:
+    return JSONResponse(
+        {
+            "status": "deprecated",
+            "message": "Legacy API module. Use src.web.app:app as the runtime entrypoint.",
+            "canonical_routes": [
+                "/",
+                "/health",
+                "/api/providers",
+                "/api/presets",
+                "/api/sequences",
+            ],
         }
     )
 
 
-if __name__ == "__main__":
-    import uvicorn
-    
-    port = int(os.getenv("PORT", "8000"))
-    host = os.getenv("HOST", "0.0.0.0")
-    
-    uvicorn.run(
-        app,
-        host=host,
-        port=port,
-        log_level="info",
-        access_log=True
+@app.get("/health")
+async def health_check() -> JSONResponse:
+    return JSONResponse(
+        {
+            "status": "deprecated",
+            "module": "src.web.api",
+            "canonical_module": "src.web.app",
+        }
+    )
+
+
+@app.get("/metrics")
+async def metrics() -> JSONResponse:
+    return JSONResponse(
+        status_code=501,
+        content={
+            "status": "not_implemented",
+            "message": (
+                "Metrics are not exposed by src.web.api. "
+                "Run src.web.app and integrate real telemetry before enabling this route."
+            ),
+        },
+    )
+
+
+@app.post("/analyze")
+async def analyze_image() -> JSONResponse:
+    return JSONResponse(
+        status_code=410,
+        content={
+            "status": "deprecated",
+            "message": "This endpoint has been removed. Use POST /api/sequences on src.web.app.",
+            "next_step": "Run: uvicorn src.web.app:app --host 0.0.0.0 --port 8000 --reload",
+        },
     )

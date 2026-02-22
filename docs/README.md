@@ -2,6 +2,12 @@
 
 **Complete Reverse-Engineering Analysis**
 
+> [!NOTE]
+> For current runtime onboarding and operations, use:
+> `README.md`, `docs/API.md`, `docs/ARCHITECTURE.md`,
+> `docs/DESIGN_SYSTEM_MVDS.md`, and `docs/OPERATIONS.md`.
+> This page mainly indexes broader architecture analysis materials.
+
 ---
 
 ## 🎯 Overview

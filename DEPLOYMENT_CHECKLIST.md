@@ -1,3 +1,7 @@
+> [!WARNING]
+> **DEPRECATED / OUTDATED**: This document may contain historical flows and commands that are not the canonical runtime path anymore.
+> Use **README.md** for onboarding and runtime startup, **docs/API.md** for endpoints, **docs/ARCHITECTURE.md** for system flow, and **docs/OPERATIONS.md** for troubleshooting.
+
 # 📋 Deployment Checklist
 
 Use this checklist to ensure a smooth deployment of the ANIMAtiZE Framework.

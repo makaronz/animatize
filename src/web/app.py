@@ -369,6 +369,7 @@ async def create_sequence(
 
         available = _available_providers()
         resolved_provider = _resolve_provider(provider, available, preset)
+        requested_provider = provider.strip().lower() if provider else "auto"
         pipeline = _build_pipeline()
 
         temporal_priority_map = {
@@ -432,7 +433,17 @@ async def create_sequence(
                     status = "failed"
                     error = response.error.message if response.error else "Provider execution failed."
             else:
-                error = "No configured provider API key found. Set RUNWAY_API_KEY, PIKA_API_KEY, VEO_API_KEY, SORA_API_KEY/OPENAI_API_KEY, or FLUX_API_KEY."
+                status = "not_configured"
+                if requested_provider != "auto" and requested_provider not in available:
+                    error = (
+                        f"Requested provider '{requested_provider}' is not configured. "
+                        "Configure its API key or switch provider to 'auto'."
+                    )
+                else:
+                    error = (
+                        "No configured provider API key found. Set RUNWAY_API_KEY, "
+                        "PIKA_API_KEY, VEO_API_KEY, SORA_API_KEY/OPENAI_API_KEY, or FLUX_API_KEY."
+                    )
 
             variants_payload.append(
                 {
@@ -453,6 +464,8 @@ async def create_sequence(
             overall_status = "success"
         elif any(variant["status"] == "failed" for variant in variants_payload):
             overall_status = "failed"
+        elif any(variant["status"] == "not_configured" for variant in variants_payload):
+            overall_status = "not_configured"
         else:
             overall_status = "not_executed"
 
@@ -469,6 +482,7 @@ async def create_sequence(
                 "motion_intensity": motion_intensity,
                 "quality_mode": quality_mode,
                 "provider": resolved_provider,
+                "provider_requested": requested_provider,
             },
             "source_image": {
                 "filename": image.filename,

@@ -1,423 +1,174 @@
-# 🎬 ANIMAtiZE Framework
+# ANIMAtiZE
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-95%25-green.svg)](tests/)
-[![Documentation](https://img.shields.io/badge/Docs-Complete-blue.svg)](docs/)
-[![PyPI](https://img.shields.io/badge/PyPI-v1.0.0-orange.svg)](https://pypi.org/project/animatize/)
+ANIMAtiZE is an intent-first workflow for generating AI video sequences from a
+single source image. The current runtime is a FastAPI application serving a V1
+web UI and real backend endpoints for scene analysis, prompt compilation, and
+provider execution.
 
-> **Transform static images into cinematic masterpieces with AI-powered movement prediction**
+This README is the single source of truth for local onboarding and runtime
+startup.
 
-ANIMAtiZE is a production-ready Python framework that leverages computer vision and AI to generate cinematic movement prompts from static images. Built for content creators, filmmakers, and creative professionals who need to bring still images to life with professional-grade cinematic techniques.
+## Current runtime scope
 
-## 🚀 Quick Start
+- FastAPI app entrypoint: `src.web.app:app`
+- UI: `src/web/static/index.html`, `src/web/static/app.js`,
+  `src/web/static/styles.css`
+- API routes:
+  - `GET /`
+  - `GET /health`
+  - `GET /api/providers`
+  - `GET /api/presets`
+  - `POST /api/sequences`
 
-### Installation
+## Hard rule: no mock or simulated generation data
 
-```bash
-pip install animatize-framework
-```
+The UI and backend must not fabricate generated outputs.
 
-### Deployment Options
+If provider integration is not configured:
 
-- **🐳 Docker**: One-command deployment with `./scripts/deploy/deploy.sh deploy`
-- **☸️ Kubernetes**: Enterprise-ready with included manifests
-- **📦 PyPI**: Install as Python package
-- **🖥️ Manual**: Direct server installation
+- backend returns explicit statuses such as `not_configured` or
+  `not_executed`,
+- response includes a clear configuration message,
+- UI renders this state directly without fake results.
 
-**👉 See [QUICKSTART.md](QUICKSTART.md) for 5-minute deployment or [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for comprehensive guide.**
+## Requirements
 
-### Basic Usage
+### Required
 
-```python
-from animatize import ANIMAtiZEFramework
+- Python `3.10+` (tested with Python `3.13`)
+- `pip`
 
-# Initialize framework
-framework = ANIMAtiZEFramework()
+### Strongly recommended for real image analysis
 
-# Analyze image and generate cinematic prompt
-result = framework.analyze_image("portrait.jpg")
-prompt = result.generate_prompt(model="flux")
+- OpenCV and CV dependencies from `requirements-cv.txt`
 
-print(f"Generated Prompt: {prompt.text}")
-print(f"Confidence: {prompt.confidence}%")
-```
+### Optional
 
-### Advanced Configuration
+- Node.js (only for advanced local work on TypeScript files in `src/models/`)
 
-```python
-from animatize.configs import Config, CinematicStyle
-
-config = Config(
-    models=["flux", "imagen", "openai"],
-    cinematic_style=CinematicStyle.NEO_NOIR,
-    movement_intensity="subtle",
-    duration_seconds=10,
-    fps=24,
-    include_justification=True
-)
-
-framework = ANIMAtiZEFramework(config=config)
-```
-
-## ✨ Features
-
-### 🎯 Advanced Movement Prediction
-- **47+ Cinematic Rules**: Professional film directing principles
-- **Multi-AI Model Support**: Flux, Imagen, OpenAI, Runway Gen-2
-- **Computer Vision Analysis**: OpenCV-based scene understanding
-- **Real-time Processing**: ~2.3 seconds per 1080p image
-- **99.7% Success Rate**: Production-ready reliability
-
-### 🎨 Cinematic Styles
-- **Neo-Noir**: Dark, atmospheric movements
-- **Documentary**: Natural, observational style
-- **Commercial**: Dynamic, engaging motion
-- **Art House**: Experimental, artistic movements
-- **Action**: High-energy, dramatic sequences
-
-### 🔧 Technical Excellence
-- **Modular Architecture**: Clean separation of concerns
-- **Comprehensive Testing**: 95%+ test coverage
-- **Type Safety**: Full type hints and validation
-- **Performance Optimized**: Multi-threading support
-- **Cloud Ready**: Docker containerization
-
-### 🎯 Consistency Engine (NEW)
-- **Character Identity Preservation**: >95% accuracy across shots
-- **Style Anchors**: Maintain visual consistency throughout sequences
-- **Lighting Continuity**: <10% ΔRGB variance tracking
-- **Spatial Coherence**: <5% position deviation validation
-- **Cross-Shot Validation**: Automated consistency checking
-- **Reference Library**: Persistent character, style, and world management
-
-**[📖 Consistency Engine Documentation](docs/consistency_engine.md)** | **[🚀 Quick Start Guide](docs/CONSISTENCY_QUICK_START.md)**
-
-## 📊 Performance Metrics
-
-| Metric | Value |
-|--------|--------|
-| **Processing Speed** | 2.3s per 1080p image |
-| **Memory Usage** | 512MB peak RAM |
-| **Success Rate** | 99.7% |
-| **Test Coverage** | 95%+ |
-| **API Latency** | <500ms |
-
-## 🏗️ Architecture
-
-```
-animatize-framework/
-├── 📁 src/                          # Core source code
-│   ├── 📁 analyzers/               # Image analysis modules
-│   │   ├── movement_predictor.py   # Advanced movement prediction
-│   │   ├── scene_analyzer.py       # Computer vision analysis
-│   │   └── motion_detector.py      # Movement detection
-│   ├── 📁 wedge_features/          # Strategic wedge features
-│   │   ├── consistency_engine.py   # Cross-shot consistency
-│   │   ├── consistency_integration.py  # Integration layer
-│   │   ├── film_grammar.py         # Film grammar rules
-│   │   ├── identity_preservation.py    # Character identity
-│   │   └── temporal_control.py     # Temporal consistency
-│   ├── 📁 generators/              # AI model integrations
-│   ├── 📁 rules/                   # Cinematic rules engine
-│   ├── 📁 core/                    # Framework core
-│   │   └── product_backlog.py      # Product backlog management
-│   ├── 📁 models/                  # Data models
-│   │   ├── product-backlog.ts      # TypeScript backlog
-│   │   └── backlog-visualization.ts # Visualization tools
-│   └── 📁 web/                     # Web interface
-├── 📁 configs/                     # Configuration files
-├── 📁 tests/                       # Comprehensive test suite
-├── 📁 docs/                        # Documentation
-├── 📁 scripts/                     # Utility scripts
-└── 📁 examples/                    # Usage examples
-```
-
-## 📋 Product Backlog Management
-
-The project includes a comprehensive **Product Backlog Management System** with 32 prioritized items across 4 development phases.
-
-### Quick Access
-- **[📖 Backlog Documentation](docs/PRODUCT_BACKLOG_README.md)** - Complete system overview
-- **[🚀 Quick Reference](docs/BACKLOG_QUICK_REFERENCE.md)** - Cheat sheet for common operations
-- **[📊 Usage Guide](docs/BACKLOG_USAGE.md)** - Detailed usage instructions
-
-### Features
-- ✅ **32 Comprehensive Items** with impact/effort/risk scoring
-- ✅ **Smart Prioritization** using (impact/effort) × (1 - risk×0.1)
-- ✅ **Phase Organization** (Foundation → Core → Enhancement → Enterprise)
-- ✅ **Refactor Tracking** with module maturity scoring (must-do vs later)
-- ✅ **Dependency Management** with full graph generation
-- ✅ **Multiple Export Formats** (JSON, Markdown, HTML)
-- ✅ **CLI Tools** for Python and TypeScript
-- ✅ **Visualization Support** with charts and analytics
-
-### Quick Start
-
-```python
-# Python
-from src.core.product_backlog import ProductBacklog
-backlog = ProductBacklog()
-backlog.export_json("data/backlog.json")
-```
+## Installation
 
 ```bash
-# CLI
-python scripts/generate_backlog.py --format both
-node src/models/product-backlog-cli.js generate
-```
+git clone https://github.com/makaronz/animatize.git
+cd animatize
 
-## 🧪 Testing
+python3 -m venv .venv
+source .venv/bin/activate
 
-### Running Tests
-
-```bash
-# Install development dependencies
-pip install -r requirements-dev.txt
-
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage
-pytest --cov=src --cov-report=html
-
-# Run specific test categories
-pytest tests/unit/ -v
-pytest tests/integration/ -v
-pytest tests/e2e/ -v
-```
-
-### Test Categories
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: Component interaction testing
-- **End-to-End Tests**: Complete workflow testing
-- **Performance Tests**: Load and stress testing
-- **Model Tests**: AI integration testing
-
-## 🎯 Use Cases
-
-### Content Creation
-- **Social Media**: Instagram, TikTok, YouTube content
-- **Marketing**: Product demonstrations, advertisements
-- **Real Estate**: Virtual property tours
-- **E-commerce**: 360° product showcases
-
-### Professional Applications
-- **Film Production**: Pre-visualization, storyboarding
-- **Photography**: Dynamic portfolio presentations
-- **Game Development**: Cinematic cutscenes
-- **Architecture**: Walkthrough animations
-
-### Creative Industries
-- **Stock Photography**: Enhanced stock video creation
-- **Digital Art**: Interactive art installations
-- **Education**: Visual learning materials
-- **VR/AR**: Immersive experiences
-
-## 🔧 Installation
-
-### System Requirements
-- **Python**: 3.8 or higher
-- **RAM**: 2GB minimum, 4GB recommended
-- **Storage**: 1GB for dependencies
-- **API Keys**: OpenAI, Google Cloud (optional)
-
-### Quick Setup
-
-```bash
-# Clone repository
-git clone https://github.com/animatize/framework.git
-cd animatize-framework
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 pip install -r requirements-cv.txt
-
-# Configure environment
-cp configs/env/.env.example configs/env/.env.local
-# Edit with your API keys
-
-# Run tests
-pytest tests/ -v
-
-# Start development server
-python src/main.py --dev
 ```
 
-### Docker Deployment
+## Run locally
+
+Use the canonical entrypoint:
 
 ```bash
-# Quick deployment with automation script
-./scripts/deploy/deploy.sh deploy
-
-# Or manually with Docker
-docker build -t animatize:latest .
-docker run -p 8000:8000 \
-  -e OPENAI_API_KEY=your_key \
-  animatize:latest
-
-# Or using Docker Compose
-docker compose up -d
+uvicorn src.web.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-**📖 See [QUICKSTART.md](QUICKSTART.md) for quick deployment or [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for comprehensive deployment guide.**
+Open:
 
-## 🌍 API Reference
+- `http://localhost:8000/` (UI)
+- `http://localhost:8000/health` (health)
 
-### Core Classes
+## Verify runtime
 
-#### ANIMAtiZEFramework
-```python
-class ANIMAtiZEFramework:
-    """Main framework class for image analysis and prompt generation."""
-    
-    def __init__(self, config: Optional[Config] = None):
-        """Initialize framework with optional configuration."""
-    
-    def analyze_image(self, image_path: str) -> AnalysisResult:
-        """Analyze image and return comprehensive results."""
-    
-    def batch_analyze(self, image_paths: List[str]) -> List[AnalysisResult]:
-        """Analyze multiple images in batch."""
+### 1) Health check
+
+```bash
+curl -sS http://localhost:8000/health
 ```
 
-#### Config
-```python
-class Config:
-    """Configuration class for framework customization."""
-    
-    models: List[str] = ["flux", "imagen", "openai"]
-    cinematic_style: CinematicStyle = CinematicStyle.NEO_NOIR
-    movement_intensity: str = "subtle"
-    duration_seconds: int = 10
-    fps: int = 24
-    include_justification: bool = True
+Expected:
+
+- HTTP `200`
+- JSON containing `"status": "ok"`
+
+### 2) UI route
+
+```bash
+curl -I http://localhost:8000/
 ```
 
-### AnalysisResult
-```python
-class AnalysisResult:
-    """Results from image analysis."""
-    
-    character_actions: List[CharacterAction]
-    camera_movements: List[CameraMovement]
-    environmental_motion: List[EnvironmentalMotion]
-    cinematic_prompt: CinematicPrompt
-    confidence_score: float
+Expected:
+
+- HTTP `200`
+
+### 3) Real multipart generation request (no fake payload)
+
+Use an actual image file path:
+
+```bash
+curl -sS -X POST "http://localhost:8000/api/sequences" \
+  -F "image=@/absolute/path/to/your-image.jpg" \
+  -F "intent=Slow cinematic push-in on subject with stable identity" \
+  -F "preset=cinematic-balanced" \
+  -F "duration=6" \
+  -F "variants=3" \
+  -F "aspect_ratio=16:9" \
+  -F "motion_intensity=6" \
+  -F "quality_mode=balanced" \
+  -F "provider=auto" \
+  -F "negative_intent=avoid jitter and identity drift"
 ```
 
-## 🎨 Configuration
+Expected:
 
-### Cinematic Rules
+- HTTP `200`
+- JSON with:
+  - `run_id`
+  - `status`
+  - `analysis`
+  - `variants[]`
 
-```json
-{
-  "movement_rules": {
-    "character_actions": {
-      "walking": {
-        "intensity": "natural",
-        "duration": "continuous",
-        "camera_movement": "tracking_shot"
-      }
-    },
-    "camera_movements": {
-      "pan": {
-        "speed": "slow",
-        "direction": "horizontal",
-        "duration": 3.0
-      }
-    }
-  }
-}
+With provider keys configured, variants can return `success` or `failed`.
+Without keys, variants return `not_configured`/`not_executed` with a clear
+error message.
+
+## Provider configuration
+
+Set provider keys in environment before startup:
+
+- `RUNWAY_API_KEY`
+- `PIKA_API_KEY`
+- `VEO_API_KEY`
+- `SORA_API_KEY` or `OPENAI_API_KEY`
+- `FLUX_API_KEY`
+
+Example:
+
+```bash
+export RUNWAY_API_KEY="..."
+export OPENAI_API_KEY="..."
+uvicorn src.web.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### Model Configuration
+If no provider is configured:
 
-```json
-{
-  "models": {
-    "flux": {
-      "endpoint": "https://api.flux.ai/v1/generate",
-      "max_tokens": 200,
-      "temperature": 0.7
-    },
-    "imagen": {
-      "endpoint": "https://api.imagen.ai/v1/generate",
-      "max_tokens": 200,
-      "temperature": 0.7
-    }
-  }
-}
+- the request still performs real CV analysis and prompt compilation,
+- execution status is explicitly non-success (`not_configured` or
+  `not_executed`),
+- no fabricated media URL is returned.
+
+## Project structure (web runtime)
+
+```text
+src/web/
+├── app.py            # Canonical FastAPI runtime (UI + API)
+├── api.py            # Legacy compatibility module (deprecated surface)
+└── static/
+    ├── index.html    # V1 UI layout
+    ├── app.js        # UI interactions, localStorage, API wiring
+    └── styles.css    # MVDS tokenized design system styles
 ```
 
-## 🚀 Advanced Usage
+## Documentation map
 
-### Custom Rules
+- API details: `docs/API.md`
+- Runtime architecture: `docs/ARCHITECTURE.md`
+- MVDS design system: `docs/DESIGN_SYSTEM_MVDS.md`
+- Operations and troubleshooting: `docs/OPERATIONS.md`
 
-```python
-from animatize.rules import CustomRule
-
-rule = CustomRule(
-    name="my_custom_rule",
-    conditions=["bright_scene", "portrait_orientation"],
-    actions=["gentle_zoom", "slow_pan"],
-    intensity=0.7
-)
-
-framework.add_custom_rule(rule)
-```
-
-### Batch Processing
-
-```python
-from animatize import BatchProcessor
-
-processor = BatchProcessor(
-    input_dir="./images",
-    output_dir="./results",
-    models=["flux", "imagen"],
-    workers=4
-)
-
-results = processor.process_all()
-```
-
-## 📞 Support
-
-### Getting Help
-- **Documentation**: [docs.animatize.dev](https://docs.animatize.dev)
-- **Discord Community**: [discord.gg/animatize](https://discord.gg/animatize)
-- **GitHub Issues**: [github.com/animatize/framework/issues](https://github.com/animatize/framework/issues)
-- **Email**: support@animatize.dev
-
-### Contributing
-- **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md)
-- **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- **Development Setup**: [DEVELOPMENT.md](DEVELOPMENT.md)
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **OpenCV Team**: For computer vision excellence
-- **AI Model Providers**: Flux, Imagen, OpenAI teams
-- **Film Directors**: For cinematic inspiration
-- **Community**: For continuous feedback and support
-
----
-
-<div align="center">
-  <p><strong>🎬 ANIMAtiZE Framework - Production-Ready Cinematic AI</strong></p>
-  <p><em>Transforming static images into cinematic masterpieces</em></p>
-  <p>
-    <a href="https://github.com/animatize/framework">⭐ Star on GitHub</a> |
-    <a href="https://docs.animatize.dev">📚 Documentation</a> |
-    <a href="https://discord.gg/animatize">💬 Discord</a>
-  </p>
-</div>
+Older documents may exist for historical context. When onboarding or running
+the app, use this README and the four docs above.

@@ -1,3 +1,7 @@
+> [!NOTE]
+> This document contains broader or historical analysis.
+> For the current runtime design and active routes use **docs/ARCHITECTURE.md** and **docs/API.md**.
+
 # ANIMAtiZE Architecture Visual Diagrams
 
 ## 1. System Architecture Overview

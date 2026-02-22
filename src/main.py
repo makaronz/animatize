@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
 """
-ANiMAtiZE Framework - Main Entry Point
+ANIMAtiZE runtime launcher.
+
+Canonical entrypoint is still:
+    uvicorn src.web.app:app --host 0.0.0.0 --port 8000 --reload
 """
 
-import asyncio
-from pathlib import Path
-import sys
+from __future__ import annotations
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent))
+import os
 
-from core.framework import ANIMAtiZEFramework
+import uvicorn
 
-async def main():
-    """Main application entry point"""
-    print("🎬 Starting ANIMAtiZE Framework...")
-    
-    framework = ANIMAtiZEFramework()
-    await framework.initialize()
-    
-    print("✅ Framework initialized successfully!")
-    print("🚀 Ready to generate cinematic prompts")
+
+def main() -> None:
+    """Start the canonical FastAPI app from src.web.app."""
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "8000"))
+    reload_enabled = os.getenv("ANIMATIZE_RELOAD", "false").lower() == "true"
+    uvicorn.run("src.web.app:app", host=host, port=port, reload=reload_enabled)
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

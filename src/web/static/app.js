@@ -276,7 +276,7 @@ function buildResultCard(run, variant) {
       </label>
       ${
         variant.error
-          ? `<p class="status failed">Error: ${variant.error}</p>`
+          ? `<p class="alert alert-error">Error: ${variant.error}</p>`
           : ""
       }
     </div>
@@ -555,7 +555,7 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
     refs.runSummary.textContent = `Run ${run.run_id} • ${run.status} • provider ${run.params.provider || "none"}`;
     announce(`Generation finished with status: ${run.status}.`);
   } catch (error) {
-    refs.resultGrid.innerHTML = `<p class="list-card">Generation failed: ${error.message}</p>`;
+    refs.resultGrid.innerHTML = `<p class="list-card alert alert-error">Generation failed: ${error.message}</p>`;
     refs.runSummary.textContent = "Generation failed";
     announce(`Generation failed: ${error.message}`);
   } finally {
