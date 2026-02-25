@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 60,
+      "includeFiles": [
+        "src/web/static/**",
+        "configs/**"
+      ]
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.py"
+    }
+  ]
+}
