@@ -160,10 +160,31 @@ function showToast(message) {
 }
 
 async function requestJSON(url, options = {}) {
-  const response = await fetch(url, {
-    credentials: "same-origin",
-    ...options,
-  });
+  const { timeoutMs = 12000, ...fetchOptions } = options;
+  const controller = fetchOptions.signal ? null : new AbortController();
+  const timeoutId = controller
+    ? setTimeout(() => {
+        controller.abort();
+      }, timeoutMs)
+    : null;
+
+  let response;
+  try {
+    response = await fetch(url, {
+      credentials: "same-origin",
+      ...fetchOptions,
+      signal: fetchOptions.signal || controller?.signal,
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error(`Request timed out after ${timeoutMs}ms`);
+    }
+    throw new Error(`Network request failed: ${error.message}`);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
 
   let payload = null;
   try {
@@ -275,8 +296,17 @@ function enterAppExperience() {
 
 async function continueAsGuest() {
   refs.authStatus.textContent = "Entering guest projector mode...";
+  refs.continueGuestButton.disabled = true;
   enterAppExperience();
-  await initializeRuntimeData();
+  try {
+    await initializeRuntimeData();
+    refs.authStatus.textContent = "Guest mode ready.";
+  } catch (error) {
+    refs.authStatus.textContent = `Guest mode started with limited data: ${error.message}`;
+    announce("Some sync endpoints are unavailable. Retrying in background is safe.");
+  } finally {
+    refs.continueGuestButton.disabled = false;
+  }
 }
 
 function switchView(nextView) {
