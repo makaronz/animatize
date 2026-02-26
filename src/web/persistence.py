@@ -15,8 +15,27 @@ from cryptography.fernet import Fernet
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = REPO_ROOT / "data"
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-DB_PATH = Path(os.getenv("ANIMATIZE_WEB_DB_PATH", DATA_DIR / "animatize_web.db"))
+
+
+def _default_db_path() -> Path:
+    env_path = os.getenv("ANIMATIZE_WEB_DB_PATH", "").strip()
+    if env_path:
+        return Path(env_path)
+
+    # Vercel serverless filesystem is read-only except /tmp.
+    if os.getenv("VERCEL", "").strip():
+        return Path("/tmp/animatize_web.db")
+
+    return DATA_DIR / "animatize_web.db"
+
+
+DB_PATH = _default_db_path()
+if not str(DB_PATH).startswith("/tmp"):
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        # Fallback for read-only runtimes.
+        DB_PATH = Path("/tmp/animatize_web.db")
 
 SESSION_COOKIE_NAME = "animatize_session"
 SESSION_TTL_HOURS = int(os.getenv("ANIMATIZE_SESSION_TTL_HOURS", "720"))
@@ -33,8 +52,16 @@ def _session_expiry_iso() -> str:
 
 
 def _connection() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
+    global DB_PATH
+    try:
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        DB_PATH = Path("/tmp/animatize_web.db")
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA busy_timeout = 5000")
+    conn.execute("PRAGMA journal_mode = WAL")
     return conn
 
 
@@ -196,19 +223,12 @@ def get_or_create_session(session_id: str | None) -> dict[str, Any]:
         return create_guest_session()
 
     with _connection() as conn:
-        _purge_expired_sessions(conn)
         row = conn.execute(
             "SELECT session_id, user_id, guest_id FROM sessions WHERE session_id = ?",
             (session_id,),
         ).fetchone()
         if not row:
             return create_guest_session()
-
-        now = _now_iso()
-        conn.execute(
-            "UPDATE sessions SET last_seen_at = ?, expires_at = ? WHERE session_id = ?",
-            (now, _session_expiry_iso(), session_id),
-        )
         return {
             "session_id": row["session_id"],
             "user_id": row["user_id"],
