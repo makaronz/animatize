@@ -105,3 +105,5 @@ configs/wedge_features/*.local.json
 *.env
 *.env.*
 TASK_log.md
+.vercel
+.env*.local

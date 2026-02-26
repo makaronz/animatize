@@ -3,141 +3,163 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ANIMAtiZE V1</title>
+    <title>ANIMAtiZE Director Console</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#mainContent">Skip to content</a>
+    <a class="skip-link" href="#appMain">Skip to console</a>
 
-    <header class="app-header" role="banner">
+    <div class="film-grain" aria-hidden="true"></div>
+    <div class="sprocket-left" aria-hidden="true"></div>
+    <div class="sprocket-right" aria-hidden="true"></div>
+
+    <section id="authView" class="auth-view" aria-labelledby="authTitle">
+      <div class="auth-card">
+        <p class="eyebrow">Director Console</p>
+        <h1 id="authTitle">ANIMAtiZE</h1>
+        <p class="auth-subtitle">
+          Log in with Google to sync your settings, keys, and generation timeline across devices.
+        </p>
+
+        <div class="countdown-reel" aria-hidden="true">
+          <div class="countdown-ring"></div>
+          <div class="countdown-center">35MM</div>
+          <div class="countdown-ticks">
+            <span>12</span>
+            <span>3</span>
+            <span>6</span>
+            <span>9</span>
+          </div>
+        </div>
+
+        <div id="googleButtonHost" class="google-button-host"></div>
+        <button id="continueGuestButton" class="btn btn-secondary" type="button">
+          Continue as guest
+        </button>
+        <p id="authStatus" class="auth-status" aria-live="polite">
+          Projector warming up...
+        </p>
+      </div>
+    </section>
+
+    <header id="appHeader" class="app-header" role="banner" hidden>
       <div class="brand-wrap">
-        <span class="brand-chip">V1</span>
+        <span class="brand-chip">DC</span>
         <div>
-          <h1>ANIMAtiZE</h1>
-          <p>Intent-first sequence workflow</p>
+          <h2>ANIMAtiZE</h2>
+          <p>Cinematic Sequence Workbench</p>
         </div>
       </div>
-      <nav class="main-nav" aria-label="Main">
+
+      <nav class="main-nav" aria-label="Main views">
         <button class="nav-btn is-active" data-view="createView">Create</button>
-        <button class="nav-btn" data-view="historyView">History</button>
-        <button class="nav-btn" data-view="favoritesView">Favorites</button>
+        <button class="nav-btn" data-view="libraryView">Library</button>
         <button class="nav-btn" data-view="presetsView">Presets</button>
         <button class="nav-btn" data-view="settingsView">Settings</button>
       </nav>
+
+      <div class="user-pill">
+        <div id="userIdentity" class="user-identity">Guest</div>
+        <button id="logoutButton" class="btn btn-ghost" type="button">Log out</button>
+      </div>
     </header>
 
-    <main id="mainContent" class="app-main" role="main">
+    <main id="appMain" class="app-main" role="main" hidden>
       <section id="createView" class="view is-active" aria-labelledby="createTitle">
-        <div class="workspace-grid">
-          <section class="creation-stage" aria-labelledby="createTitle">
-            <div class="stage-heading">
+        <div class="create-grid">
+          <section class="stage-panel" aria-labelledby="createTitle">
+            <div class="section-head">
               <div>
-                <h2 id="createTitle">Create new sequence</h2>
-                <p>Upload an image, describe intent, and generate variants fast.</p>
+                <h3 id="createTitle">Frame the narrative</h3>
+                <p>Load a source still, define intent, and iterate with lens-grade control.</p>
               </div>
-              <button id="generateButton" class="btn btn-primary" disabled>
-                Generate
+              <button id="generateButton" class="btn btn-primary" type="button" disabled>
+                Roll Camera
               </button>
             </div>
 
-            <article id="emptyStateCard" class="state-card state-empty">
-              <h3>Start with image + intent</h3>
-              <p>
-                Drag an image into the canvas, then describe the scene intention.
-                Smart defaults are preselected to reduce setup friction.
-              </p>
-            </article>
-
-            <section class="upload-intent" aria-labelledby="intentLabel">
+            <div class="upload-intent-grid">
               <div
                 id="dropZone"
                 class="drop-zone"
-                tabindex="0"
                 role="button"
-                aria-label="Upload source image"
+                tabindex="0"
+                aria-label="Upload source frame"
               >
                 <input id="fileInput" type="file" accept="image/*" hidden />
-                <img id="sourcePreview" alt="Uploaded source image preview" />
+                <img id="sourcePreview" alt="Source frame preview" />
                 <div id="dropZoneText" class="drop-zone-text">
-                  <strong>Drop image here</strong>
+                  <strong>Drop key frame</strong>
                   <span>or click to browse</span>
                 </div>
               </div>
 
-              <div class="intent-wrap">
-                <label id="intentLabel" for="intentInput">Intent</label>
+              <div class="intent-panel">
+                <label for="intentInput">Director intent</label>
                 <textarea
                   id="intentInput"
-                  rows="4"
-                  placeholder="Example: Slow cinematic push-in on the subject with warm evening tone and subtle environmental motion."
+                  rows="5"
+                  placeholder="Example: Slow dolly-in with controlled parallax, soft amber practicals, no identity drift."
                 ></textarea>
-                <div class="intent-examples" aria-label="Intent examples">
-                  <button class="chip" data-intent="Dreamy neo-noir camera drift with coherent character motion.">
-                    Neo-noir drift
+                <div class="intent-chips" aria-label="Intent snippets">
+                  <button class="chip" data-intent="Controlled push-in, warm practical light, soft atmospheric haze, stable subject identity.">
+                    Amber push-in
                   </button>
-                  <button class="chip" data-intent="Commercial-style energetic motion with clean transitions and high coherence.">
-                    Commercial energy
+                  <button class="chip" data-intent="Low-angle orbit with subtle handheld texture, disciplined pacing, no abrupt cut-like motion.">
+                    Orbit discipline
                   </button>
-                  <button class="chip" data-intent="Documentary natural camera movement and grounded environmental dynamics.">
-                    Documentary realism
+                  <button class="chip" data-intent="Documentary glide, natural exposure shifts, anchored perspective, grounded motion arcs.">
+                    Documentary glide
                   </button>
                 </div>
               </div>
-            </section>
-
-            <div id="statusLive" class="sr-only" aria-live="polite"></div>
+            </div>
 
             <section class="result-section" aria-labelledby="resultTitle">
-              <div class="result-head">
-                <h3 id="resultTitle">Generated results</h3>
-                <div class="result-actions">
-                  <button id="openCompareButton" class="btn btn-secondary" disabled>
-                    Compare selected
+              <div class="section-head compact">
+                <h3 id="resultTitle">Take review</h3>
+                <div class="inline-actions">
+                  <button id="openCompareButton" class="btn btn-secondary" type="button" disabled>
+                    Open compare
                   </button>
-                  <span id="runSummary" class="run-summary">No runs yet</span>
+                  <span id="runSummary" class="run-summary">No takes yet</span>
                 </div>
               </div>
-              <div id="resultGrid" class="result-grid" aria-live="polite"></div>
-            </section>
 
-            <section id="comparePanel" class="compare-panel" aria-labelledby="compareTitle" hidden>
-              <div class="compare-head">
-                <h3 id="compareTitle">Compare variants</h3>
-                <button id="closeCompareButton" class="btn btn-secondary">Close</button>
-              </div>
-              <div id="compareGrid" class="compare-grid"></div>
+              <div id="resultGrid" class="result-grid" aria-live="polite"></div>
+
+              <section id="comparePanel" class="compare-panel" hidden aria-labelledby="compareTitle">
+                <div class="section-head compact">
+                  <h4 id="compareTitle">A/B/C compare strip</h4>
+                  <button id="closeCompareButton" class="btn btn-ghost" type="button">Close</button>
+                </div>
+                <div id="compareGrid" class="compare-grid"></div>
+              </section>
             </section>
           </section>
 
-          <aside class="parameter-panel" aria-labelledby="parameterTitle">
-            <h2 id="parameterTitle">Generation setup</h2>
-            <p>Basic controls first. Advanced options stay hidden unless needed.</p>
+          <aside class="control-rack" aria-labelledby="rackTitle">
+            <h3 id="rackTitle">Lens & movement rack</h3>
 
             <div class="field">
               <label for="providerSelect">Provider</label>
-              <select id="providerSelect">
-                <option value="auto">Auto (best available)</option>
-              </select>
+              <select id="providerSelect"></select>
             </div>
 
             <div class="field">
               <label for="presetSelect">Preset</label>
-              <select id="presetSelect">
-                <option value="cinematic-balanced">Cinematic balanced</option>
-                <option value="coherence-first">Coherence first</option>
-                <option value="speed-first">Speed first</option>
-              </select>
+              <select id="presetSelect"></select>
             </div>
 
             <div class="field-row">
               <div class="field">
-                <label for="durationInput">Duration (sec)</label>
+                <label for="durationInput">Duration</label>
                 <input id="durationInput" type="number" min="2" max="20" value="6" />
               </div>
               <div class="field">
@@ -161,90 +183,208 @@
               <input id="motionInput" type="range" min="1" max="10" value="6" />
             </div>
 
-            <button id="toggleAdvancedButton" class="btn btn-ghost" aria-expanded="false">
-              Show advanced
+            <button id="toggleAdvancedButton" class="btn btn-ghost" type="button" aria-expanded="false">
+              Pull focus (advanced)
             </button>
             <div id="advancedPanel" class="advanced-panel" hidden>
               <div class="field">
                 <label for="qualitySelect">Quality mode</label>
                 <select id="qualitySelect">
                   <option value="balanced">Balanced</option>
-                  <option value="high">High quality</option>
+                  <option value="high">High</option>
                   <option value="fast">Fast</option>
                 </select>
               </div>
+
               <div class="field">
-                <label for="negativeIntentInput">Negative intent (optional)</label>
+                <label for="negativeIntentInput">Negative intent</label>
                 <textarea
                   id="negativeIntentInput"
                   rows="3"
-                  placeholder="Avoid abrupt camera shake, identity drift, visual noise."
+                  placeholder="Avoid jitter, identity drift, sudden brightness jumps."
                 ></textarea>
               </div>
             </div>
           </aside>
         </div>
 
-        <section class="timeline-wrap" aria-labelledby="timelineTitle">
-          <div class="timeline-head">
-            <h3 id="timelineTitle">Generation timeline</h3>
-            <button id="clearTimelineButton" class="btn btn-ghost">Clear</button>
+        <section class="timeline-section" aria-labelledby="timelineTitle">
+          <div class="section-head compact">
+            <h3 id="timelineTitle">Timeline</h3>
+            <button id="clearTimelineButton" class="btn btn-ghost" type="button">Clear</button>
           </div>
           <div id="timelineList" class="timeline-list"></div>
         </section>
       </section>
 
-      <section id="historyView" class="view" aria-labelledby="historyTitle">
-        <h2 id="historyTitle">History</h2>
-        <p>Chronological runs with quick reopen, compare, and one-click regenerate.</p>
-        <div id="historyList" class="list-grid"></div>
-      </section>
-
-      <section id="favoritesView" class="view" aria-labelledby="favoritesTitle">
-        <h2 id="favoritesTitle">Favorites</h2>
-        <p>Saved variants for reuse and rapid regeneration.</p>
-        <div id="favoritesList" class="list-grid"></div>
+      <section id="libraryView" class="view" aria-labelledby="libraryTitle">
+        <div class="library-grid">
+          <article>
+            <div class="section-head compact">
+              <h3 id="libraryTitle">Run history</h3>
+            </div>
+            <div id="historyList" class="list-grid"></div>
+          </article>
+          <article>
+            <div class="section-head compact">
+              <h3 id="favoritesTitle">Favorite takes</h3>
+            </div>
+            <div id="favoritesList" class="list-grid"></div>
+          </article>
+        </div>
       </section>
 
       <section id="presetsView" class="view" aria-labelledby="presetsTitle">
-        <h2 id="presetsTitle">Presets</h2>
-        <p>Smart defaults reduce setup friction and keep first output quality high.</p>
-        <div class="preset-list">
-          <article class="preset-card">
-            <h3>Cinematic balanced</h3>
-            <p>Recommended starting profile for most creator workflows.</p>
-          </article>
-          <article class="preset-card">
-            <h3>Coherence first</h3>
-            <p>Prioritizes continuity and intent fidelity in multi-shot flow.</p>
-          </article>
-          <article class="preset-card">
-            <h3>Speed first</h3>
-            <p>Faster turnaround when exploring ideas or rough concepts.</p>
-          </article>
+        <div class="section-head">
+          <div>
+            <h3 id="presetsTitle">Preset library</h3>
+            <p>Calibrated profiles inspired by lens mechanics and film grammar.</p>
+          </div>
         </div>
+        <div id="presetCards" class="preset-grid"></div>
       </section>
 
       <section id="settingsView" class="view" aria-labelledby="settingsTitle">
-        <h2 id="settingsTitle">Settings</h2>
-        <div class="settings-grid">
-          <article class="setting-card">
-            <h3>Accessibility</h3>
-            <label class="toggle">
-              <input id="reducedMotionToggle" type="checkbox" />
-              <span>Reduced motion</span>
-            </label>
-          </article>
-          <article class="setting-card">
-            <h3>Default behavior</h3>
-            <label class="toggle">
-              <input id="autoFavoriteToggle" type="checkbox" />
-              <span>Auto-favorite selected winner</span>
-            </label>
-          </article>
+        <div class="section-head">
+          <div>
+            <h3 id="settingsTitle">Settings Console</h3>
+            <p>Every control auto-saves with version history and sync support.</p>
+          </div>
+          <div class="sync-pill">
+            <span id="syncState">Idle</span>
+            <span id="settingsVersion">v1</span>
+          </div>
         </div>
+
+        <div class="settings-accordion">
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="apiConfigPanel" aria-expanded="true">
+              API Configuration
+            </button>
+            <div id="apiConfigPanel" class="settings-panel is-open">
+              <p class="settings-note">
+                Keys are encrypted at rest. Runtime keys are never rendered back in full.
+              </p>
+              <div id="apiKeyRows" class="api-key-rows"></div>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="preferencesPanel" aria-expanded="false">
+              User Preferences
+            </button>
+            <div id="preferencesPanel" class="settings-panel">
+              <label class="toggle">
+                <input id="reducedMotionToggle" type="checkbox" />
+                <span>Reduced motion</span>
+              </label>
+              <label class="toggle">
+                <input id="autoFavoriteToggle" type="checkbox" />
+                <span>Auto-favorite compare winner</span>
+              </label>
+              <label class="toggle">
+                <input id="announceStatusToggle" type="checkbox" />
+                <span>Announce status updates</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="behaviorPanel" aria-expanded="false">
+              Behavior & Performance
+            </button>
+            <div id="behaviorPanel" class="settings-panel">
+              <div class="field">
+                <label for="autoSaveDelayInput">Autosave delay (ms)</label>
+                <input id="autoSaveDelayInput" type="number" min="300" max="5000" value="700" />
+              </div>
+              <div class="field">
+                <label for="parallelPreviewInput">Parallel previews</label>
+                <input id="parallelPreviewInput" type="number" min="1" max="4" value="2" />
+              </div>
+              <label class="toggle">
+                <input id="confirmClearToggle" type="checkbox" />
+                <span>Confirm before clearing timeline</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="themePanel" aria-expanded="false">
+              Visual Theme
+            </button>
+            <div id="themePanel" class="settings-panel">
+              <div class="field">
+                <label for="accentSelect">Accent color</label>
+                <select id="accentSelect">
+                  <option value="amber">Amber</option>
+                  <option value="teal">Teal</option>
+                  <option value="crimson">Crimson</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="grainInput">Film grain intensity</label>
+                <input id="grainInput" type="range" min="0" max="1" step="0.05" value="0.35" />
+              </div>
+              <div class="field">
+                <label for="contrastInput">Contrast</label>
+                <input id="contrastInput" type="range" min="0.9" max="1.2" step="0.01" value="1" />
+              </div>
+              <div class="theme-preview" id="themePreview">
+                <p>Live Preview</p>
+                <h4>Film gate calibrated</h4>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="dataPanel" aria-expanded="false">
+              Data Sync, Export & Restore
+            </button>
+            <div id="dataPanel" class="settings-panel">
+              <div class="inline-actions">
+                <button id="exportDataButton" class="btn btn-secondary" type="button">Export backup</button>
+                <label class="btn btn-ghost file-import">
+                  Import backup
+                  <input id="importDataInput" type="file" accept="application/json" hidden />
+                </label>
+              </div>
+              <p class="settings-note">Backup includes settings history and timeline entries.</p>
+            </div>
+          </section>
+
+          <section class="settings-section">
+            <button class="settings-toggle" type="button" data-target="developerPanel" aria-expanded="false">
+              Developer Options
+            </button>
+            <div id="developerPanel" class="settings-panel">
+              <label class="toggle">
+                <input id="debugOverlayToggle" type="checkbox" />
+                <span>Enable debug overlay</span>
+              </label>
+              <label class="toggle">
+                <input id="rawPayloadToggle" type="checkbox" />
+                <span>Show raw payload details</span>
+              </label>
+              <label class="toggle">
+                <input id="gestureNavToggle" type="checkbox" />
+                <span>Gesture-based navigation</span>
+              </label>
+            </div>
+          </section>
+        </div>
+
+        <section class="version-history" aria-labelledby="historyVersionTitle">
+          <div class="section-head compact">
+            <h4 id="historyVersionTitle">Settings history</h4>
+          </div>
+          <div id="settingsHistoryList" class="list-grid"></div>
+        </section>
       </section>
     </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="statusLive" class="sr-only" aria-live="polite"></div>
 
     <script src="/static/app.js" defer></script>
   </body>

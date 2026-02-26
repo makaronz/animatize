@@ -1,9 +1,9 @@
 # ANIMAtiZE
 
 ANIMAtiZE is an intent-first workflow for generating AI video sequences from a
-single source image. The current runtime is a FastAPI application serving a V1
-web UI and real backend endpoints for scene analysis, prompt compilation, and
-provider execution.
+single source image. The current runtime is a FastAPI application serving a
+cinematic web console and backend endpoints for scene analysis, prompt
+compilation, auth, persistent settings, and provider execution.
 
 This README is the single source of truth for local onboarding and runtime
 startup.
@@ -16,6 +16,23 @@ startup.
 - API routes:
   - `GET /`
   - `GET /health`
+  - `GET /api/session/bootstrap`
+  - `GET /api/auth/config`
+  - `GET /api/auth/me`
+  - `POST /api/auth/google`
+  - `POST /api/auth/logout`
+  - `GET /api/settings`
+  - `PUT /api/settings`
+  - `GET /api/settings/history`
+  - `POST /api/settings/history/{history_id}/restore`
+  - `GET /api/settings/api-keys`
+  - `PUT /api/settings/api-keys/{provider}`
+  - `DELETE /api/settings/api-keys/{provider}`
+  - `GET /api/settings/backup`
+  - `POST /api/settings/restore`
+  - `GET /api/runs`
+  - `PUT /api/runs/{run_id}`
+  - `DELETE /api/runs`
   - `GET /api/providers`
   - `GET /api/presets`
   - `POST /api/sequences`
@@ -135,6 +152,8 @@ Set provider keys in environment before startup:
 - `VEO_API_KEY`
 - `SORA_API_KEY` or `OPENAI_API_KEY`
 - `FLUX_API_KEY`
+- `GOOGLE_CLIENT_ID` (for Google sign-in)
+- `ANIMATIZE_SECRET_KEY` (for API-key encryption at rest)
 
 Example:
 
@@ -157,10 +176,11 @@ If no provider is configured:
 src/web/
 ├── app.py            # Canonical FastAPI runtime (UI + API)
 ├── api.py            # Legacy compatibility module (deprecated surface)
+├── persistence.py    # SQLite sessions/settings/runs/API-key persistence
 └── static/
-    ├── index.html    # V1 UI layout
-    ├── app.js        # UI interactions, localStorage, API wiring
-    └── styles.css    # MVDS tokenized design system styles
+    ├── index.html    # Director Console UI
+    ├── app.js        # UI interactions, auth, autosave, API wiring
+    └── styles.css    # Cinematic design system styles
 ```
 
 ## Documentation map
@@ -169,6 +189,7 @@ src/web/
 - Runtime architecture: `docs/ARCHITECTURE.md`
 - MVDS design system: `docs/DESIGN_SYSTEM_MVDS.md`
 - Operations and troubleshooting: `docs/OPERATIONS.md`
+- Persistence migration: `docs/WEB_CONSOLE_PERSISTENCE_MIGRATION.md`
 
 Older documents may exist for historical context. When onboarding or running
 the app, use this README and the four docs above.
