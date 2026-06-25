@@ -1,8 +1,10 @@
 # ANIMAtiZE - Raport Analizy Strategicznej
 
-**Data:** 2026-02-07
-**Wersja:** 1.0
+**Data:** 2026-02-07 | **Aktualizacja:** 2026-06-25
+**Wersja:** 1.1
 **Autor:** Principal R&D Analyst / Product Strategist
+
+> ⚠️ **UWAGA:** Wersja 1.1 zawiera krytyczne aktualizacje dotyczące wycofania Sora i Runway Gen-3 Alpha.
 
 ---
 
@@ -77,7 +79,7 @@
 │  │                         MODEL ADAPTERS                                  │ │
 │  │   ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐   │ │
 │  │   │ SORA  │  │  VEO  │  │RUNWAY │  │ KLING │  │ LUMA  │  │  WAN  │   │ │
-│  │   │  2    │  │ 3.1   │  │ Gen-3 │  │  2.6  │  │ Ray3  │  │ 2.2   │   │ │
+│  │   │  ⛔   │  │ 3.1   │  │ 4.5   │  │  3.0  │  │ Ray3  │  │ 2.7   │   │ │
 │  │   └───────┘  └───────┘  └───────┘  └───────┘  └───────┘  └───────┘   │ │
 │  └────────────────────────────────────────────────────────┬───────────────┘ │
 │                                                           │                 │
@@ -146,6 +148,21 @@ ConsistencyViolation:
 | **Metryki** | Brak Prometheus/OpenTelemetry | Brak observability | Średni |
 | **Multi-scene** | Brak pipeline multi-shot | Ograniczone narracje | Wysoki |
 | **Temporal** | Brak synchronizacji audio | Brak lip-sync | Średni |
+| **🔴 Sora EOL** | API wygasa 24 Sep 2026 | Utrata providera | **KRYTYCZNY** |
+| **🟡 Runway EOL** | Gen-3 Alpha kończy 30 Jul 2026 | Migracja wymagana | Wysoki |
+
+### 1.4.1 🚨 WYMAGANE AKCJE NA ADAPTERACH (Czerwiec 2026)
+
+| Adapter | Obecny | Docelowy | Deadline | Priorytet | Effort |
+|---------|--------|----------|----------|-----------|--------|
+| `sora_adapter.py` | Sora 2 | **USUNĄĆ** lub zastąpić | 24 Sep 2026 | 🔴 P0 | S |
+| `runway_adapter.py` | Gen-3 Alpha | Gen-4.5 | 30 Jul 2026 | 🟡 P1 | M |
+| `kling_adapter.py` | Kling 2.6 | Kling 3.0 | ASAP | 🟢 P2 | M |
+| `wan_adapter.py` | Wan 2.2 | Wan 2.7 | Q3 2026 | 🟢 P2 | S |
+| `luma_adapter.py` | Ray3 | Ray3.14 | Q3 2026 | 🟢 P3 | S |
+| `veo_adapter.py` | Veo 3.1 | + Veo 3.1 Lite | Q3 2026 | 🟢 P3 | S |
+
+**Legenda:** S = Small (1-2 dni), M = Medium (3-5 dni), L = Large (1-2 tygodnie)
 
 ### 1.5 JTBD (Jobs To Be Done)
 
@@ -181,21 +198,41 @@ ConsistencyViolation:
 
 ### 2.1 Mapa Modeli (A)
 
-| Model | Firma | Max Duration | Max Resolution | Kontrola Kamery | I2V | Audio | API | Data |
-|-------|-------|--------------|----------------|-----------------|-----|-------|-----|------|
-| **Sora 2** | OpenAI | 60s | 1920x1080 | Prompt-based | ✓ | × | ✓ | Dec 2024 |
-| **Sora 2 Pro** | OpenAI | 60s | 1920x1080 | Enhanced | ✓ | × | ✓ | Dec 2024 |
-| **Veo 3.1** | Google | 8s | 4K | JSON Schema | ✓ | ✓ | ✓ | Oct 2025 |
-| **Runway Gen-3 Alpha** | Runway | 10s | 1080p | Camera Controls | ✓ | × | ✓ | Nov 2024 |
-| **Kling 2.6** | Kuaishou | 2min | 1080p | Motion Brush | ✓ | ✓ | ✓ | 2025 |
-| **Luma Ray3** | Luma AI | 30s | 4K HDR | Camera Concepts | ✓ | × | ✓ | 2025 |
-| **Wan 2.2** | Alibaba | - | 1080p | MoE Control | ✓ | × | OSS | Jul 2025 |
-| **Pika 2.5** | Pika Labs | 10s | 1080p | Pikaffects | ✓ | × | 3rd Party | 2025 |
+| Model | Firma | Max Duration | Max Resolution | Kontrola Kamery | I2V | Audio | API | Data | Status |
+|-------|-------|--------------|----------------|-----------------|-----|-------|-----|------|--------|
+| **Sora 2** | OpenAI | 25s | 1920x1080 | Prompt-based | ✓ | ✓ | ⚠️ | Sep 2025 | **⛔ DEPRECATED** |
+| **Veo 3.1** | Google | 8s | 4K | JSON Schema | ✓ | ✓ | ✓ | Oct 2025 | ✅ Aktywny |
+| **Veo 3.1 Lite** | Google | 8s | 1080p | JSON Schema | ✓ | ✓ | ✓ | Apr 2026 | ✅ Aktywny |
+| **Runway Gen-4.5** | Runway | 10s+ | 4K | Advanced Controls | ✓ | × | ✓ | Dec 2025 | ✅ Aktywny |
+| **Runway Gen-3 Alpha** | Runway | 10s | 1080p | Camera Controls | ✓ | × | ⚠️ | Nov 2024 | **⚠️ EOL Jul 2026** |
+| **Kling 3.0** | Kuaishou | 15s | 4K | Motion Brush | ✓ | ✓ | ✓ | Feb 2026 | ✅ Aktywny |
+| **Kling 2.6** | Kuaishou | 10s | 1080p | Motion Brush | ✓ | ✓ | ✓ | Dec 2025 | ✅ Aktywny |
+| **Luma Ray 3.2** | Luma AI | - | 1080p | Multi-Keyframe | ✓ | × | ✓ | Mar 2026 | ✅ Aktywny |
+| **Luma Ray3.14** | Luma AI | - | Native 1080p | Full Control | ✓ | × | ✓ | 2026 | ✅ Aktywny |
+| **Wan 2.7** | Alibaba | - | 1080p | First/Last Frame | ✓ | × | OSS | 2026 | ✅ Aktywny |
+| **Pika 2.5** | Pika Labs | 25s | 1080p | Pikaframes | ✓ | × | ✓ | Early 2026 | ✅ Aktywny |
+
+### ⚠️ KRYTYCZNE ALERTY (Aktualizacja Czerwiec 2026)
+
+| Alert | Model | Data | Wpływ | Akcja |
+|-------|-------|------|-------|-------|
+| **🔴 WYCOFANY** | Sora App | 26 Apr 2026 | Aplikacja zamknięta | Migracja na Veo/Kling |
+| **🔴 EOL** | Sora API | 24 Sep 2026 | API zostanie wyłączone | Usunąć `sora_adapter.py` |
+| **🟡 EOL** | Runway Gen-3 Alpha | 30 Jul 2026 | Model przestanie działać | Aktualizacja do Gen-4.5 |
+| **🟢 NOWY** | Kling 3.0 | 4 Feb 2026 | Lider ELO (1243) | Dodać `kling_v3_adapter.py` |
+| **🟢 NOWY** | Luma Ray3 Modify | Mar 2026 | Character performance transfer | Nowa capability |
+| **🟢 NOWY** | Veo 3.1 Lite | Apr 2026 | 50% tańszy | Dodać tier pricing |
 
 **Źródła:**
-- [OpenAI Sora API](https://platform.openai.com/docs/guides/video-generation) - Jan 2025
-- [Google Veo Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo) - Oct 2025
-- [Runway Gen-3 Alpha](https://runwayml.com/research/introducing-gen-3-alpha) - Nov 2024
+- [OpenAI Sora 2](https://openai.com/index/sora-2/) - Sep 2025
+- [Sora Shutdown Notice](https://aipure.ai/articles/openai-shuts-down-sora-app-what-the-future-holds-for-ai-video-generation-in-2026) - Apr 2026
+- [Google Veo 3.1](https://deepmind.google/models/veo/) - Oct 2025
+- [Veo 3.1 Lite](https://blog.google/innovation-and-ai/technology/ai/veo-3-1-lite/) - Apr 2026
+- [Runway Gen-3 Deprecation](https://help.runwayml.com/hc/en-us/articles/30266515017875) - 2026
+- [Kling 3.0 Launch](https://ir.kuaishou.com/news-releases/news-release-details/kling-ai-launches-30-model-ushering-era-where-everyone-can-be/) - Feb 2026
+- [Luma Ray3](https://lumalabs.ai/ray) - Mar 2026
+- [Wan 2.7](https://fal.ai/wan-2.7) - 2026
+- [Pika 2.5](https://pikaslabs.com/pika-2.5/) - 2026
 
 ### 2.2 Prompt Engineering (B)
 
@@ -214,11 +251,14 @@ ConsistencyViolation:
 | **SPARK** | Subject-Purpose-Action-Result-Key | Produktowe |
 | **STORY** | Narrative structure | Multi-shot |
 
-**Model-Specific Strategies:**
-- **Sora 2**: Causal chains, world logic, cause-effect
-- **Veo 3.1**: JSON schemas, structured data, reference images
-- **Runway**: Motion vectors, physics, forces
-- **Kling**: Timeline scripts, audio sync
+**Model-Specific Strategies (Zaktualizowane Czerwiec 2026):**
+- **Sora 2**: ⛔ WYCOFANY - Migruj na Veo 3.1 lub Kling 3.0
+- **Veo 3.1**: JSON schemas, structured data, reference images, native audio
+- **Veo 3.1 Lite**: Ekonomiczna alternatywa (<50% kosztów)
+- **Runway Gen-4.5**: Advanced controls, 4K native, Act-One performance
+- **Kling 3.0**: 4K/60fps, 15s, unified multimodal, timeline scripts, audio sync
+- **Luma Ray3**: Multi-keyframe control (16 keyframes), Ray3 Modify dla character transfer
+- **Wan 2.7**: First/Last frame, subject referencing, open weights
 
 **Źródła:**
 - [Venice.ai Video Prompt Guide](https://venice.ai/blog/the-complete-guide-to-ai-video-prompt-engineering) - 2024
@@ -243,9 +283,9 @@ ConsistencyViolation:
 
 ### 2.4 Ewaluacja i Benchmarki (D)
 
-| Benchmark | Zakres | Metryki | Lider |
-|-----------|--------|---------|-------|
-| **VBench** | Temporal, aesthetic, motion | 16 dimensions | Wan 2.1 (#1 OSS) |
+| Benchmark | Zakres | Metryki | Lider (Czerwiec 2026) |
+|-----------|--------|---------|----------------------|
+| **VBench / ELO** | Temporal, aesthetic, motion | 16 dimensions + ELO | **Kling 3.0 (ELO 1243)** |
 | **T2V-CompBench** | Compositional | Multi-object, attributes | - |
 | **CLIP Score** | Prompt adherence | Cosine similarity | Korelacja 0.8+ z human |
 | **DreamSim** | Perceptual similarity | Human correlation | r>0.75 |
@@ -259,14 +299,16 @@ ConsistencyViolation:
 
 ### 2.5 Narzędzia i API (E)
 
-| Narzędzie | Typ | Funkcjonalność | Cena |
-|-----------|-----|----------------|------|
-| **Sora API** | Official | T2V, I2V, Video Extension | Tokenized |
-| **Veo on Vertex AI** | Official | T2V, I2V, SynthID | $0.35/s (Veo 3) |
-| **Runway API** | Official | Gen-4 Image | Per generation |
-| **Kling via Fal.ai** | 3rd Party | Full features | $0.07-0.14/s |
-| **Luma API** | Official | Dream Machine | $0.32/Mpx |
-| **Pika via API Glue** | 3rd Party | All features | Varies |
+| Narzędzie | Typ | Funkcjonalność | Cena | Status (Czerwiec 2026) |
+|-----------|-----|----------------|------|------------------------|
+| **Sora API** | Official | T2V, I2V, Video Extension | Tokenized | ⛔ **EOL 24 Sep 2026** |
+| **Veo 3.1 on Vertex AI** | Official | T2V, I2V, SynthID | $0.35/s | ✅ Aktywny |
+| **Veo 3.1 Lite** | Official | T2V, I2V | <$0.18/s | ✅ **NOWY** |
+| **Runway Gen-4.5** | Official | T2V, I2V, Act-One | Per generation | ✅ Aktywny |
+| **Runway Gen-3 Alpha** | Official | T2V, I2V | Per generation | ⚠️ **EOL 30 Jul 2026** |
+| **Kling 3.0 via Fal.ai** | 3rd Party | 4K/60fps, 15s, Audio | $0.10-0.20/s | ✅ **NOWY** |
+| **Luma Ray3.14 API** | Official | Multi-keyframe | $0.32/Mpx | ✅ Aktywny |
+| **Pika 2.5** | Official | Pikaframes, 25s | Varies | ✅ Aktywny |
 
 **Bezpieczeństwo:**
 - **SynthID** (Google) - Invisible watermarking
