@@ -161,8 +161,41 @@ ConsistencyViolation:
 | `wan_adapter.py` | Wan 2.2 | Wan 2.7 | Q3 2026 | 🟢 P2 | S |
 | `luma_adapter.py` | Ray3 | Ray3.14 | Q3 2026 | 🟢 P3 | S |
 | `veo_adapter.py` | Veo 3.1 | + Veo 3.1 Lite | Q3 2026 | 🟢 P3 | S |
+| `seedance_adapter.py` | **BRAK** | Seedance 2.0 | Q3 2026 | 🟢 P2 | M |
+| `happyhorse_adapter.py` | **BRAK** | HappyHorse 1.1 | Q3 2026 | 🟢 P2 | M |
 
 **Legenda:** S = Small (1-2 dni), M = Medium (3-5 dni), L = Large (1-2 tygodnie)
+
+### 📊 Nowe Modele - Szczegółowa Analiza
+
+#### Seedance 2.0 (ByteDance) - Luty 2026
+| Cecha | Wartość |
+|-------|---------|
+| **Architektura** | Dual-Branch Diffusion Transformer |
+| **Wejścia** | Text, Image, Video, Audio (do 12 assetów jednocześnie) |
+| **Rozdzielczość** | do 2K |
+| **Czas trwania** | 4-15s |
+| **Proporcje** | 16:9, 9:16, 1:1 |
+| **Audio** | ✅ Natywna synchronizacja audio-video |
+| **Multi-shot** | ✅ Spójne postacie i logika wizualna między ujęciami |
+| **API** | BytePlus (intl), Volcengine (China), fal.ai |
+| **Cena** | ~1 CNY/s (~$0.14/s) lub ~$0.05/5s @720p via 3rd party |
+
+#### HappyHorse 1.1 (Alibaba) - Kwiecień 2026
+| Cecha | Wartość |
+|-------|---------|
+| **Architektura** | 15B Unified Transformer (40 warstw) |
+| **Distillation** | DMD-2, 8 kroków, bez CFG |
+| **Czas generacji** | ~10s (jeden z najszybszych) |
+| **Rozdzielczość** | 720p / 1080p |
+| **Czas trwania** | 3-15s |
+| **Proporcje** | 16:9, 9:16, 1:1, 4:3, 3:4, 4:5, 5:4, 9:21, 21:9 |
+| **Audio** | ✅ Natywna synchronizacja |
+| **Lip-sync** | ✅ 7 języków (EN, ZH, JA, KO, DE, FR, Cantonese) |
+| **Reference Images** | do 9 obrazów |
+| **Open Source** | ✅ Apache 2.0 |
+| **API** | fal.ai, Alibaba Cloud, happyhorse.com |
+| **Cena** | $0.14/s @720p, $0.18/s @1080p |
 
 ### 1.5 JTBD (Jobs To Be Done)
 
@@ -211,6 +244,8 @@ ConsistencyViolation:
 | **Luma Ray3.14** | Luma AI | - | Native 1080p | Full Control | ✓ | × | ✓ | 2026 | ✅ Aktywny |
 | **Wan 2.7** | Alibaba | - | 1080p | First/Last Frame | ✓ | × | OSS | 2026 | ✅ Aktywny |
 | **Pika 2.5** | Pika Labs | 25s | 1080p | Pikaframes | ✓ | × | ✓ | Early 2026 | ✅ Aktywny |
+| **Seedance 2.0** | ByteDance | 15s | 2K | 12-Asset Multimodal | ✓ | ✓ | ✓ | Feb 2026 | ✅ **NOWY** |
+| **HappyHorse 1.1** | Alibaba | 15s | 1080p | 9-Image Reference | ✓ | ✓ | ✓/OSS | Apr 2026 | ✅ **NOWY** |
 
 ### ⚠️ KRYTYCZNE ALERTY (Aktualizacja Czerwiec 2026)
 
@@ -222,6 +257,8 @@ ConsistencyViolation:
 | **🟢 NOWY** | Kling 3.0 | 4 Feb 2026 | Lider ELO (1243) | Dodać `kling_v3_adapter.py` |
 | **🟢 NOWY** | Luma Ray3 Modify | Mar 2026 | Character performance transfer | Nowa capability |
 | **🟢 NOWY** | Veo 3.1 Lite | Apr 2026 | 50% tańszy | Dodać tier pricing |
+| **🟢 NOWY** | Seedance 2.0 | Feb 2026 | 12-asset multimodal, native audio | Dodać `seedance_adapter.py` |
+| **🟢 NOWY** | HappyHorse 1.1 | Apr 2026 | #1 ELO open-source, 7-lang lip-sync | Dodać `happyhorse_adapter.py` |
 
 **Źródła:**
 - [OpenAI Sora 2](https://openai.com/index/sora-2/) - Sep 2025
@@ -233,6 +270,10 @@ ConsistencyViolation:
 - [Luma Ray3](https://lumalabs.ai/ray) - Mar 2026
 - [Wan 2.7](https://fal.ai/wan-2.7) - 2026
 - [Pika 2.5](https://pikaslabs.com/pika-2.5/) - 2026
+- [Seedance 2.0](https://www.mindstudio.ai/blog/what-is-seedance-2-bytedance-ai-video-model) - Feb 2026
+- [Seedance 2.0 API](https://fal.ai/seedance-2.0) - Apr 2026
+- [HappyHorse 1.1](https://www.explainx.ai/blog/happyhorse-1-1-alibaba-video-generation-model-2026) - Apr 2026
+- [HappyHorse API](https://fal.ai/happyhorse-1.0) - 2026
 
 ### 2.2 Prompt Engineering (B)
 
@@ -259,6 +300,8 @@ ConsistencyViolation:
 - **Kling 3.0**: 4K/60fps, 15s, unified multimodal, timeline scripts, audio sync
 - **Luma Ray3**: Multi-keyframe control (16 keyframes), Ray3 Modify dla character transfer
 - **Wan 2.7**: First/Last frame, subject referencing, open weights
+- **Seedance 2.0**: 12-asset multimodal input, Dual-Branch Diffusion Transformer, native audio-video sync, multi-shot storytelling
+- **HappyHorse 1.1**: 9-image reference, 7-language lip-sync, 15B unified transformer, DMD-2 distillation (8 steps), ~10s/gen
 
 **Źródła:**
 - [Venice.ai Video Prompt Guide](https://venice.ai/blog/the-complete-guide-to-ai-video-prompt-engineering) - 2024
@@ -309,6 +352,8 @@ ConsistencyViolation:
 | **Kling 3.0 via Fal.ai** | 3rd Party | 4K/60fps, 15s, Audio | $0.10-0.20/s | ✅ **NOWY** |
 | **Luma Ray3.14 API** | Official | Multi-keyframe | $0.32/Mpx | ✅ Aktywny |
 | **Pika 2.5** | Official | Pikaframes, 25s | Varies | ✅ Aktywny |
+| **Seedance 2.0** | BytePlus/Volcengine | 12-asset multimodal, audio-video | ~$0.05/5s @720p | ✅ **NOWY** |
+| **HappyHorse 1.1** | Alibaba/Fal.ai | 9-ref, 7-lang lip-sync | $0.14-0.18/s | ✅ **NOWY / OSS** |
 
 **Bezpieczeństwo:**
 - **SynthID** (Google) - Invisible watermarking
