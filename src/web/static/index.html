@@ -79,9 +79,12 @@
                 <h3 id="createTitle">Frame the narrative</h3>
                 <p>Load a source still, define intent, and iterate with lens-grade control.</p>
               </div>
-              <button id="generateButton" class="btn btn-primary" type="button" disabled>
-                Roll Camera
-              </button>
+              <div class="run-controls">
+                <button id="generateButton" class="btn btn-primary" type="button" disabled>
+                  Roll Camera
+                </button>
+                <p id="costPreview" class="run-summary" aria-live="polite" hidden></p>
+              </div>
             </div>
 
             <div class="upload-intent-grid">
@@ -97,6 +100,9 @@
                 <div id="dropZoneText" class="drop-zone-text">
                   <strong>Drop key frame</strong>
                   <span>or click to browse</span>
+                  <button id="sampleFrameButton" class="btn-small" type="button">
+                    Try with sample frame
+                  </button>
                 </div>
               </div>
 
@@ -134,12 +140,16 @@
 
               <div id="resultGrid" class="result-grid" aria-live="polite"></div>
 
-              <section id="comparePanel" class="compare-panel" hidden aria-labelledby="compareTitle">
+              <section id="comparePanel" class="compare-panel" hidden aria-labelledby="compareTitle" tabindex="-1">
                 <div class="section-head compact">
-                  <h4 id="compareTitle">A/B/C compare strip</h4>
+                  <h4 id="compareTitle">Light table — A/B/C review</h4>
                   <button id="closeCompareButton" class="btn btn-ghost" type="button">Close</button>
                 </div>
+                <div id="lightTableTransport" class="light-table-transport" hidden></div>
                 <div id="compareGrid" class="compare-grid"></div>
+                <p class="light-table-legend">
+                  Reviewer keys: 1/2/3 select take • F favorite • Space play/pause • Esc close
+                </p>
               </section>
             </section>
           </section>
@@ -150,6 +160,7 @@
             <div class="field">
               <label for="providerSelect">Provider</label>
               <select id="providerSelect"></select>
+              <div id="providerCards"></div>
             </div>
 
             <div class="field">
@@ -181,6 +192,7 @@
             <div class="field">
               <label for="motionInput">Motion intensity</label>
               <input id="motionInput" type="range" min="1" max="10" value="6" />
+              <div id="movementSegments"></div>
             </div>
 
             <button id="toggleAdvancedButton" class="btn btn-ghost" type="button" aria-expanded="false">
@@ -281,6 +293,10 @@
               <label class="toggle">
                 <input id="autoFavoriteToggle" type="checkbox" />
                 <span>Auto-favorite compare winner</span>
+              </label>
+              <label class="toggle">
+                <input id="autoOpenCompareToggle" type="checkbox" />
+                <span>Auto-open light table after multi-take runs</span>
               </label>
               <label class="toggle">
                 <input id="announceStatusToggle" type="checkbox" />
@@ -386,6 +402,6 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="statusLive" class="sr-only" aria-live="polite"></div>
 
-    <script src="/static/app.js" defer></script>
+    <script type="module" src="/static/app.js"></script>
   </body>
 </html>

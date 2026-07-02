@@ -107,3 +107,11 @@ configs/wedge_features/*.local.json
 TASK_log.md
 .vercel
 .env*.local
+
+# claude-flow swarm runtime artifacts
+agentdb.rvf
+agentdb.rvf.lock
+.swarm/
+.hive-mind/
+data/*.db-shm
+data/*.db-wal
