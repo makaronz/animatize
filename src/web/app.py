@@ -466,13 +466,12 @@ class SequenceJob:
     """In-memory state for one async sequence run: stage history, terminal event,
     cancel flag, and live SSE subscribers."""
 
-    def __init__(self, run_id: str, loop: asyncio.AbstractEventLoop) -> None:
+    def __init__(self, run_id: str) -> None:
         self.run_id = run_id
-        self.loop = loop
         self.cancel_requested = False
         self.stage_events: list[tuple[str, Any]] = []
         self.terminal_event: tuple[str, Any] | None = None
-        self._subscribers: list[asyncio.Queue] = []
+        self._subscribers: list[tuple[asyncio.Queue, asyncio.AbstractEventLoop]] = []
         self._lock = threading.Lock()
 
     @property
@@ -482,8 +481,9 @@ class SequenceJob:
     def broadcast(self, name: str, data: Any) -> None:
         """Record an event and fan it out to live subscribers.
 
-        Safe to call from the event loop or a worker thread. Events published
-        after the terminal event are dropped.
+        Safe to call from an event loop or a worker thread. Events published
+        after the terminal event are dropped. Each subscriber is delivered to
+        on the loop it subscribed from (loops can differ per request).
         """
         with self._lock:
             if self.terminal_event is not None:
@@ -492,28 +492,33 @@ class SequenceJob:
                 self.stage_events.append((name, data))
             else:
                 self.terminal_event = (name, data)
-            queues = list(self._subscribers)
-        for queue in queues:
-            self.loop.call_soon_threadsafe(queue.put_nowait, (name, data))
+            targets = list(self._subscribers)
+        for queue, loop in targets:
+            try:
+                loop.call_soon_threadsafe(queue.put_nowait, (name, data))
+            except RuntimeError:
+                # Subscriber's event loop is gone (client disconnected).
+                self.unsubscribe(queue)
 
     def subscribe(self) -> tuple[asyncio.Queue, list[tuple[str, Any]], tuple[str, Any] | None]:
         """Snapshot history and register a live queue atomically.
 
-        If the job already finished, no queue is registered and the terminal
-        event is returned for immediate replay.
+        Must be called from a running event loop. If the job already finished,
+        no queue is registered and the terminal event is returned for
+        immediate replay.
         """
         queue: asyncio.Queue = asyncio.Queue()
+        loop = asyncio.get_running_loop()
         with self._lock:
             history = list(self.stage_events)
             terminal = self.terminal_event
             if terminal is None:
-                self._subscribers.append(queue)
+                self._subscribers.append((queue, loop))
         return queue, history, terminal
 
     def unsubscribe(self, queue: asyncio.Queue) -> None:
         with self._lock:
-            if queue in self._subscribers:
-                self._subscribers.remove(queue)
+            self._subscribers = [entry for entry in self._subscribers if entry[0] is not queue]
 
 
 _SEQUENCE_JOBS: dict[str, SequenceJob] = {}
@@ -1235,10 +1240,8 @@ async def create_sequence(
         "negative_intent": negative_intent,
     }
 
-    loop = asyncio.get_running_loop()
-
     if async_mode == "1":
-        job = SequenceJob(run_id=run_id, loop=loop)
+        job = SequenceJob(run_id=run_id)
         _register_sequence_job(job)
         job.broadcast(
             "stage",
@@ -1265,7 +1268,9 @@ async def create_sequence(
             _set_session_cookie(response, session["session_id"])
         return response
 
-    payload = await loop.run_in_executor(None, partial(_execute_sequence_run, **run_kwargs))
+    payload = await asyncio.get_running_loop().run_in_executor(
+        None, partial(_execute_sequence_run, **run_kwargs)
+    )
 
     response = JSONResponse(_json_safe(payload))
     if should_set_cookie:
