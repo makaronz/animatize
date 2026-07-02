@@ -79,9 +79,12 @@
                 <h3 id="createTitle">Frame the narrative</h3>
                 <p>Load a source still, define intent, and iterate with lens-grade control.</p>
               </div>
-              <button id="generateButton" class="btn btn-primary" type="button" disabled>
-                Roll Camera
-              </button>
+              <div class="run-controls">
+                <button id="generateButton" class="btn btn-primary" type="button" disabled>
+                  Roll Camera
+                </button>
+                <p id="costPreview" class="run-summary" aria-live="polite" hidden></p>
+              </div>
             </div>
 
             <div class="upload-intent-grid">
@@ -97,6 +100,9 @@
                 <div id="dropZoneText" class="drop-zone-text">
                   <strong>Drop key frame</strong>
                   <span>or click to browse</span>
+                  <button id="sampleFrameButton" class="btn-small" type="button">
+                    Try with sample frame
+                  </button>
                 </div>
               </div>
 

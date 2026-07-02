@@ -33,6 +33,19 @@ const DEFAULT_SETTINGS = {
   },
 };
 
+const GENERATION_TIMEOUT_MS = 180000;
+
+const PROVIDER_META = {
+  sora: { label: "Sora", costPerSecond: 0.3, estSeconds: 90, audio: true, maxDuration: 20, deprecated: true },
+  veo: { label: "Veo", costPerSecond: 0.35, estSeconds: 40, audio: true, maxDuration: 8 },
+  runway: { label: "Runway", costPerSecond: 0.25, estSeconds: 50, audio: false, maxDuration: 10 },
+  kling: { label: "Kling", costPerSecond: 0.15, estSeconds: 60, audio: true, maxDuration: 10 },
+  luma: { label: "Luma", costPerSecond: 0.32, estSeconds: 55, audio: false, maxDuration: 10 },
+  pika: { label: "Pika", costPerSecond: 0.2, estSeconds: 45, audio: false, maxDuration: 10 },
+  wan: { label: "Wan", costPerSecond: 0.1, estSeconds: 70, audio: false, maxDuration: 10 },
+  flux: { label: "Flux", costPerSecond: 0.05, estSeconds: 20, audio: false, maxDuration: 6 },
+};
+
 const state = {
   auth: {
     googleEnabled: false,
@@ -47,6 +60,7 @@ const state = {
   currentRunId: null,
   selectedForCompare: new Set(),
   pendingRun: null,
+  activeGeneration: null,
   runs: [],
   providerOptions: [],
   presets: [],
@@ -81,6 +95,8 @@ const refs = {
   intentInput: document.getElementById("intentInput"),
   intentChips: document.querySelectorAll(".chip"),
   generateButton: document.getElementById("generateButton"),
+  costPreview: document.getElementById("costPreview"),
+  sampleFrameButton: document.getElementById("sampleFrameButton"),
 
   providerSelect: document.getElementById("providerSelect"),
   presetSelect: document.getElementById("presetSelect"),
@@ -369,12 +385,49 @@ function setCurrentParams(params = {}) {
   refs.motionInput.value = params.motion_intensity || 6;
   refs.qualitySelect.value = params.quality_mode || state.settings.behavior.renderQuality || "balanced";
   refs.negativeIntentInput.value = params.negative_intent || "";
+  updateCostPreview();
 }
 
 function setGenerateEnabled() {
+  if (state.activeGeneration) return;
   const hasImage = Boolean(state.currentImageFile || state.currentImageUrl);
   const hasIntent = refs.intentInput.value.trim().length > 0;
   refs.generateButton.disabled = !(hasImage && hasIntent);
+}
+
+function setRunPending(isPending) {
+  const button = refs.generateButton;
+  if (isPending) {
+    button.textContent = "Cut";
+    button.classList.remove("btn-primary");
+    button.classList.add("btn-danger");
+    button.setAttribute("aria-label", "Cut the current take");
+    button.disabled = false;
+  } else {
+    button.textContent = "Roll Camera";
+    button.classList.add("btn-primary");
+    button.classList.remove("btn-danger");
+    button.removeAttribute("aria-label");
+    setGenerateEnabled();
+  }
+}
+
+function cutActiveGeneration() {
+  state.activeGeneration?.controller.abort();
+}
+
+function updateCostPreview() {
+  if (!refs.costPreview) return;
+  const meta = PROVIDER_META[refs.providerSelect.value];
+  if (!meta) {
+    refs.costPreview.hidden = true;
+    return;
+  }
+  const duration = Number(refs.durationInput.value || 6);
+  const variants = Number(refs.variantCountInput.value || 3);
+  const cost = (variants * duration * meta.costPerSecond).toFixed(2);
+  refs.costPreview.hidden = false;
+  refs.costPreview.textContent = `${variants} variants × ${duration}s ≈ $${cost} • ~${meta.estSeconds}s wait`;
 }
 
 function setCurrentImage(file, dataUrl) {
@@ -388,7 +441,44 @@ function setCurrentImage(file, dataUrl) {
   announce("Source frame loaded.");
 }
 
+function createSampleFrameDataUrl() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 960;
+  canvas.height = 540;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#0b0a08";
+  ctx.fillRect(0, 0, 960, 540);
+
+  const glow = ctx.createRadialGradient(620, 210, 40, 620, 210, 430);
+  glow.addColorStop(0, "rgba(255, 179, 71, 0.85)");
+  glow.addColorStop(0.45, "rgba(255, 143, 31, 0.28)");
+  glow.addColorStop(1, "rgba(255, 143, 31, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 960, 540);
+
+  ctx.fillStyle = "#08070a";
+  ctx.fillRect(150, 250, 130, 290);
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  ctx.fillRect(0, 470, 960, 70);
+
+  return canvas.toDataURL("image/jpeg", 0.92);
+}
+
+function attachSampleFrameEvents() {
+  const button = refs.sampleFrameButton;
+  if (!button) return;
+  button.addEventListener("keydown", (event) => event.stopPropagation());
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    const dataUrl = createSampleFrameDataUrl();
+    setCurrentImage(dataUrlToFile(dataUrl, "sample-frame.jpg"), dataUrl);
+  });
+}
+
 function attachUploadEvents() {
+  attachSampleFrameEvents();
   refs.dropZone.addEventListener("click", () => refs.fileInput.click());
   refs.dropZone.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -822,11 +912,41 @@ async function loadProviders() {
   (payload.supported_providers || []).forEach((provider) => {
     const option = document.createElement("option");
     option.value = provider;
-    option.textContent = state.providerOptions.includes(provider)
-      ? `${provider} (configured)`
-      : `${provider} (not configured)`;
+    const configured = state.providerOptions.includes(provider);
+    option.textContent = providerOptionLabel(provider, configured);
+    option.title = providerOptionTooltip(provider, configured);
+    if (PROVIDER_META[provider]?.deprecated) {
+      option.classList.add("is-deprecated");
+    }
     refs.providerSelect.appendChild(option);
   });
+  updateCostPreview();
+}
+
+function providerOptionLabel(provider, configured) {
+  const meta = PROVIDER_META[provider];
+  if (!meta) {
+    return configured ? `${provider} (configured)` : `${provider} (not configured)`;
+  }
+  let label = `${meta.label} — ${meta.audio ? "audio" : "no audio"} • ~$${meta.costPerSecond.toFixed(2)}/s`;
+  if (meta.deprecated) label += " (deprecated)";
+  if (!configured) label += " (not configured)";
+  return label;
+}
+
+function providerOptionTooltip(provider, configured) {
+  const meta = PROVIDER_META[provider];
+  if (!meta) {
+    return configured ? `${provider}: configured` : `${provider}: API key not configured`;
+  }
+  const parts = [
+    `${meta.label}: ~${meta.estSeconds}s per take`,
+    `max ${meta.maxDuration}s clip`,
+    meta.audio ? "native audio" : "no audio",
+  ];
+  if (meta.deprecated) parts.push("deprecated");
+  if (!configured) parts.push("API key not configured");
+  return parts.join(" • ");
 }
 
 async function loadPresets() {
@@ -852,7 +972,86 @@ async function loadPresets() {
   });
 }
 
+function classifyGenerationError(error) {
+  const status = Number(error?.status || 0);
+  const lower = String(error?.message || "").toLowerCase();
+
+  if (status === 429 || lower.includes("429") || lower.includes("rate limit") || lower.includes("overload")) {
+    return { headline: "Provider overloaded", actions: ["retry", "switch-provider"] };
+  }
+  if (
+    status === 401 ||
+    status === 403 ||
+    lower.includes("401") ||
+    lower.includes("403") ||
+    lower.includes("api key") ||
+    lower.includes("unauthorized") ||
+    lower.includes("forbidden") ||
+    lower.includes("authentication")
+  ) {
+    return { headline: "API key rejected", actions: ["open-settings"] };
+  }
+  if (
+    lower.includes("content policy") ||
+    lower.includes("policy violation") ||
+    lower.includes("safety") ||
+    lower.includes("moderation")
+  ) {
+    return { headline: "Prompt rejected by safety filter", actions: ["edit-intent"] };
+  }
+  return { headline: "Generation failed", actions: ["retry"] };
+}
+
+function renderRecoveryCard(error, retryArgs) {
+  const info = classifyGenerationError(error);
+  const RECOVERY_ACTIONS = {
+    retry: { label: "Retry", run: () => executeGeneration(retryArgs) },
+    "switch-provider": { label: "Switch provider", run: () => refs.providerSelect.focus() },
+    "open-settings": { label: "Open Settings", run: () => switchView("settingsView") },
+    "edit-intent": { label: "Edit intent", run: () => refs.intentInput.focus() },
+  };
+
+  const card = document.createElement("article");
+  card.className = "recovery-card";
+  card.setAttribute("role", "alert");
+  card.innerHTML = `
+    <strong>${sanitize(info.headline)}</strong>
+    <p>${sanitize(error?.message || "Unknown error.")}</p>
+    <div class="action-row"></div>
+  `;
+
+  const actionRow = card.querySelector(".action-row");
+  info.actions.forEach((key) => {
+    const action = RECOVERY_ACTIONS[key];
+    if (!action) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn-small";
+    button.textContent = action.label;
+    button.addEventListener("click", action.run);
+    actionRow.appendChild(button);
+  });
+
+  refs.resultGrid.innerHTML = "";
+  refs.resultGrid.appendChild(card);
+  actionRow.querySelector("button")?.focus();
+}
+
 async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params }) {
+  if (state.activeGeneration) {
+    announce("A take is already rolling. Cut it before starting another.");
+    return;
+  }
+
+  const controller = new AbortController();
+  const generation = { controller, timedOut: false };
+  const timeoutId = setTimeout(() => {
+    generation.timedOut = true;
+    controller.abort();
+  }, GENERATION_TIMEOUT_MS);
+  state.activeGeneration = generation;
+  setRunPending(true);
+
   state.pendingRun = {
     createdAt: Date.now(),
     intent,
@@ -880,10 +1079,16 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
       method: "POST",
       credentials: "same-origin",
       body: formData,
+      signal: controller.signal,
     });
     const payload = await response.json();
     if (!response.ok) {
-      throw new Error(payload.detail || "Generation failed.");
+      const detail = payload?.detail;
+      const failure = new Error(
+        typeof detail === "string" ? detail : detail ? JSON.stringify(detail) : "Generation failed.",
+      );
+      failure.status = response.status;
+      throw failure;
     }
 
     const run = {
@@ -903,10 +1108,27 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
     refs.runSummary.textContent = `Run ${run.run_id} • ${run.status}`;
     announce(`Generation finished with status: ${run.status}`);
   } catch (error) {
-    refs.resultGrid.innerHTML = `<p class="list-card alert">${sanitize(error.message)}</p>`;
-    refs.runSummary.textContent = "Generation failed";
-    announce(`Generation failed: ${error.message}`);
+    const retryArgs = { imageFile, sourceImageDataUrl, intent, params };
+    if (error?.name === "AbortError") {
+      refs.resultGrid.innerHTML = "";
+      if (generation.timedOut) {
+        refs.runSummary.textContent = "Take timed out";
+        renderRecoveryCard(new Error(`Generation timed out after ${GENERATION_TIMEOUT_MS / 1000} seconds.`), retryArgs);
+        announce("Generation timed out.");
+      } else {
+        refs.runSummary.textContent = "Take cut";
+        showToast("Take cut.");
+        announce("Take cut.");
+      }
+    } else {
+      renderRecoveryCard(error, retryArgs);
+      refs.runSummary.textContent = "Generation failed";
+      announce(`Generation failed: ${error.message}`);
+    }
   } finally {
+    clearTimeout(timeoutId);
+    state.activeGeneration = null;
+    setRunPending(false);
     state.pendingRun = null;
     renderTimeline();
     renderHistory();
@@ -915,6 +1137,7 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
 }
 
 async function generateSequence() {
+  if (state.activeGeneration) return;
   const intent = refs.intentInput.value.trim();
   if (!intent) {
     announce("Director intent is required.");
@@ -1348,7 +1571,16 @@ function attachCoreEvents() {
   });
 
   refs.generateButton.addEventListener("click", () => {
+    if (state.activeGeneration) {
+      cutActiveGeneration();
+      return;
+    }
     generateSequence();
+  });
+
+  [refs.providerSelect, refs.durationInput, refs.variantCountInput].forEach((element) => {
+    element.addEventListener("input", updateCostPreview);
+    element.addEventListener("change", updateCostPreview);
   });
 
   refs.openCompareButton.addEventListener("click", () => {

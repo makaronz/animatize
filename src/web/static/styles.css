@@ -497,6 +497,17 @@ a {
   background: rgba(255, 255, 255, 0.01);
 }
 
+.btn-danger {
+  color: #2a0d0d;
+  background: radial-gradient(circle at 20% 10%, #ffb9b9, var(--danger));
+}
+
+.run-controls {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: end;
+}
+
 .upload-intent-grid {
   display: grid;
   grid-template-columns: minmax(260px, 42%) 1fr;
@@ -1070,6 +1081,34 @@ input[type="range"] {
   font-size: 0.82rem;
 }
 
+.recovery-card {
+  border-radius: 12px;
+  border: 1px solid rgba(241, 107, 107, 0.45);
+  background: rgba(241, 107, 107, 0.1);
+  padding: 0.68rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.recovery-card strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  color: #f9c4c4;
+}
+
+.recovery-card p {
+  font-size: 0.84rem;
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+
+#providerSelect option.is-deprecated {
+  color: var(--text-2);
+  font-style: italic;
+}
+
 .skeleton {
   height: 254px;
   border-radius: 14px;
@@ -1117,10 +1156,6 @@ select:focus-visible,
 @media (max-width: 1120px) {
   .create-grid {
     grid-template-columns: 1fr;
-  }
-
-  .control-rack {
-    order: -1;
   }
 
   .library-grid {
