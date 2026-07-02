@@ -113,3 +113,5 @@ agentdb.rvf
 agentdb.rvf.lock
 .swarm/
 .hive-mind/
+data/*.db-shm
+data/*.db-wal

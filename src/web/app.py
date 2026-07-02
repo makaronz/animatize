@@ -162,6 +162,150 @@ def _resolve_provider(requested: str, available: list[str], preset: str) -> str 
     return available[0]
 
 
+# Static provider capability/cost metadata for the frontend provider picker
+# ("Camera Cards", docs/UI_UX_AUDIT_REPORT.md section 2.2). Pricing and wait
+# estimates are not part of the adapter contracts, and capability values are
+# mirrored from each adapter's get_capabilities() so we never have to
+# instantiate adapters (which require real API keys) just to describe them.
+PROVIDER_METADATA: dict[str, dict[str, Any]] = {
+    "sora": {
+        "label": "Sora",
+        "est_cost_per_second": 0.30,
+        "est_wait_seconds": 90,
+        "lifecycle": {"status": "deprecated", "note": "API EOL 2026-09-24"},
+        "max_duration": 60.0,
+        "supports_audio": True,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+            "video_extension": True,
+            "prompt_enhancement": True,
+            "style_transfer": True,
+        },
+    },
+    "veo": {
+        "label": "Veo",
+        "est_cost_per_second": 0.35,
+        "est_wait_seconds": 40,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": 120.0,
+        "supports_audio": True,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+            "video_extension": True,
+            "camera_control": True,
+            "motion_control": True,
+        },
+    },
+    "runway": {
+        "label": "Runway",
+        "est_cost_per_second": 0.25,
+        "est_wait_seconds": 50,
+        "lifecycle": {"status": "migration_recommended", "note": "Gen-3 Alpha EOL 2026-07-30"},
+        "max_duration": 16.0,
+        "supports_audio": False,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+            "video_to_video": True,
+            "motion_brush": True,
+            "frame_interpolation": True,
+            "upscaling": True,
+        },
+    },
+    "kling": {
+        "label": "Kling",
+        "est_cost_per_second": 0.15,
+        "est_wait_seconds": 60,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": 10.0,
+        "supports_audio": True,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+        },
+    },
+    "luma": {
+        "label": "Luma",
+        "est_cost_per_second": 0.32,
+        "est_wait_seconds": 55,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": 10.0,
+        "supports_audio": False,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+        },
+    },
+    "pika": {
+        "label": "Pika",
+        "est_cost_per_second": 0.20,
+        "est_wait_seconds": 45,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": 10.0,
+        "supports_audio": True,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+            "lip_sync": True,
+            "sound_effects": True,
+            "extend_video": True,
+            "modify_region": True,
+        },
+    },
+    "wan": {
+        "label": "Wan",
+        "est_cost_per_second": 0.10,
+        "est_wait_seconds": 70,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": 10.0,
+        "supports_audio": False,
+        "features": {
+            "text_to_video": True,
+            "image_to_video": True,
+        },
+    },
+    "flux": {
+        "label": "Flux",
+        "est_cost_per_second": 0.05,
+        "est_wait_seconds": 20,
+        "lifecycle": {"status": "active", "note": None},
+        "max_duration": None,
+        "supports_audio": False,
+        "features": {
+            "text_to_image": True,
+            "image_to_image": True,
+            "inpainting": True,
+            "controlnet": True,
+            "lora": True,
+        },
+    },
+}
+
+
+def _provider_catalog(available: list[str]) -> list[dict[str, Any]]:
+    """Build enriched provider entries for the frontend provider picker."""
+    supported = set(SUPPORTED_PROVIDERS)
+    catalog = []
+    for provider, meta in PROVIDER_METADATA.items():
+        catalog.append(
+            {
+                "id": provider,
+                "label": meta["label"],
+                "supported": provider in supported,
+                "configured": provider in available,
+                "est_cost_per_second": meta["est_cost_per_second"],
+                "est_wait_seconds": meta["est_wait_seconds"],
+                "lifecycle": dict(meta["lifecycle"]),
+                "max_duration": meta["max_duration"],
+                "supports_audio": meta["supports_audio"],
+                "features": dict(meta["features"]),
+            }
+        )
+    return catalog
+
+
 def _provider_type(provider: str) -> ProviderType:
     mapping = {
         "runway": ProviderType.RUNWAY,
@@ -575,6 +719,7 @@ async def providers(request: Request) -> JSONResponse:
             "available_providers": available,
             "provider_count": len(available),
             "supported_providers": list(SUPPORTED_PROVIDERS),
+            "providers": _provider_catalog(available),
             "credential_status": credential_status,
             "defaults": {
                 "preset_default": "cinematic-balanced",
