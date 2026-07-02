@@ -1,3 +1,17 @@
+import { initDailiesRoom, attemptAsyncGeneration } from "./modules/dailiesRoom.js";
+import { initCameraCards, renderCameraCards, syncCameraCards } from "./modules/cameraCards.js";
+import {
+  initMovementVocabulary,
+  renderMovementVocabulary,
+  syncMovementVocabulary,
+} from "./modules/movementVocabulary.js";
+import {
+  initLightTable,
+  openLightTable,
+  closeLightTable,
+  maybeAutoOpenLightTable,
+} from "./modules/lightTable.js";
+
 const DEFAULT_SETTINGS = {
   accessibility: {
     reducedMotion: false,
@@ -6,6 +20,7 @@ const DEFAULT_SETTINGS = {
   },
   preferences: {
     autoFavoriteWinner: false,
+    autoOpenCompare: true,
     defaultPreset: "cinematic-balanced",
     defaultAspectRatio: "16:9",
     defaultDuration: 6,
@@ -99,11 +114,13 @@ const refs = {
   sampleFrameButton: document.getElementById("sampleFrameButton"),
 
   providerSelect: document.getElementById("providerSelect"),
+  providerCards: document.getElementById("providerCards"),
   presetSelect: document.getElementById("presetSelect"),
   durationInput: document.getElementById("durationInput"),
   variantCountInput: document.getElementById("variantCountInput"),
   aspectSelect: document.getElementById("aspectSelect"),
   motionInput: document.getElementById("motionInput"),
+  movementSegments: document.getElementById("movementSegments"),
   qualitySelect: document.getElementById("qualitySelect"),
   negativeIntentInput: document.getElementById("negativeIntentInput"),
   toggleAdvancedButton: document.getElementById("toggleAdvancedButton"),
@@ -114,6 +131,7 @@ const refs = {
   comparePanel: document.getElementById("comparePanel"),
   closeCompareButton: document.getElementById("closeCompareButton"),
   compareGrid: document.getElementById("compareGrid"),
+  lightTableTransport: document.getElementById("lightTableTransport"),
   runSummary: document.getElementById("runSummary"),
 
   timelineList: document.getElementById("timelineList"),
@@ -131,6 +149,7 @@ const refs = {
 
   reducedMotionToggle: document.getElementById("reducedMotionToggle"),
   autoFavoriteToggle: document.getElementById("autoFavoriteToggle"),
+  autoOpenCompareToggle: document.getElementById("autoOpenCompareToggle"),
   announceStatusToggle: document.getElementById("announceStatusToggle"),
 
   autoSaveDelayInput: document.getElementById("autoSaveDelayInput"),
@@ -385,12 +404,25 @@ function setCurrentParams(params = {}) {
   refs.motionInput.value = params.motion_intensity || 6;
   refs.qualitySelect.value = params.quality_mode || state.settings.behavior.renderQuality || "balanced";
   refs.negativeIntentInput.value = params.negative_intent || "";
+  syncCameraCards();
+  syncMovementVocabulary();
   updateCostPreview();
+}
+
+function hasSourceImage() {
+  return Boolean(state.currentImageFile || state.currentImageUrl);
+}
+
+function isReducedMotion() {
+  return (
+    Boolean(state.settings.accessibility.reducedMotion) ||
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
+  );
 }
 
 function setGenerateEnabled() {
   if (state.activeGeneration) return;
-  const hasImage = Boolean(state.currentImageFile || state.currentImageUrl);
+  const hasImage = hasSourceImage();
   const hasIntent = refs.intentInput.value.trim().length > 0;
   refs.generateButton.disabled = !(hasImage && hasIntent);
 }
@@ -474,6 +506,12 @@ function attachSampleFrameEvents() {
     event.stopPropagation();
     const dataUrl = createSampleFrameDataUrl();
     setCurrentImage(dataUrlToFile(dataUrl, "sample-frame.jpg"), dataUrl);
+    if (!refs.intentInput.value.trim()) {
+      refs.intentInput.value =
+        "Slow push-in on the silhouette, warm amber practicals, soft haze, stable identity.";
+      announce("Sample intent loaded. Ready to roll camera.");
+    }
+    setGenerateEnabled();
   });
 }
 
@@ -557,7 +595,9 @@ async function toggleFavorite(runId, variantId) {
   if (!variant) return;
   variant.favorite = !variant.favorite;
   await persistRun(run);
-  if (state.currentRunId === runId) renderResults(run);
+  if (state.currentRunId === runId) {
+    renderResults(run, { preserveCompare: !refs.comparePanel.hidden });
+  }
   renderHistory();
   renderFavorites();
 }
@@ -686,11 +726,13 @@ function buildResultCard(run, variant) {
   return card;
 }
 
-function renderResults(run) {
+function renderResults(run, options = {}) {
   refs.resultGrid.innerHTML = "";
-  refs.comparePanel.hidden = true;
-  state.selectedForCompare.clear();
-  refs.openCompareButton.disabled = true;
+  if (!options.preserveCompare) {
+    refs.comparePanel.hidden = true;
+    state.selectedForCompare.clear();
+    refs.openCompareButton.disabled = true;
+  }
 
   if (!run || !Array.isArray(run.variants) || run.variants.length === 0) {
     refs.resultGrid.innerHTML = '<p class="list-card">No takes yet.</p>';
@@ -699,38 +741,6 @@ function renderResults(run) {
 
   run.variants.forEach((variant) => {
     refs.resultGrid.appendChild(buildResultCard(run, variant));
-  });
-}
-
-function renderComparePanel() {
-  const selected = [];
-  state.runs.forEach((run) => {
-    run.variants.forEach((variant) => {
-      if (state.selectedForCompare.has(variant.id)) {
-        selected.push({ run, variant });
-      }
-    });
-  });
-
-  refs.compareGrid.innerHTML = "";
-  selected.forEach(({ run, variant }) => {
-    const card = document.createElement("article");
-    card.className = "compare-card";
-    card.innerHTML = `
-      <h4>${sanitize(variant.label)}</h4>
-      <p>Status: ${sanitize(variant.status)}</p>
-      <p>Provider: ${sanitize(variant.provider || "n/a")}</p>
-      <p>Temporal weight: ${sanitize(variant.compiled_prompt?.temporal_config?.temporal_weight ?? "n/a")}</p>
-      <button class="btn-small" type="button" data-winner>Select as winner</button>
-      ${executionUrl(variant) ? `<a class="btn-small" href="${sanitize(executionUrl(variant))}" target="_blank" rel="noreferrer noopener">Open output</a>` : ""}
-    `;
-    card.querySelector("[data-winner]").addEventListener("click", async () => {
-      if (state.settings.preferences.autoFavoriteWinner) {
-        await toggleFavorite(run.run_id, variant.id);
-      }
-      announce(`${variant.label} marked as winner.`);
-    });
-    refs.compareGrid.appendChild(card);
   });
 }
 
@@ -920,6 +930,7 @@ async function loadProviders() {
     }
     refs.providerSelect.appendChild(option);
   });
+  renderCameraCards(payload.providers || []);
   updateCostPreview();
 }
 
@@ -1075,26 +1086,50 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
   formData.append("negative_intent", params.negative_intent || "");
 
   try {
-    const response = await fetch("/api/sequences", {
-      method: "POST",
-      credentials: "same-origin",
-      body: formData,
+    // Dailies Room first: async SSE mode with transparent synchronous fallback.
+    const asyncOutcome = await attemptAsyncGeneration({
+      formData,
+      params,
+      sourceImageDataUrl,
       signal: controller.signal,
     });
-    const payload = await response.json();
-    if (!response.ok) {
-      const detail = payload?.detail;
-      const failure = new Error(
-        typeof detail === "string" ? detail : detail ? JSON.stringify(detail) : "Generation failed.",
-      );
-      failure.status = response.status;
-      throw failure;
+
+    let resultPayload = null;
+    if (asyncOutcome.mode === "async-complete") {
+      resultPayload = asyncOutcome.run;
+    } else {
+      let { response, payload } = asyncOutcome;
+      if (asyncOutcome.mode === "retry-sync") {
+        // The dailies feed never came up — replay the classic synchronous take.
+        createLoadingCards(params.variants);
+        refs.runSummary.textContent = "Projector spinning...";
+        response = await fetch("/api/sequences", {
+          method: "POST",
+          credentials: "same-origin",
+          body: formData,
+          signal: controller.signal,
+        });
+        try {
+          payload = await response.json();
+        } catch {
+          payload = null;
+        }
+      }
+      if (!response.ok) {
+        const detail = payload?.detail;
+        const failure = new Error(
+          typeof detail === "string" ? detail : detail ? JSON.stringify(detail) : "Generation failed.",
+        );
+        failure.status = response.status;
+        throw failure;
+      }
+      resultPayload = payload;
     }
 
     const run = {
-      ...payload,
+      ...resultPayload,
       source_image_data_url: sourceImageDataUrl,
-      variants: (payload.variants || []).map((variant) => ({
+      variants: (resultPayload.variants || []).map((variant) => ({
         ...variant,
         favorite: Boolean(variant.favorite),
       })),
@@ -1107,9 +1142,10 @@ async function executeGeneration({ imageFile, sourceImageDataUrl, intent, params
     renderResults(run);
     refs.runSummary.textContent = `Run ${run.run_id} • ${run.status}`;
     announce(`Generation finished with status: ${run.status}`);
+    maybeAutoOpenLightTable(run);
   } catch (error) {
     const retryArgs = { imageFile, sourceImageDataUrl, intent, params };
-    if (error?.name === "AbortError") {
+    if (error?.name === "AbortError" || error?.code === "cancelled") {
       refs.resultGrid.innerHTML = "";
       if (generation.timedOut) {
         refs.runSummary.textContent = "Take timed out";
@@ -1238,6 +1274,7 @@ async function loadSettings() {
 function renderSettingsState() {
   refs.reducedMotionToggle.checked = Boolean(state.settings.accessibility.reducedMotion);
   refs.autoFavoriteToggle.checked = Boolean(state.settings.preferences.autoFavoriteWinner);
+  refs.autoOpenCompareToggle.checked = state.settings.preferences.autoOpenCompare !== false;
   refs.announceStatusToggle.checked = Boolean(state.settings.accessibility.announceStatusChanges);
 
   refs.autoSaveDelayInput.value = Number(state.settings.behavior.autoSaveDelayMs || 700);
@@ -1269,6 +1306,7 @@ function collectSettingsFromUI() {
     preferences: {
       ...state.settings.preferences,
       autoFavoriteWinner: refs.autoFavoriteToggle.checked,
+      autoOpenCompare: refs.autoOpenCompareToggle.checked,
     },
     behavior: {
       ...state.settings.behavior,
@@ -1461,6 +1499,7 @@ function attachSettingsEvents() {
   [
     refs.reducedMotionToggle,
     refs.autoFavoriteToggle,
+    refs.autoOpenCompareToggle,
     refs.announceStatusToggle,
     refs.autoSaveDelayInput,
     refs.parallelPreviewInput,
@@ -1532,8 +1571,7 @@ function attachKeyboardShortcuts() {
       generateSequence();
     }
     if (event.key.toLowerCase() === "c" && !refs.openCompareButton.disabled) {
-      refs.comparePanel.hidden = false;
-      renderComparePanel();
+      openLightTable({ focus: true });
     }
     if (event.key.toLowerCase() === "r" && state.currentRunId) {
       rerunFromRun(state.currentRunId);
@@ -1584,12 +1622,11 @@ function attachCoreEvents() {
   });
 
   refs.openCompareButton.addEventListener("click", () => {
-    refs.comparePanel.hidden = false;
-    renderComparePanel();
+    openLightTable({ focus: true });
   });
 
   refs.closeCompareButton.addEventListener("click", () => {
-    refs.comparePanel.hidden = true;
+    closeLightTable();
   });
 
   refs.clearTimelineButton.addEventListener("click", () => {
@@ -1621,6 +1658,26 @@ async function initializeRuntimeData() {
 }
 
 async function initialize() {
+  const moduleContext = {
+    state,
+    refs,
+    PROVIDER_META,
+    announce,
+    showToast,
+    sanitize,
+    switchView,
+    toggleFavorite,
+    executionUrl,
+    cutActiveGeneration,
+    hasSourceImage,
+    isReducedMotion,
+  };
+  initDailiesRoom(moduleContext);
+  initCameraCards(moduleContext);
+  initMovementVocabulary(moduleContext);
+  initLightTable(moduleContext);
+  renderMovementVocabulary();
+
   attachCoreEvents();
 
   try {
