@@ -163,6 +163,11 @@ ConsistencyViolation:
 | `veo_adapter.py` | Veo 3.1 | + Veo 3.1 Lite | Q3 2026 | 🟢 P3 | S |
 | `seedance_adapter.py` | **BRAK** | Seedance 2.0 | Q3 2026 | 🟢 P2 | M |
 | `happyhorse_adapter.py` | **BRAK** | HappyHorse 1.1 | Q3 2026 | 🟢 P2 | M |
+| `hailuo_adapter.py` | **BRAK** | Hailuo 2.3 Pro | Q3 2026 | 🟢 P2 | M |
+| `pixverse_adapter.py` | **BRAK** | PixVerse V6 | Q3 2026 | 🟢 P2 | M |
+| `vidu_adapter.py` | **BRAK** | Vidu 2.0 | Q4 2026 | 🟢 P3 | M |
+| `hunyuan_adapter.py` | **BRAK** | Hunyuan 1.5 | Q4 2026 | 🟢 P3 | M (OSS) |
+| `mochi_adapter.py` | **BRAK** | Mochi 1 | Q4 2026 | 🟢 P4 | S (OSS) |
 
 **Legenda:** S = Small (1-2 dni), M = Medium (3-5 dni), L = Large (1-2 tygodnie)
 
@@ -196,6 +201,59 @@ ConsistencyViolation:
 | **Open Source** | ✅ Apache 2.0 |
 | **API** | fal.ai, Alibaba Cloud, happyhorse.com |
 | **Cena** | $0.14/s @720p, $0.18/s @1080p |
+
+#### Hailuo/MiniMax 2.3 Pro - Październik 2025
+| Cecha | Wartość |
+|-------|---------|
+| **Architektura** | NCR Framework (Noise-Conditional Redistribution) |
+| **Rozdzielczość** | 768p (Standard) / 1080p (Pro) |
+| **Czas trwania** | 6s @1080p / 10s @768p |
+| **Warianty** | Standard, Pro, Fast, Fast Pro |
+| **Specjalizacja** | Micro-expressions, full-body choreography |
+| **API** | fal.ai, MiniMax official |
+| **Cena** | $0.28/gen @768p, $0.49/gen @1080p |
+
+#### Vidu 2.0 (Shengshu) - 2026
+| Cecha | Wartość |
+|-------|---------|
+| **Architektura** | Physics-conditioned Diffusion |
+| **Rozdzielczość** | 1080p (do 2K w pro) |
+| **Czas trwania** | 8-32s (full-sequence attention) |
+| **Physics Engine** | 3-stage: scene parsing → physics sim → conditioned diffusion |
+| **Camera Language** | Dolly zooms, orbit shots, FPV sweeps |
+| **Czas generacji** | <10s |
+| **API** | Z.AI, fal.ai |
+| **Cena** | ~$0.04/s |
+
+#### PixVerse V6 (Aishi) - Marzec 2026
+| Cecha | Wartość |
+|-------|---------|
+| **Architektura** | Hybrid Diffusion-Transformer |
+| **Rozdzielczość** | 360p - 1080p |
+| **Czas trwania** | 5-15s |
+| **Camera Controls** | 20+ (focal length, aperture, DoF, lens distortion, vignetting) |
+| **Multi-shot** | ✅ Native support |
+| **Audio** | ✅ Multi-character lip-sync |
+| **API** | muapi.ai, fal.ai, official |
+| **Cena** | Varies by provider |
+
+#### Hunyuan Video 1.5 (Tencent) - Listopad 2025
+| Cecha | Wartość |
+|-------|---------|
+| **Parametry** | 8.3B |
+| **Rozdzielczość** | 1080p |
+| **Czas trwania** | Do 75s (single RTX 4090) |
+| **Open Source** | ✅ Weights available |
+| **Specjalizacja** | Motion diversity, text-video alignment |
+| **Self-hosting** | ✅ Możliwy |
+
+#### Mochi 1 (Genmo) - 2025
+| Cecha | Wartość |
+|-------|---------|
+| **Typ** | Open-source state-of-the-art |
+| **Specjalizacja** | High-fidelity motion, prompt adherence |
+| **Open Source** | ✅ Full weights |
+| **API** | fal.ai, self-hosted |
 
 ### 1.5 JTBD (Jobs To Be Done)
 
@@ -246,6 +304,11 @@ ConsistencyViolation:
 | **Pika 2.5** | Pika Labs | 25s | 1080p | Pikaframes | ✓ | × | ✓ | Early 2026 | ✅ Aktywny |
 | **Seedance 2.0** | ByteDance | 15s | 2K | 12-Asset Multimodal | ✓ | ✓ | ✓ | Feb 2026 | ✅ **NOWY** |
 | **HappyHorse 1.1** | Alibaba | 15s | 1080p | 9-Image Reference | ✓ | ✓ | ✓/OSS | Apr 2026 | ✅ **NOWY** |
+| **Hailuo 2.3 Pro** | MiniMax | 6s | 1080p | NCR Framework | ✓ | × | ✓ | Oct 2025 | ✅ Aktywny |
+| **Hunyuan 1.5** | Tencent | 75s | 1080p | Open Weights | ✓ | × | OSS | Nov 2025 | ✅ Aktywny |
+| **Vidu 2.0** | Shengshu | 32s | 2K | Physics Engine | ✓ | × | ✓ | 2026 | ✅ Aktywny |
+| **PixVerse V6** | Aishi | 15s | 1080p | 20+ Camera Controls | ✓ | ✓ | ✓ | Mar 2026 | ✅ **NOWY** |
+| **Mochi 1** | Genmo | - | 1080p | Open Source | ✓ | × | OSS | 2025 | ✅ Aktywny |
 
 ### ⚠️ KRYTYCZNE ALERTY (Aktualizacja Czerwiec 2026)
 
@@ -259,6 +322,11 @@ ConsistencyViolation:
 | **🟢 NOWY** | Veo 3.1 Lite | Apr 2026 | 50% tańszy | Dodać tier pricing |
 | **🟢 NOWY** | Seedance 2.0 | Feb 2026 | 12-asset multimodal, native audio | Dodać `seedance_adapter.py` |
 | **🟢 NOWY** | HappyHorse 1.1 | Apr 2026 | #1 ELO open-source, 7-lang lip-sync | Dodać `happyhorse_adapter.py` |
+| **🟢 NOWY** | Hailuo 2.3 Pro | Oct 2025 | NCR framework, micro-expressions | Dodać `hailuo_adapter.py` |
+| **🟢 NOWY** | PixVerse V6 | Mar 2026 | 20+ camera controls, multi-shot | Dodać `pixverse_adapter.py` |
+| **🟢 NOWY** | Vidu 2.0 | 2026 | Physics engine, 32s coherent | Dodać `vidu_adapter.py` |
+| **🟢 OSS** | Hunyuan 1.5 | Nov 2025 | 8.3B params, 75s clips | Rozważyć self-hosting |
+| **🟢 OSS** | Mochi 1 | 2025 | High-fidelity motion | Rozważyć self-hosting |
 
 **Źródła:**
 - [OpenAI Sora 2](https://openai.com/index/sora-2/) - Sep 2025
@@ -274,6 +342,13 @@ ConsistencyViolation:
 - [Seedance 2.0 API](https://fal.ai/seedance-2.0) - Apr 2026
 - [HappyHorse 1.1](https://www.explainx.ai/blog/happyhorse-1-1-alibaba-video-generation-model-2026) - Apr 2026
 - [HappyHorse API](https://fal.ai/happyhorse-1.0) - 2026
+- [Hailuo 2.3](https://www.minimax.io/news/minimax-hailuo-23) - Oct 2025
+- [Vidu 2.0](https://flowith.io/blog/vidu-2-0-physics-engine-long-coherence-redefine-short-film-2026/) - 2026
+- [PixVerse V6](https://wavespeed.ai/blog/posts/pixverse-v6-ai-video-camera-control-vfx-2026/) - Mar 2026
+- [Hunyuan Video](https://fal.ai/learn/tools/ai-video-generators) - Nov 2025
+- [Mochi 1](https://fal.ai/explore?categories=text-to-video) - 2025
+- [fal.ai Platform](https://fal.ai/video) - 2026
+- [MuAPI Platform](https://muapi.ai/) - 2026
 
 ### 2.2 Prompt Engineering (B)
 
@@ -302,6 +377,11 @@ ConsistencyViolation:
 - **Wan 2.7**: First/Last frame, subject referencing, open weights
 - **Seedance 2.0**: 12-asset multimodal input, Dual-Branch Diffusion Transformer, native audio-video sync, multi-shot storytelling
 - **HappyHorse 1.1**: 9-image reference, 7-language lip-sync, 15B unified transformer, DMD-2 distillation (8 steps), ~10s/gen
+- **Hailuo 2.3**: NCR framework, micro-expressions, choreography, 4 variants (Standard/Pro/Fast)
+- **Vidu 2.0**: Physics engine, 32s coherent generation, full-sequence attention, $0.04/s
+- **PixVerse V6**: 20+ camera controls (focal, aperture, DoF), multi-shot native, lip-sync
+- **Hunyuan 1.5**: 8.3B params, 75s clips, open weights, self-hostable
+- **Mochi 1**: Open-source SOTA, high-fidelity motion
 
 **Źródła:**
 - [Venice.ai Video Prompt Guide](https://venice.ai/blog/the-complete-guide-to-ai-video-prompt-engineering) - 2024
@@ -354,6 +434,22 @@ ConsistencyViolation:
 | **Pika 2.5** | Official | Pikaframes, 25s | Varies | ✅ Aktywny |
 | **Seedance 2.0** | BytePlus/Volcengine | 12-asset multimodal, audio-video | ~$0.05/5s @720p | ✅ **NOWY** |
 | **HappyHorse 1.1** | Alibaba/Fal.ai | 9-ref, 7-lang lip-sync | $0.14-0.18/s | ✅ **NOWY / OSS** |
+| **Hailuo 2.3 Pro** | MiniMax/Fal.ai | Micro-expressions, 1080p | $0.49/gen @1080p | ✅ Aktywny |
+| **Vidu 2.0** | Z.AI/Fal.ai | Physics engine, 32s | ~$0.04/s | ✅ Aktywny |
+| **PixVerse V6** | Official/MuAPI | 20+ camera controls | Varies | ✅ **NOWY** |
+| **Hunyuan 1.5** | Self-hosted | 75s, 8.3B params | GPU costs only | ✅ OSS |
+| **Mochi 1** | Self-hosted/Fal.ai | High-fidelity motion | GPU costs only | ✅ OSS |
+
+### 2.5.1 🌐 Platformy Agregatorów API
+
+| Platforma | Modele | Unikalne Cechy | Pricing |
+|-----------|--------|----------------|---------|
+| **[fal.ai](https://fal.ai)** | 1000+ (Kling, Seedance, Hailuo, Vidu, Hunyuan, Mochi) | CUDA kernels, pay-per-use, unified API | ~30% taniej od official |
+| **[muapi.ai](https://muapi.ai)** | 250+ (Veo, Kling, Seedance, PixVerse, Wan) | Workflow builder, unified REST, ~30% taniej | Single param model switch |
+| **[Replicate](https://replicate.com)** | 100+ OSS models | Easy deployment, serverless | Per-second billing |
+| **[Runware](https://runware.ai)** | Video + Image models | Enterprise focus | Volume discounts |
+
+**Rekomendacja dla ANIMAtiZE:** Użyj fal.ai lub muapi.ai jako fallback/routing layer dla multi-provider support. Unified API redukuje complexity adapterów.
 
 **Bezpieczeństwo:**
 - **SynthID** (Google) - Invisible watermarking
