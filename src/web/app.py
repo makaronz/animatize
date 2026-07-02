@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+import asyncio
+import json
 import math
 import os
 import tempfile
+import threading
 import uuid
 from datetime import datetime, timezone
+from functools import partial
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from fastapi import Body, FastAPI, File, Form, HTTPException, Query, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.adapters.contracts import ProviderType
@@ -454,6 +458,430 @@ def _variant_camera(index: int, motion_strength: float) -> CameraMotion:
     return motion
 
 
+class SequenceCancelled(Exception):
+    """Raised inside a background run when the director requested cancellation."""
+
+
+class SequenceJob:
+    """In-memory state for one async sequence run: stage history, terminal event,
+    cancel flag, and live SSE subscribers."""
+
+    def __init__(self, run_id: str, loop: asyncio.AbstractEventLoop) -> None:
+        self.run_id = run_id
+        self.loop = loop
+        self.cancel_requested = False
+        self.stage_events: list[tuple[str, Any]] = []
+        self.terminal_event: tuple[str, Any] | None = None
+        self._subscribers: list[asyncio.Queue] = []
+        self._lock = threading.Lock()
+
+    @property
+    def finished(self) -> bool:
+        return self.terminal_event is not None
+
+    def broadcast(self, name: str, data: Any) -> None:
+        """Record an event and fan it out to live subscribers.
+
+        Safe to call from the event loop or a worker thread. Events published
+        after the terminal event are dropped.
+        """
+        with self._lock:
+            if self.terminal_event is not None:
+                return
+            if name == "stage":
+                self.stage_events.append((name, data))
+            else:
+                self.terminal_event = (name, data)
+            queues = list(self._subscribers)
+        for queue in queues:
+            self.loop.call_soon_threadsafe(queue.put_nowait, (name, data))
+
+    def subscribe(self) -> tuple[asyncio.Queue, list[tuple[str, Any]], tuple[str, Any] | None]:
+        """Snapshot history and register a live queue atomically.
+
+        If the job already finished, no queue is registered and the terminal
+        event is returned for immediate replay.
+        """
+        queue: asyncio.Queue = asyncio.Queue()
+        with self._lock:
+            history = list(self.stage_events)
+            terminal = self.terminal_event
+            if terminal is None:
+                self._subscribers.append(queue)
+        return queue, history, terminal
+
+    def unsubscribe(self, queue: asyncio.Queue) -> None:
+        with self._lock:
+            if queue in self._subscribers:
+                self._subscribers.remove(queue)
+
+
+_SEQUENCE_JOBS: dict[str, SequenceJob] = {}
+_SEQUENCE_JOBS_MAX = 50
+
+
+def _register_sequence_job(job: SequenceJob) -> None:
+    """Insert a job, evicting the oldest finished jobs beyond the cap."""
+    _SEQUENCE_JOBS[job.run_id] = job
+    if len(_SEQUENCE_JOBS) <= _SEQUENCE_JOBS_MAX:
+        return
+    for run_id in list(_SEQUENCE_JOBS):
+        if len(_SEQUENCE_JOBS) <= _SEQUENCE_JOBS_MAX:
+            break
+        if _SEQUENCE_JOBS[run_id].finished:
+            del _SEQUENCE_JOBS[run_id]
+
+
+def _sse_event(name: str, data: Any) -> str:
+    return f"event: {name}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+def _run_stage(
+    emit: Callable[[str, str, str, float], None],
+    check_cancel: Callable[[], None],
+    stage: str,
+    start_detail: str,
+    start_progress: float,
+    end_progress: float,
+    fn: Callable[[], tuple[Any, str]],
+) -> Any:
+    """Run one pipeline stage, emitting started/completed (or failed) events."""
+    check_cancel()
+    emit(stage, "started", start_detail, start_progress)
+    try:
+        result, end_detail = fn()
+    except SequenceCancelled:
+        emit(stage, "failed", "Cancelled by director", start_progress)
+        raise
+    except HTTPException as error:
+        emit(stage, "failed", str(error.detail), start_progress)
+        raise
+    except Exception as error:
+        emit(stage, "failed", str(error), start_progress)
+        raise
+    emit(stage, "completed", end_detail, end_progress)
+    return result
+
+
+def _execute_sequence_run(
+    *,
+    owner_key: str,
+    run_id: str,
+    created_at: str,
+    content: bytes,
+    filename: str | None,
+    content_type: str | None,
+    intent: str,
+    preset: str,
+    duration: float,
+    variants: int,
+    aspect_ratio: str,
+    motion_intensity: int,
+    quality_mode: str,
+    provider: str,
+    negative_intent: str,
+    emit: Callable[[str, str, str, float], None] | None = None,
+    check_cancel: Callable[[], None] | None = None,
+) -> dict[str, Any]:
+    """Execute a full sequence generation run (blocking).
+
+    Shared by the synchronous POST /api/sequences path (no-op callbacks) and
+    the async job worker (stage events + cancellation checks). Returns the run
+    payload; the finished run is persisted via save_run exactly like before.
+    """
+    emit = emit or (lambda stage, status, detail, progress: None)
+    check_cancel = check_cancel or (lambda: None)
+
+    variant_count = _parse_variant_count(variants)
+    motion_strength = max(0.1, min(motion_intensity / 10.0, 1.0))
+    requested_provider = provider.strip().lower() if provider else "auto"
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=Path(filename or "input.jpg").suffix or ".jpg") as tmp:
+        tmp.write(content)
+        image_path = Path(tmp.name)
+
+    try:
+        # Stage 1: scene_analysis — image validation + CV analysis.
+        def _scene_analysis_stage() -> tuple[Any, str]:
+            try:
+                from src.analyzers.movement_predictor import MovementPredictor
+                from src.analyzers.scene_analyzer import SceneAnalyzer
+            except ModuleNotFoundError as error:
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "Missing computer-vision dependency for real image analysis. "
+                        "Install requirements-cv.txt before running sequence generation."
+                    ),
+                ) from error
+
+            scene_analyzer = SceneAnalyzer(config_path=str(CONFIG_DIR / "scene_analyzer.json"))
+            movement_predictor = MovementPredictor(config_path=str(CONFIG_DIR / "movement_prediction_rules.json"))
+            scene_analysis = scene_analyzer.analyze_image(str(image_path))
+            movement_analysis = movement_predictor.analyze_image(str(image_path))
+            movement_prompt = movement_predictor.get_cinematic_movement_prompt(str(image_path))
+            object_count = len(scene_analysis.get("objects", []))
+            return (
+                (scene_analysis, movement_analysis, movement_prompt),
+                f"Scene analysis complete: {object_count} objects tracked",
+            )
+
+        scene_analysis, movement_analysis, movement_prompt = _run_stage(
+            emit,
+            check_cancel,
+            "scene_analysis",
+            f"Analyzing {filename or 'source frame'} for composition and movement",
+            0.1,
+            0.3,
+            _scene_analysis_stage,
+        )
+
+        # Stage 2: prompt_compile — provider resolution + prompt/preset assembly.
+        def _prompt_compile_stage() -> tuple[Any, str]:
+            available = _available_providers(owner_key)
+            resolved_provider = _resolve_provider(provider, available, preset)
+            prompt_compiler = VideoPromptCompiler(
+                catalog_path=str(CONFIG_DIR / "video_prompting_catalog.json"),
+                rules_path=str(CONFIG_DIR / "movement_prediction_rules.json"),
+            )
+            temporal_priority_map = {
+                "coherence-first": "critical",
+                "speed-first": "medium",
+                "cinematic-balanced": "high",
+            }
+            temporal_priority = temporal_priority_map.get(preset, "high")
+
+            compiled_variants = []
+            for index in range(variant_count):
+                check_cancel()
+                control = VideoControlParameters(
+                    camera_motion=_variant_camera(index, motion_strength),
+                    duration_seconds=float(duration),
+                    fps=24,
+                    shot_type="medium",
+                    motion_strength=motion_strength,
+                )
+                determinism = DeterminismConfig(seed=42, enable_seed_management=True, seed_increment_per_scene=97)
+                request_payload = VideoGenerationRequest(
+                    model_type=_model_type_for_provider(resolved_provider) if resolved_provider else ModelType.RUNWAY,
+                    scene_description=intent,
+                    duration=float(duration),
+                    aspect_ratio=aspect_ratio,
+                    style="cinematic",
+                    temporal_consistency_priority=temporal_priority,
+                    control_parameters=control,
+                    determinism_config=determinism,
+                )
+                compiled = prompt_compiler.compile_video_prompt(request_payload, scene_index=index)
+                model_parameters = prompt_compiler.compile_model_parameters(compiled)
+                compiled_variants.append(
+                    {
+                        "index": index,
+                        "compiled": compiled,
+                        "model_parameters": model_parameters,
+                        "camera": control.camera_motion,
+                    }
+                )
+
+            lead = compiled_variants[0]["camera"]
+            return (
+                (available, resolved_provider, compiled_variants),
+                f"Compiled {variant_count} variants ({lead.type}-{lead.direction} lead) with preset {preset}",
+            )
+
+        available, resolved_provider, compiled_variants = _run_stage(
+            emit,
+            check_cancel,
+            "prompt_compile",
+            f"Compiling {variant_count} camera variants with preset {preset}",
+            0.35,
+            0.5,
+            _prompt_compile_stage,
+        )
+
+        # Stage 3: render — provider execution loop over the compiled variants.
+        def _render_stage() -> tuple[Any, str]:
+            pipeline = _build_pipeline(owner_key)
+            variants_payload = []
+            for entry in compiled_variants:
+                check_cancel()
+                index = entry["index"]
+                compiled = entry["compiled"]
+                model_parameters = entry["model_parameters"]
+                variant_id = f"{run_id}-v{index + 1}"
+
+                execution = None
+                status = "not_executed"
+                error = None
+                used_provider = resolved_provider
+                used_model = _model_for_provider(resolved_provider) if resolved_provider else None
+                if resolved_provider:
+                    provider_params = _provider_parameters(
+                        provider=resolved_provider,
+                        compiled_parameters=model_parameters,
+                        duration=float(duration),
+                        aspect_ratio=aspect_ratio,
+                        quality_mode=quality_mode,
+                        motion_intensity=motion_intensity,
+                        negative_intent=negative_intent,
+                    )
+                    response = pipeline.generate_video(
+                        prompt=compiled.prompt_text,
+                        provider=_provider_type(resolved_provider),
+                        model=used_model,
+                        parameters=provider_params,
+                        metadata={"run_id": run_id, "variant_id": variant_id},
+                    )
+                    execution = response.to_dict()
+                    if response.is_success():
+                        status = "success"
+                    else:
+                        status = "failed"
+                        error = response.error.message if response.error else "Provider execution failed."
+                else:
+                    status = "not_configured"
+                    if requested_provider != "auto" and requested_provider not in available:
+                        error = (
+                            f"Requested provider '{requested_provider}' is not configured. "
+                            "Configure its API key or switch provider to 'auto'."
+                        )
+                    else:
+                        error = (
+                            "No configured provider API key found. Set RUNWAY_API_KEY, "
+                            "PIKA_API_KEY, VEO_API_KEY, SORA_API_KEY/OPENAI_API_KEY, or FLUX_API_KEY."
+                        )
+
+                variants_payload.append(
+                    {
+                        "id": variant_id,
+                        "label": f"Variant {index + 1}",
+                        "status": status,
+                        "provider": used_provider,
+                        "model": used_model,
+                        "prompt_text": compiled.prompt_text,
+                        "compiled_prompt": compiled.to_dict(),
+                        "model_parameters": model_parameters,
+                        "execution": execution,
+                        "error": error,
+                        "favorite": False,
+                    }
+                )
+
+            success_count = sum(1 for variant in variants_payload if variant["status"] == "success")
+            if resolved_provider:
+                detail = f"Rendered {success_count}/{variant_count} variants via {resolved_provider}"
+            else:
+                detail = "No provider configured; variants compiled without execution"
+            return variants_payload, detail
+
+        render_detail = (
+            f"Rendering {variant_count} variants via {resolved_provider}"
+            if resolved_provider
+            else f"Skipping provider execution for {variant_count} variants (no provider configured)"
+        )
+        variants_payload = _run_stage(
+            emit,
+            check_cancel,
+            "render",
+            render_detail,
+            0.55,
+            0.9,
+            _render_stage,
+        )
+
+        # Stage 4: qc — response assembly + persistence.
+        def _qc_stage() -> tuple[Any, str]:
+            if any(variant["status"] == "success" for variant in variants_payload):
+                overall_status = "success"
+            elif any(variant["status"] == "failed" for variant in variants_payload):
+                overall_status = "failed"
+            elif any(variant["status"] == "not_configured" for variant in variants_payload):
+                overall_status = "not_configured"
+            else:
+                overall_status = "not_executed"
+
+            payload = {
+                "run_id": run_id,
+                "created_at": created_at,
+                "status": overall_status,
+                "intent": intent,
+                "preset": preset,
+                "params": {
+                    "duration": duration,
+                    "variants": variant_count,
+                    "aspect_ratio": aspect_ratio,
+                    "motion_intensity": motion_intensity,
+                    "quality_mode": quality_mode,
+                    "provider": resolved_provider,
+                    "provider_requested": requested_provider,
+                },
+                "source_image": {
+                    "filename": filename,
+                    "content_type": content_type,
+                    "bytes": len(content),
+                },
+                "analysis": {
+                    "scene_type": scene_analysis.get("scene_type", {}),
+                    "aesthetics": scene_analysis.get("aesthetics", {}),
+                    "object_count": len(scene_analysis.get("objects", [])),
+                    "movement_prompt": movement_prompt,
+                    "movement_prediction_count": len(movement_analysis.get("generated_prompts", [])),
+                },
+                "available_providers": available,
+                "variants": variants_payload,
+            }
+
+            save_run(owner_key, payload)
+            return payload, f"QC complete: run {run_id} saved to Library with status {overall_status}"
+
+        return _run_stage(
+            emit,
+            check_cancel,
+            "qc",
+            "Assembling dailies and persisting run",
+            0.92,
+            1.0,
+            _qc_stage,
+        )
+    finally:
+        try:
+            image_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+
+def _run_sequence_job(job: SequenceJob, run_kwargs: dict[str, Any]) -> None:
+    """Background worker (runs in a thread off the event loop)."""
+
+    def emit(stage: str, status: str, detail: str, progress: float) -> None:
+        job.broadcast(
+            "stage",
+            {
+                "run_id": job.run_id,
+                "stage": stage,
+                "status": status,
+                "detail": detail,
+                "progress": round(float(progress), 3),
+            },
+        )
+
+    def check_cancel() -> None:
+        if job.cancel_requested:
+            raise SequenceCancelled()
+
+    try:
+        check_cancel()
+        emit("queued", "completed", "Picked up by generation worker", 0.05)
+        payload = _execute_sequence_run(emit=emit, check_cancel=check_cancel, **run_kwargs)
+        job.broadcast("done", _json_safe(payload))
+    except SequenceCancelled:
+        job.broadcast("error", {"message": "Cancelled by director", "code": "cancelled"})
+    except HTTPException as error:
+        job.broadcast("error", {"message": str(error.detail), "code": f"http_{error.status_code}"})
+    except Exception as error:  # noqa: BLE001 — terminal event must always be emitted
+        job.broadcast("error", {"message": str(error), "code": "internal_error"})
+
+
 app = FastAPI(
     title="ANIMAtiZE Director Console",
     description="Cinematic workflow UI with persistent settings, auth, and generation orchestration.",
@@ -774,6 +1202,7 @@ async def create_sequence(
     quality_mode: str = Form("balanced"),
     provider: str = Form("auto"),
     negative_intent: str = Form(""),
+    async_mode: str = Form(""),
 ) -> JSONResponse:
     session, should_set_cookie = _resolve_session(request)
     owner_key = session["owner_key"]
@@ -788,179 +1217,102 @@ async def create_sequence(
 
     run_id = f"R{uuid.uuid4().hex[:8]}"
     created_at = _iso_utc()
-    variant_count = _parse_variant_count(variants)
-    motion_strength = max(0.1, min(motion_intensity / 10.0, 1.0))
+    run_kwargs: dict[str, Any] = {
+        "owner_key": owner_key,
+        "run_id": run_id,
+        "created_at": created_at,
+        "content": content,
+        "filename": image.filename,
+        "content_type": image.content_type,
+        "intent": intent,
+        "preset": preset,
+        "duration": duration,
+        "variants": variants,
+        "aspect_ratio": aspect_ratio,
+        "motion_intensity": motion_intensity,
+        "quality_mode": quality_mode,
+        "provider": provider,
+        "negative_intent": negative_intent,
+    }
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=Path(image.filename or "input.jpg").suffix or ".jpg") as tmp:
-        tmp.write(content)
-        image_path = Path(tmp.name)
+    loop = asyncio.get_running_loop()
 
-    try:
-        try:
-            from src.analyzers.movement_predictor import MovementPredictor
-            from src.analyzers.scene_analyzer import SceneAnalyzer
-        except ModuleNotFoundError as error:
-            raise HTTPException(
-                status_code=503,
-                detail=(
-                    "Missing computer-vision dependency for real image analysis. "
-                    "Install requirements-cv.txt before running sequence generation."
-                ),
-            ) from error
-
-        scene_analyzer = SceneAnalyzer(config_path=str(CONFIG_DIR / "scene_analyzer.json"))
-        movement_predictor = MovementPredictor(config_path=str(CONFIG_DIR / "movement_prediction_rules.json"))
-        prompt_compiler = VideoPromptCompiler(
-            catalog_path=str(CONFIG_DIR / "video_prompting_catalog.json"),
-            rules_path=str(CONFIG_DIR / "movement_prediction_rules.json"),
+    if async_mode == "1":
+        job = SequenceJob(run_id=run_id, loop=loop)
+        _register_sequence_job(job)
+        job.broadcast(
+            "stage",
+            {
+                "run_id": run_id,
+                "stage": "queued",
+                "status": "started",
+                "detail": "Queued in the Dailies Room pipeline",
+                "progress": 0.0,
+            },
         )
+        threading.Thread(
+            target=_run_sequence_job,
+            args=(job, run_kwargs),
+            name=f"animatize-run-{run_id}",
+            daemon=True,
+        ).start()
 
-        scene_analysis = scene_analyzer.analyze_image(str(image_path))
-        movement_analysis = movement_predictor.analyze_image(str(image_path))
-        movement_prompt = movement_predictor.get_cinematic_movement_prompt(str(image_path))
-
-        available = _available_providers(owner_key)
-        resolved_provider = _resolve_provider(provider, available, preset)
-        requested_provider = provider.strip().lower() if provider else "auto"
-        pipeline = _build_pipeline(owner_key)
-
-        temporal_priority_map = {
-            "coherence-first": "critical",
-            "speed-first": "medium",
-            "cinematic-balanced": "high",
-        }
-        temporal_priority = temporal_priority_map.get(preset, "high")
-
-        variants_payload = []
-        for index in range(variant_count):
-            variant_id = f"{run_id}-v{index + 1}"
-            control = VideoControlParameters(
-                camera_motion=_variant_camera(index, motion_strength),
-                duration_seconds=float(duration),
-                fps=24,
-                shot_type="medium",
-                motion_strength=motion_strength,
-            )
-            determinism = DeterminismConfig(seed=42, enable_seed_management=True, seed_increment_per_scene=97)
-
-            request_payload = VideoGenerationRequest(
-                model_type=_model_type_for_provider(resolved_provider) if resolved_provider else ModelType.RUNWAY,
-                scene_description=intent,
-                duration=float(duration),
-                aspect_ratio=aspect_ratio,
-                style="cinematic",
-                temporal_consistency_priority=temporal_priority,
-                control_parameters=control,
-                determinism_config=determinism,
-            )
-            compiled = prompt_compiler.compile_video_prompt(request_payload, scene_index=index)
-            model_parameters = prompt_compiler.compile_model_parameters(compiled)
-
-            execution = None
-            status = "not_executed"
-            error = None
-            used_provider = resolved_provider
-            used_model = _model_for_provider(resolved_provider) if resolved_provider else None
-            if resolved_provider:
-                provider_params = _provider_parameters(
-                    provider=resolved_provider,
-                    compiled_parameters=model_parameters,
-                    duration=float(duration),
-                    aspect_ratio=aspect_ratio,
-                    quality_mode=quality_mode,
-                    motion_intensity=motion_intensity,
-                    negative_intent=negative_intent,
-                )
-                response = pipeline.generate_video(
-                    prompt=compiled.prompt_text,
-                    provider=_provider_type(resolved_provider),
-                    model=used_model,
-                    parameters=provider_params,
-                    metadata={"run_id": run_id, "variant_id": variant_id},
-                )
-                execution = response.to_dict()
-                if response.is_success():
-                    status = "success"
-                else:
-                    status = "failed"
-                    error = response.error.message if response.error else "Provider execution failed."
-            else:
-                status = "not_configured"
-                if requested_provider != "auto" and requested_provider not in available:
-                    error = (
-                        f"Requested provider '{requested_provider}' is not configured. "
-                        "Configure its API key or switch provider to 'auto'."
-                    )
-                else:
-                    error = (
-                        "No configured provider API key found. Set RUNWAY_API_KEY, "
-                        "PIKA_API_KEY, VEO_API_KEY, SORA_API_KEY/OPENAI_API_KEY, or FLUX_API_KEY."
-                    )
-
-            variants_payload.append(
-                {
-                    "id": variant_id,
-                    "label": f"Variant {index + 1}",
-                    "status": status,
-                    "provider": used_provider,
-                    "model": used_model,
-                    "prompt_text": compiled.prompt_text,
-                    "compiled_prompt": compiled.to_dict(),
-                    "model_parameters": model_parameters,
-                    "execution": execution,
-                    "error": error,
-                    "favorite": False,
-                }
-            )
-
-        if any(variant["status"] == "success" for variant in variants_payload):
-            overall_status = "success"
-        elif any(variant["status"] == "failed" for variant in variants_payload):
-            overall_status = "failed"
-        elif any(variant["status"] == "not_configured" for variant in variants_payload):
-            overall_status = "not_configured"
-        else:
-            overall_status = "not_executed"
-
-        payload = {
-            "run_id": run_id,
-            "created_at": created_at,
-            "status": overall_status,
-            "intent": intent,
-            "preset": preset,
-            "params": {
-                "duration": duration,
-                "variants": variant_count,
-                "aspect_ratio": aspect_ratio,
-                "motion_intensity": motion_intensity,
-                "quality_mode": quality_mode,
-                "provider": resolved_provider,
-                "provider_requested": requested_provider,
-            },
-            "source_image": {
-                "filename": image.filename,
-                "content_type": image.content_type,
-                "bytes": len(content),
-            },
-            "analysis": {
-                "scene_type": scene_analysis.get("scene_type", {}),
-                "aesthetics": scene_analysis.get("aesthetics", {}),
-                "object_count": len(scene_analysis.get("objects", [])),
-                "movement_prompt": movement_prompt,
-                "movement_prediction_count": len(movement_analysis.get("generated_prompts", [])),
-            },
-            "available_providers": available,
-            "variants": variants_payload,
-        }
-
-        save_run(owner_key, payload)
-
-        response = JSONResponse(_json_safe(payload))
+        response = JSONResponse(
+            {"run_id": run_id, "stream_url": f"/api/sequences/{run_id}/events"},
+            status_code=202,
+        )
         if should_set_cookie:
             _set_session_cookie(response, session["session_id"])
         return response
-    finally:
+
+    payload = await loop.run_in_executor(None, partial(_execute_sequence_run, **run_kwargs))
+
+    response = JSONResponse(_json_safe(payload))
+    if should_set_cookie:
+        _set_session_cookie(response, session["session_id"])
+    return response
+
+
+@app.get("/api/sequences/{run_id}/events")
+async def sequence_events(run_id: str) -> StreamingResponse:
+    job = _SEQUENCE_JOBS.get(run_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Run not found.")
+
+    async def stream():
+        queue, history, terminal = job.subscribe()
+        if terminal is not None:
+            # Late subscriber: replay the terminal event and close.
+            yield _sse_event(*terminal)
+            return
         try:
-            image_path.unlink(missing_ok=True)
-        except Exception:
-            pass
+            for name, data in history:
+                yield _sse_event(name, data)
+            while True:
+                try:
+                    name, data = await asyncio.wait_for(queue.get(), timeout=15.0)
+                except asyncio.TimeoutError:
+                    yield ": keepalive\n\n"
+                    continue
+                yield _sse_event(name, data)
+                if name in ("done", "error"):
+                    return
+        finally:
+            job.unsubscribe(queue)
+
+    return StreamingResponse(
+        stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@app.post("/api/sequences/{run_id}/cancel")
+async def cancel_sequence(run_id: str) -> JSONResponse:
+    job = _SEQUENCE_JOBS.get(run_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Run not found.")
+    if job.finished:
+        return JSONResponse({"status": "already_finished"})
+    job.cancel_requested = True
+    return JSONResponse({"status": "cancelling"})
